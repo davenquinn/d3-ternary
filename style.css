@@ -1,0 +1,18 @@
+.ternary-circle{
+  stroke:#c00;
+  fill:#fff;
+}
+
+.ternary-line{
+  fill:none;
+  stroke:#c00;
+}
+.ternary-tick{
+  fill:none;
+  stroke:#aaa;
+}
+
+.minor{
+  stroke:#fefefe;	
+}
+
