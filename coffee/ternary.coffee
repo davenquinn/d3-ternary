@@ -176,27 +176,6 @@ ternaryAxes = (plot) ->
       parent = d3.select(parentSelector)
     minor = parent.append('g').attr('id', 'minor-ticks')
     major = parent.append('g').attr('id', 'major-ticks')
-    #minor ticks
-    i = 0
-    while i < minorTicks.length
-            j = 0
-      while j < minorTicks[i].length
-        minor.append('path').attr
-          'class': 'ternary-tick minor'
-          'd': plot.rule(minorTicks[i][j], i)
-        j++
-      i++
-    #major ticks
-    i = 0
-    while i < ticks.length
-            j = 0
-      while j < ticks[i].length
-        major.append('path').attr
-          'class': 'ternary-tick'
-          'd': plot.rule(ticks[i][j], i)
-        j++
-      i++
-    return
 
   axes.ticks = (tickArrays) ->
     # an array containing 1 - 3 three arrays the first array will be copied over empty spaces at the end
