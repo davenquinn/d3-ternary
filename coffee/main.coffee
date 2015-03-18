@@ -53,7 +53,7 @@ rotate = [0,60,-60]
 
 baryAxis = d3.svg.axis()
   .scale myTernary.scale
-  .tickSize 5
+  .tickSize 10
   .tickFormat d3.format("%")
   .tickValues [.2,.4,.6,.8]
   .orient "top"
@@ -75,7 +75,7 @@ b_axes = axes.selectAll ".bary-axis"
         .selectAll "text"
           .attr transform: (d)->
             y = d3.select(@).attr "y"
-            "rotate(-180 0 #{2*y})"
+            "translate(0 #{-y})rotate(-180 0 #{2*y})"
 
 ticks = baryAxis.tickValues()
 

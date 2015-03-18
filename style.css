@@ -21,6 +21,7 @@ text {
   font-weight: 200;
 }
 
+
 path.domain {
   display: none;
 }
@@ -29,7 +30,7 @@ path.domain {
   stroke: #f8f8f8;
 }
 
-.graticule path.major {
+.graticule path.major ,.tick line {
   stroke: #eee;
   stroke-width: 2px;
 }
