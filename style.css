@@ -26,5 +26,10 @@ path.domain {
 }
 
 .graticule path {
+  stroke: #f8f8f8;
+}
+
+.graticule path.major {
   stroke: #eee;
+  stroke-width: 2px;
 }

@@ -104,6 +104,9 @@ axes.selectAll ".graticule"
             .enter()
               .append "path"
                 .attr
+                  class: (d)->
+                    console.log d%.2
+                    if d*100%20 < 0.00001 then "major" else "minor"
                   d: (d)->
                     a = myTernary.rule d,i
                     console.log a
