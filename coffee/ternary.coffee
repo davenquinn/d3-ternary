@@ -55,22 +55,21 @@ ternaryPlot = ->
     path positions
 
   ternary.rule = (value, axis) ->
-    console.log value, axis
     ends = []
     if axis == 0
       ends = [
-        [value, 0, 100 - value]
-        [value, 100 - value, 0]
+        [value, 0, 1 - value]
+        [value, 1 - value, 0]
       ]
     else if axis == 1
       ends = [
-        [0, value, 100 - value]
-        [100 - value, value, 0]
+        [0, value, 1 - value]
+        [1 - value, value, 0]
       ]
     else if axis == 2
       ends = [
-        [0, 100 - value, value]
-        [100 - value, 0, value]
+        [0, 1 - value, value]
+        [1 - value, 0, value]
       ]
 
     ternary.line ends

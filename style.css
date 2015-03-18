@@ -21,3 +21,10 @@ text {
   font-weight: 200;
 }
 
+path.domain {
+  display: none;
+}
+
+.graticule path {
+  stroke: #eee;
+}

@@ -21,8 +21,8 @@ svg = d3.select 'body'
       width: width
       height: height
 
-plot = svg.append('g').attr('id', 'plot')
 axes = svg.append('g').attr('id', 'axes')
+plot = svg.append('g').attr('id', 'plot')
 
 myTernary = ternaryPlot()
   .range [0,width]
@@ -56,6 +56,7 @@ baryAxis = d3.svg.axis()
   .tickSize 5
   .tickFormat d3.format("%")
   .tickValues [.2,.4,.6,.8]
+  .orient "top"
 
 b_axes = axes.selectAll ".bary-axis"
   .data angles
@@ -67,7 +68,7 @@ b_axes = axes.selectAll ".bary-axis"
         x = offs[0]
         y = offs[1]
         "rotate(#{60+i*120} #{x} #{y}) translate(0 #{Math.sqrt(3)/2*width-radius})"
-    .call baryAxis.orient "top"
+    .call baryAxis
     .each (d,i)->
       return unless i==1
       d3.select @
@@ -75,9 +76,38 @@ b_axes = axes.selectAll ".bary-axis"
           .attr transform: (d)->
             y = d3.select(@).attr "y"
             "rotate(-180 0 #{2*y})"
-      #else
-      #  axis.call baryAxis.orient "top"
 
+ticks = baryAxis.tickValues()
+
+ticks = []
+int = 0.05
+start = int
+while start < 1
+  ticks.push start
+  start += int
+
+gratAxis = d3.svg.axis()
+  .scale myTernary.scale
+  .tickValues ticks
+
+axes.selectAll ".graticule"
+  .data [gratAxis,gratAxis,gratAxis]
+  .enter()
+    .append "g"
+      .attr
+        class: "graticule"
+      .each (d,i)->
+        console.log d.tickValues()
+        d3.select @
+          .selectAll "path"
+            .data d.tickValues()
+            .enter()
+              .append "path"
+                .attr
+                  d: (d)->
+                    a = myTernary.rule d,i
+                    console.log a
+                    a+"Z"
 
 axes.selectAll ".vertex-label"
   .data labels
@@ -93,5 +123,7 @@ axes.selectAll ".vertex-label"
           x = offs[0]+Math.sin(a)*(radius+pad)
           y = offs[1]-Math.cos(a)*(radius+pad)
           "translate(#{x},#{y})rotate(#{rotate[i]})"
+
+
 
 d3.json 'data.json', gotData
