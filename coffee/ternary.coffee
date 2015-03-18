@@ -1,30 +1,3 @@
-test_data = [
-  {
-    a: 100
-    b: 0
-    c: 0
-    color: '#F00'
-  }
-  {
-    a: 0
-    b: 100
-    c: 0
-    color: '#0F0'
-  }
-  {
-    a: 0
-    b: 0
-    c: 100
-    color: '#00F'
-  }
-  {
-    a: 33
-    b: 33
-    c: 33
-    color: '#999'
-  }
-]
-
 ternaryPlot = ->
   ternary = {}
   height = Math.sqrt(1 * 1 - 1 / 2 * 1 / 2)
@@ -32,30 +5,20 @@ ternaryPlot = ->
 
   rescale = (range) ->
     if !range.length
-      range = [
-        0
-        1
-      ]
-    ternary.scale = d3.scale.linear().domain([
-      0
-      1
-    ]).range(range)
-    return
+      range = [0,1]
+    ternary.scale = d3.scale.linear()
+      .domain [0,1]
+      .range range
 
   line = (interpolator) ->
     if !interpolator
       interpolator = 'linear'
-    path = d3.svg.line().x((d) ->
-      d[0]
-    ).y((d) ->
-      d[1]
-    ).interpolate(interpolator)
-    return
+    path = d3.svg.line()
+      .x (d) -> d[0]
+      .y (d) -> d[1]
+      .interpolate interpolator
 
-  rescale [
-    0
-    400
-  ]
+  rescale [0,400]
   line()
 
   ternary.range = (range) ->
@@ -65,15 +28,10 @@ ternaryPlot = ->
   #map teranry coordinate [a, b, c] to an [x, y] position
 
   ternary.point = (coords) ->
-    pos = [
-      0
-      0
-    ]
-    sum = d3.sum(coords)
+    pos = [0,0]
+    sum = d3.sum coords
     if sum != 0
-      normalized = coords.map((d) ->
-        d / sum
-      )
+      normalized = coords.map (d) -> d / sum
       pos[0] = ternary.scale(normalized[1] + normalized[2] / 2)
       pos[1] = ternary.scale(height * normalized[0] + height * normalized[1])
     pos
@@ -85,13 +43,11 @@ ternaryPlot = ->
     if interpolator
       line interpolator
     if !accessor
+      accessor = (d) -> d
 
-      accessor = (d) ->
-        d
-
-    positions = coordsList.map((d) ->
+    positions = coordsList.map (d) ->
       ternary.point accessor(d)
-    )
+
     path positions
 
   ternary.rule = (value, axis) ->
@@ -99,43 +55,20 @@ ternaryPlot = ->
     ends = []
     if axis == 0
       ends = [
-        [
-          value
-          0
-          100 - value
-        ]
-        [
-          value
-          100 - value
-          0
-        ]
+        [value, 0, 100 - value]
+        [value, 100 - value, 0]
       ]
     else if axis == 1
       ends = [
-        [
-          0
-          value
-          100 - value
-        ]
-        [
-          100 - value
-          value
-          0
-        ]
+        [0, value, 100 - value]
+        [100 - value, value, 0]
       ]
     else if axis == 2
       ends = [
-        [
-          0
-          100 - value
-          value
-        ]
-        [
-          100 - value
-          0
-          value
-        ]
+        [0, 100 - value, value]
+        [100 - value, 0, value]
       ]
+
     ternary.line ends
 
   # this inverse of point i.e. take an x,y positon and get the ternary coordinate
@@ -146,11 +79,7 @@ ternaryPlot = ->
     c = 1 - pos[1]
     b = pos[0] - c / 2
     a = y - b
-    [
-      a
-      b
-      c
-    ]
+    [a,b,c]
 
   ternary
 
