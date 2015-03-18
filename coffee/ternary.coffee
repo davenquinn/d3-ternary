@@ -24,6 +24,12 @@ ternaryPlot = ->
     rescale range
     ternary
 
+  ternary.margin = (margin) ->
+    ternary
+
+  ternary.radius = (radius) ->
+    ternary
+
   #map teranry coordinate [a, b, c] to an [x, y] position
 
   ternary.point = (coords) ->

@@ -4,7 +4,7 @@
 }
 
 .ternary-line{
-  fill:#fff;
+  fill: rgba(255,255,255,0.0);
   stroke:#c00;
 }
 .ternary-tick{
@@ -14,5 +14,10 @@
 
 .minor{
   stroke:#fefefe;	
+}
+
+text {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 200;
 }
 

@@ -1,13 +1,31 @@
+margin =
+  top: 50
+  bottom: 50
+  left: 50
+  right: 50
+
+outerWidth = 500
+outerHeight = 500
+
+width = outerWidth-margin.left-margin.right
+height = outerHeight-margin.top-margin.bottom
+
 svg = d3.select 'body'
   .append 'svg'
   .attr
-    width: 500
-    height: 500
+    width: outerWidth
+    height: outerHeight
+  .append "g"
+    .attr
+      transform: "translate(#{margin.left},#{margin.top})"
+      width: width
+      height: height
 
-axes = svg.append('g').attr('id', 'axes')
 plot = svg.append('g').attr('id', 'plot')
+axes = svg.append('g').attr('id', 'axes')
 
-myTernary = ternaryPlot().range [0,400]
+myTernary = ternaryPlot()
+  .range [0,width]
 myAxes = ternaryAxes(myTernary)
 
 gotData = (d) ->
@@ -24,32 +42,56 @@ gotData = (d) ->
       .on 'click', (d) ->
         console.log @id
 
-myAxes
-  .ticks()
-  .minorTicks [ d3.range(0, 101, 5) ]
-  .draw '#axes'
-
 labels = ["Clay","Sand","Silt"]
 
-width = 500
 radius = width/Math.sqrt(3)
-margin = 10
-rad = radius + margin
-offs = width/2+margin
-angles = (a*Math.PI/180 for a in [0,-120,-240])
+pad = 20
+offs = [width/2,width/Math.sqrt(3)]
+angles = [0,120,240]
+anchors = ["middle","end","start"]
+rotate = [0,60,-60]
 
-placeLabel = (d,i)->
-  a = angles[i]
-  d3.select @
+baryAxis = d3.svg.axis()
+  .scale myTernary.scale
+  .tickSize 5
+  .tickFormat d3.format("%")
+  .tickValues [.2,.4,.6,.8]
+
+b_axes = axes.selectAll ".bary-axis"
+  .data angles
+  .enter()
+    .append "g"
     .attr
-      x: offs+Math.sin(a)*rad
-      y: offs-Math.cos(a)*rad
+      class: "bary-axis"
+      transform: (d,i)->
+        x = offs[0]
+        y = offs[1]
+        "rotate(#{60+i*120} #{x} #{y}) translate(0 #{Math.sqrt(3)/2*width-radius})"
+    .call baryAxis.orient "top"
+    .each (d,i)->
+      return unless i==1
+      d3.select @
+        .selectAll "text"
+          .attr transform: (d)->
+            y = d3.select(@).attr "y"
+            "rotate(-180 0 #{2*y})"
+      #else
+      #  axis.call baryAxis.orient "top"
 
-axes.selectAll ".vertexLabel"
+
+axes.selectAll ".vertex-label"
   .data labels
   .enter()
     .append "text"
       .text (d) -> d
-      .each placeLabel
+      .attr
+        dy: ".35em"
+        "text-anchor": "middle"
+        class: "vertex-label"
+        transform: (d,i)->
+          a = -angles[i]*Math.PI/180
+          x = offs[0]+Math.sin(a)*(radius+pad)
+          y = offs[1]-Math.cos(a)*(radius+pad)
+          "translate(#{x},#{y})rotate(#{rotate[i]})"
 
 d3.json 'data.json', gotData
