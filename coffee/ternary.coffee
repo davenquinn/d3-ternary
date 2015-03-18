@@ -19,7 +19,6 @@ ternaryPlot = ->
       .interpolate interpolator
 
   rescale [0,400]
-  line()
 
   ternary.range = (range) ->
     rescale range
@@ -40,8 +39,7 @@ ternaryPlot = ->
 
   ternary.line = (coordsList, accessor, interpolator) ->
     #path generator wrapper
-    if interpolator
-      line interpolator
+    line interpolator
     if !accessor
       accessor = (d) -> d
 
