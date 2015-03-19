@@ -1,5 +1,18 @@
+path = undefined
+
+line = (interpolator) ->
+  if !interpolator
+    interpolator = 'linear'
+  path = d3.svg.line()
+    .x (d) -> d[0]
+    .y (d) -> d[1]
+    .interpolate interpolator
+
+
 class TernaryPlot
   constructor: ->
+    @height = Math.sqrt(1 * 1 - 1 / 2 * 1 / 2)
+    @rescale [0,400]
 
   create: (el)=>
     svg = el
@@ -9,63 +22,34 @@ class TernaryPlot
       .append "svg"
       .append "g"
 
-ternaryPlot = ->
-
-  ternary = new TernaryPlot
-
-  height = Math.sqrt(1 * 1 - 1 / 2 * 1 / 2)
-  path = undefined
-
-  rescale = (range) ->
-    if !range.length
-      range = [0,1]
-    ternary.scale = d3.scale.linear()
-      .domain [0,1]
-      .range range
-
-  line = (interpolator) ->
-    if !interpolator
-      interpolator = 'linear'
-    path = d3.svg.line()
-      .x (d) -> d[0]
-      .y (d) -> d[1]
-      .interpolate interpolator
-
-  rescale [0,400]
-
-  ternary.range = (range) ->
-    rescale range
-    ternary
-
-  ternary.margin = (margin) ->
-    ternary
-
-  ternary.radius = (radius) ->
-    ternary
-
-  ternary.point = (coords) ->
+  point: (coords) =>
     pos = [0,0]
     sum = d3.sum coords
     if sum != 0
       normalized = coords.map (d) -> d / sum
-      pos[0] = ternary.scale(normalized[1] + normalized[2] / 2)
-      pos[1] = ternary.scale(height * normalized[0] + height * normalized[1])
+      pos[0] = @scale(normalized[1] + normalized[2] / 2)
+      pos[1] = @scale(@height * normalized[0] + @height * normalized[1])
     pos
 
-  #create an SVG path from a set of points
-
-  ternary.line = (coordsList, accessor, interpolator) ->
+  line: (coordsList, accessor, interpolator) =>
     #path generator wrapper
     line interpolator
     if !accessor
       accessor = (d) -> d
 
-    positions = coordsList.map (d) ->
-      ternary.point accessor(d)
+    positions = coordsList.map (d) =>
+      @point accessor(d)
 
     path positions
 
-  ternary.rule = (value, axis) ->
+  rescale: (range) =>
+    if !range.length
+      range = [0,1]
+    @scale = d3.scale.linear()
+      .domain [0,1]
+      .range range
+
+  rule: (value, axis) =>
     ends = []
     if axis == 0
       ends = [
@@ -83,17 +67,24 @@ ternaryPlot = ->
         [1 - value, 0, value]
       ]
 
-    ternary.line ends
+    @line ends
 
   # this inverse of point i.e. take an x,y positon and get the ternary coordinate
 
-  ternary.getValues = (pos) ->
+  getValues: (pos) =>
     #NOTE! haven't checked if this works yet
-    pos = pos.map(ternary.scale.inverse)
+    pos = pos.map(@scale.inverse)
     c = 1 - pos[1]
     b = pos[0] - c / 2
     a = y - b
     [a,b,c]
 
+  range: (range) => @
+  margin: (margin) => @
+  radius: (radius) => @
+
+ternaryPlot = ->
+
+  ternary = new TernaryPlot
   ternary
 
