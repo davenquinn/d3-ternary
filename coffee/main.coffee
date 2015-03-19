@@ -109,7 +109,6 @@ axes.selectAll ".graticule"
                     if d*100%20 < 0.00001 then "major" else "minor"
                   d: (d)->
                     a = myTernary.rule d,i
-                    console.log a
                     a+"Z"
 
 axes.selectAll ".vertex-label"
@@ -127,6 +126,19 @@ axes.selectAll ".vertex-label"
           y = offs[1]-Math.cos(a)*(radius+pad)
           "translate(#{x},#{y})rotate(#{rotate[i]})"
 
+createPoint = (i)->
+  a = [0,0,0]
+  a[i] = 1
+  a
 
-
+svg.append "polygon"
+  .datum (createPoint(i) for i in [0..2])
+  .attr
+    class: "neatline"
+    points: (d)->
+      console.log d
+      di = d.map (c)->
+        i = myTernary.point c
+        i.join(",")
+      di.join(" ")
 d3.json 'data.json', gotData

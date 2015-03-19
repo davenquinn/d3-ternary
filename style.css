@@ -34,3 +34,9 @@ path.domain {
   stroke: #eee;
   stroke-width: 2px;
 }
+
+.neatline {
+  stroke: black;
+  stroke-width: 2px;
+  fill: none;
+}
