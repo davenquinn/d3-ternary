@@ -10,22 +10,30 @@ outerHeight = 500
 width = outerWidth-margin.left-margin.right
 height = outerHeight-margin.top-margin.bottom
 
-svg = d3.select 'body'
-  .append 'svg'
-  .attr
-    width: outerWidth
-    height: outerHeight
-  .append "g"
+myTernary = ternaryPlot()
+  .range [0,width]
+
+d3.select 'body'
+  .call myTernary.create
+  .select "svg"
     .attr
-      transform: "translate(#{margin.left},#{margin.top})"
-      width: width
-      height: height
+      width: outerWidth
+      height: outerHeight
+
+svg = myTernary.svg
+
+svg.attr
+  transform: "translate(#{margin.left},#{margin.top})"
+  width: width
+  height: height
 
 axes = svg.append('g').attr('id', 'axes')
 plot = svg.append('g').attr('id', 'plot')
 
-myTernary = ternaryPlot()
-  .range [0,width]
+svg.attr
+  transform: "translate(#{margin.left},#{margin.top})"
+  width: width
+  height: height
 
 gotData = (d) ->
   for type of d

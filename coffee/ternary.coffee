@@ -1,5 +1,18 @@
+class TernaryPlot
+  constructor: ->
+
+  create: (el)=>
+    svg = el
+      .selectAll "svg"
+      .data [null]
+    @svg = svg.enter()
+      .append "svg"
+      .append "g"
+
 ternaryPlot = ->
-  ternary = {}
+
+  ternary = new TernaryPlot
+
   height = Math.sqrt(1 * 1 - 1 / 2 * 1 / 2)
   path = undefined
 
