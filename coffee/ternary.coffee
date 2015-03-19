@@ -11,8 +11,9 @@ line = (interpolator) ->
 
 class TernaryPlot
   constructor: ->
-    @height = Math.sqrt(1 * 1 - 1 / 2 * 1 / 2)
+    @height = Math.sqrt(3)/2
     @rescale [0,400]
+    @svg = null
 
   create: (el)=>
     svg = el
@@ -22,13 +23,18 @@ class TernaryPlot
       .append "svg"
       .append "g"
 
+  margin: (m)=>
+    return @margin unless m?
+    @margin = m
+    return @
+
   point: (coords) =>
     pos = [0,0]
     sum = d3.sum coords
     if sum != 0
       normalized = coords.map (d) -> d / sum
       pos[0] = @scale(normalized[1] + normalized[2] / 2)
-      pos[1] = @scale(@height * normalized[0] + @height * normalized[1])
+      pos[1] = @scale(@height * (normalized[0] + normalized[1]))
     pos
 
   line: (coordsList, accessor, interpolator) =>
