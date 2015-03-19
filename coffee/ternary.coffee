@@ -30,8 +30,6 @@ ternaryPlot = ->
   ternary.radius = (radius) ->
     ternary
 
-  #map teranry coordinate [a, b, c] to an [x, y] position
-
   ternary.point = (coords) ->
     pos = [0,0]
     sum = d3.sum coords
@@ -86,56 +84,3 @@ ternaryPlot = ->
 
   ternary
 
-#//
-
-ternaryAxes = (plot) ->
-  axes = {}
-  parent = d3.select('svg')
-  defaultTicks = d3.range(0, 101, 25)
-  ticks = [
-    defaultTicks
-    defaultTicks
-    defaultTicks
-  ]
-  minorTicks = [
-    []
-    []
-    []
-  ]
-
-  axes.draw = (parentSelector) ->
-    if parentSelector
-      parent = d3.select(parentSelector)
-    minor = parent.append('g').attr('id', 'minor-ticks')
-    major = parent.append('g').attr('id', 'major-ticks')
-
-  axes.ticks = (tickArrays) ->
-    # an array containing 1 - 3 three arrays the first array will be copied over empty spaces at the end
-    if !tickArrays
-      tickArrays = [
-        defaultTicks
-        defaultTicks
-        defaultTicks
-      ]
-    if !tickArrays[1]
-      tickArrays[1] = tickArrays[0]
-    if !tickArrays[2]
-      tickArrays[2] = tickArrays[0]
-    ticks = tickArrays
-    axes
-
-  axes.minorTicks = (tickArrays) ->
-    if !tickArrays
-      tickArrays = [
-        []
-        []
-        []
-      ]
-    if !tickArrays[1]
-      tickArrays[1] = tickArrays[0]
-    if !tickArrays[2]
-      tickArrays[2] = tickArrays[0]
-    minorTicks = tickArrays
-    axes
-
-  axes

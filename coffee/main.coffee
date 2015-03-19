@@ -26,7 +26,6 @@ plot = svg.append('g').attr('id', 'plot')
 
 myTernary = ternaryPlot()
   .range [0,width]
-myAxes = ternaryAxes(myTernary)
 
 gotData = (d) ->
   for type of d
@@ -46,7 +45,7 @@ labels = ["Clay","Sand","Silt"]
 
 radius = width/Math.sqrt(3)
 pad = 20
-offs = [width/2,width/Math.sqrt(3)]
+offs = [width/2,radius]
 angles = [0,120,240]
 anchors = ["middle","end","start"]
 rotate = [0,60,-60]
@@ -67,7 +66,7 @@ b_axes = axes.selectAll ".bary-axis"
       transform: (d,i)->
         x = offs[0]
         y = offs[1]
-        "rotate(#{60+i*120} #{x} #{y}) translate(0 #{Math.sqrt(3)/2*width-radius})"
+        "rotate(#{60+i*120} #{x} #{y}) translate(0 #{radius/2})"
     .call baryAxis
     .each (d,i)->
       return unless i==1
@@ -75,7 +74,7 @@ b_axes = axes.selectAll ".bary-axis"
         .selectAll "text"
           .attr transform: (d)->
             y = d3.select(@).attr "y"
-            "translate(0 #{-y})rotate(-180 0 #{2*y})"
+            "translate(0 #{-y}) rotate(-180 0 #{2*y})"
 
 ticks = baryAxis.tickValues()
 
@@ -97,7 +96,6 @@ axes.selectAll ".graticule"
       .attr
         class: "graticule"
       .each (d,i)->
-        console.log d.tickValues()
         d3.select @
           .selectAll "path"
             .data d.tickValues()
@@ -105,7 +103,6 @@ axes.selectAll ".graticule"
               .append "path"
                 .attr
                   class: (d)->
-                    console.log d%.2
                     if d*100%20 < 0.00001 then "major" else "minor"
                   d: (d)->
                     a = myTernary.rule d,i
@@ -141,4 +138,6 @@ svg.append "polygon"
         i = myTernary.point c
         i.join(",")
       di.join(" ")
+
 d3.json 'data.json', gotData
+
