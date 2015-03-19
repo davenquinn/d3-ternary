@@ -21,6 +21,9 @@ text {
   font-weight: 200;
 }
 
+.tick text {
+  font-size: 0.8em;
+}
 
 path.domain {
   display: none;
