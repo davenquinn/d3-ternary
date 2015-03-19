@@ -10,6 +10,15 @@ line = (interpolator) ->
 
 
 class TernaryPlot
+  options:
+    outerWidth: 500
+    outerHeight: 500
+    margin:
+      top: 50
+      bottom: 50
+      left: 50
+      right: 50
+
   constructor: ->
     @height = Math.sqrt(3)/2
     @rescale [0,400]
@@ -24,9 +33,16 @@ class TernaryPlot
       .append "g"
 
   margin: (m)=>
-    return @margin unless m?
-    @margin = m
+    return @options.margin unless m?
+    @options.margin = m
     return @
+
+  rescaleView: =>
+    return unless @svg?
+    @svg.attr
+      transform: "translate(#{@options.margin.left},#{@options.margin.top})"
+      width: width
+      height: height
 
   point: (coords) =>
     pos = [0,0]
@@ -86,7 +102,6 @@ class TernaryPlot
     [a,b,c]
 
   range: (range) => @
-  margin: (margin) => @
   radius: (radius) => @
 
 ternaryPlot = ->
