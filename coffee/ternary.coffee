@@ -10,6 +10,40 @@ line = (interpolator) ->
     .y (d) -> d[1]
     .interpolate interpolator
 
+vertexLabels = (plot)->
+  # Currently implemented only for apex vertices of triangle.
+  sel = null
+  angles = [0,120,240]
+  rotate = [0,60,-60]
+  pad = 20
+
+  L = (labels)->
+    sel = plot.axes()
+      .selectAll ".vertex-label"
+
+    offs = plot.center()
+    radius = plot.radius()
+
+    data = labels.map (l,i)->
+      {label: l, angle: angles[i]}
+    sel
+      .data data
+      .enter()
+        .append "text"
+          .text (d) -> d.label
+          .attr
+            dy: ".35em"
+            "text-anchor": "middle"
+            class: "vertex-label"
+            transform: (d,i)->
+              a = -d.angle*Math.PI/180
+              console.log a
+              x = offs[0]+Math.sin(a)*(radius+pad)
+              y = offs[1]-Math.cos(a)*(radius+pad)
+              "translate(#{x},#{y})rotate(#{rotate[i]})"
+    sel
+  L
+
 d3.ternary.plot = ->
 
   outerWidth = 500
@@ -19,9 +53,12 @@ d3.ternary.plot = ->
     bottom: 50
     left: 50
     right: 50
+  radius = null
 
   height = Math.sqrt(3)/2
   svg = null
+  axes = null
+  plot = null
 
   scale = d3.scale.linear()
     .domain [0,1]
@@ -39,6 +76,9 @@ d3.ternary.plot = ->
         width: outerWidth
         height: outerHeight
 
+    radius = width/Math.sqrt(3)
+    center = [width/2,radius]
+
     scale.range [0,400]
 
   T = (el)->
@@ -49,9 +89,14 @@ d3.ternary.plot = ->
       .append "svg"
       .append "g"
 
+    axes = svg.append('g').attr 'id', 'axes'
+    plot = svg.append('g').attr 'id', 'plot'
+
     rescaleView()
 
   T.node = -> svg
+  T.axes = -> axes
+  T.plot = -> plot
 
   T.scale = scale
 
@@ -111,7 +156,10 @@ d3.ternary.plot = ->
     [a,b,c]
 
   T.range = (range) -> T
-  T.radius = (radius) -> T
+  T.radius = (r) ->
+    return radius unless r?
+    T
+  T.center = -> [width/2,radius]
 
   T.neatline = (el)->
 
@@ -130,5 +178,7 @@ d3.ternary.plot = ->
             i.join(",")
           di.join(" ")
     el
+
+  T.vertexLabels = vertexLabels T
 
   T

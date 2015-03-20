@@ -18,13 +18,11 @@ d3.select 'body'
 
 svg = myTernary.node()
 
-axes = svg.append('g').attr('id', 'axes')
-plot = svg.append('g').attr('id', 'plot')
-
 gotData = (d) ->
   for type of d
 
-    plot.append('path')
+    myTernary.plot()
+      .append 'path'
       .attr
         d: ->
           l = myTernary.line d[type], (d) ->
@@ -36,6 +34,7 @@ gotData = (d) ->
         console.log @id
 
 labels = ["Clay","Sand","Silt"]
+myTernary.vertexLabels labels
 
 radius = width/Math.sqrt(3)
 pad = 20
@@ -51,7 +50,7 @@ baryAxis = d3.svg.axis()
   .tickValues [.2,.4,.6,.8]
   .orient "top"
 
-b_axes = axes.selectAll ".bary-axis"
+b_axes = myTernary.axes().selectAll ".bary-axis"
   .data angles
   .enter()
     .append "g"
@@ -83,7 +82,7 @@ gratAxis = d3.svg.axis()
   .scale myTernary.scale
   .tickValues ticks
 
-axes.selectAll ".graticule"
+myTernary.axes().selectAll ".graticule"
   .data [gratAxis,gratAxis,gratAxis]
   .enter()
     .append "g"
@@ -102,20 +101,6 @@ axes.selectAll ".graticule"
                     a = myTernary.rule d,i
                     a+"Z"
 
-axes.selectAll ".vertex-label"
-  .data labels
-  .enter()
-    .append "text"
-      .text (d) -> d
-      .attr
-        dy: ".35em"
-        "text-anchor": "middle"
-        class: "vertex-label"
-        transform: (d,i)->
-          a = -angles[i]*Math.PI/180
-          x = offs[0]+Math.sin(a)*(radius+pad)
-          y = offs[1]-Math.cos(a)*(radius+pad)
-          "translate(#{x},#{y})rotate(#{rotate[i]})"
 
 
 svg.append "polygon"
