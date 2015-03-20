@@ -1,2 +1,2 @@
 all:
-	coffee -wcb -o js coffee
+	coffee -wc -o js coffee
