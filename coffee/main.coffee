@@ -1,9 +1,14 @@
+grat = d3.ternary.graticule()
+    .majorInterval 0.2
+    .minorInterval 0.05
+
+
 ternary = d3.ternary.plot()
   .call d3.ternary.scalebars()
   .call d3.ternary.vertexLabels ["Clay","Sand","Silt"]
   .call d3.ternary.neatline()
-  .call d3.ternary.graticule()
-
+  .call grat
+  
 d3.select 'body'
   .call ternary
 

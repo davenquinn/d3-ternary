@@ -13,36 +13,76 @@ line = (interpolator) ->
 angles = [0,120,240]
 
 d3.ternary.graticule = ->
-  ticks = []
-  int = 0.05
-  start = int
-  while start < 1
-    ticks.push start
-    start += int
+  majorInterval = 0.1
+  minorInterval = null
+
+  majorTicks = ->
+    ticks = []
+    int = majorInterval
+    start = int
+    while start < 1
+      ticks.push start
+      start += int
+    ticks
+
+  minorTicks = ->
+    ticks = []
+    return ticks unless minorInterval?
+    start = minorInterval
+    while start < 1
+      if start%majorInterval != 0
+        ticks.push start
+      start += minorInterval
+    ticks
 
   gratAxis = d3.svg.axis()
-    .tickValues ticks
+    .tickValues majorTicks()
+
 
   graticule = (plot)->
     # Can currently only be called against plot.
     # Should be able to call against axis as well.
     gratAxis.scale plot.scale
+
+    axisGraticule = (scale,i)->
+
+      container = d3.select @
+
+      sel = container.selectAll "path.minor"
+        .data minorTicks()
+      sel.enter()
+        .append "path"
+          .attr
+            class: "minor"
+            d: plot.rule(i)
+
+      sel = container.selectAll "path.major"
+        .data majorTicks()
+      sel.enter()
+        .append "path"
+          .attr
+            class: "major"
+            d: plot.rule(i)
+
     plot.axes().selectAll ".graticule"
       .data [gratAxis,gratAxis,gratAxis]
       .enter()
         .append "g"
-          .attr
-            class: "graticule"
-          .each (d,i)->
-            d3.select @
-              .selectAll "path"
-                .data d.tickValues()
-                .enter()
-                  .append "path"
-                    .attr
-                      class: (a)->
-                        if a*100%20 < 0.00001 then "major" else "minor"
-                      d: plot.rule(i)
+          .attr class: "graticule"
+          .each axisGraticule
+
+  graticule.axis = -> gratAxis
+
+  graticule.majorInterval = (d)->
+    return majorInterval unless d
+    majorInterval = d
+    return graticule
+
+  graticule.minorInterval = (d)->
+    return minorInterval unless d
+    minorInterval = d
+    return graticule
+
   graticule
 
 d3.ternary.scalebars = ->
