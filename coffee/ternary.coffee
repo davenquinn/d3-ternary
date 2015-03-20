@@ -44,7 +44,7 @@ d3.ternary.graticule = ->
     # Should be able to call against axis as well.
     gratAxis.scale plot.scale
 
-    axisGraticule = (scale,i)->
+    axisGraticule = (axis,i)->
 
       container = d3.select @
 
