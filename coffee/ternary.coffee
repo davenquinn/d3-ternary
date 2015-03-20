@@ -12,6 +12,37 @@ line = (interpolator) ->
 
 angles = [0,120,240]
 
+d3.ternary.graticule = ->
+  ticks = []
+  int = 0.05
+  start = int
+  while start < 1
+    ticks.push start
+    start += int
+
+  gratAxis = d3.svg.axis()
+    .tickValues ticks
+
+  graticule = (plot)->
+    gratAxis.scale plot.scale
+    plot.axes().selectAll ".graticule"
+      .data [gratAxis,gratAxis,gratAxis]
+      .enter()
+        .append "g"
+          .attr
+            class: "graticule"
+          .each (d,i)->
+            d3.select @
+              .selectAll "path"
+                .data d.tickValues()
+                .enter()
+                  .append "path"
+                    .attr
+                      class: (a)->
+                        if a*100%20 < 0.00001 then "major" else "minor"
+                      d: plot.rule(i)
+  graticule
+
 d3.ternary.scalebars = ->
   baryAxis = d3.svg.axis()
     .tickSize 10
@@ -29,6 +60,7 @@ d3.ternary.scalebars = ->
 
   S = (plot)->
     baryAxis.scale plot.scale
+    r = plot.radius()
 
     offs = plot.center()
     b_axes = plot.axes().selectAll ".bary-axis"
@@ -40,7 +72,7 @@ d3.ternary.scalebars = ->
           transform: (d,i)->
             x = offs[0]
             y = offs[1]
-            "rotate(#{60+i*120} #{x} #{y}) translate(0 #{radius/2})"
+            "rotate(#{60+i*120} #{x} #{y}) translate(0 #{r/2})"
         .call baryAxis
         .each adjustText
 
@@ -111,7 +143,8 @@ d3.ternary.plot = ->
     right: 50
   radius = null
 
-  height = Math.sqrt(3)/2
+  height = null
+  width = null
   svg = null
   axes = null
   plot = null
@@ -121,6 +154,10 @@ d3.ternary.plot = ->
     .range [0,1]
 
   rescaleView = ->
+    width = outerWidth-margin.left-margin.right
+    height = outerHeight-margin.top-margin.bottom
+    radius = width/Math.sqrt(3)
+    center = [width/2,radius]
     return unless svg?
     svg.attr
       transform: "translate(#{margin.left},#{margin.top})"
@@ -131,10 +168,6 @@ d3.ternary.plot = ->
       .attr
         width: outerWidth
         height: outerHeight
-
-    radius = width/Math.sqrt(3)
-    center = [width/2,radius]
-
     scale.range [0,400]
 
   T = (el)->
@@ -170,7 +203,7 @@ d3.ternary.plot = ->
     if sum != 0
       normalized = coords.map (d) -> d / sum
       pos[0] = scale(normalized[1] + normalized[2] / 2)
-      pos[1] = scale(height * (normalized[0] + normalized[1]))
+      pos[1] = scale(Math.sqrt(3)/2 * (normalized[0] + normalized[1]))
     pos
 
   T.path = (coordsList, accessor, interpolator) =>
@@ -184,26 +217,25 @@ d3.ternary.plot = ->
 
     path(positions)+"Z"
 
-  T.rule = (value, axis) =>
-    ends = []
-    if axis == 0
-      ends = [
-        [value, 0, 1 - value]
-        [value, 1 - value, 0]
-      ]
-    else if axis == 1
-      ends = [
-        [0, value, 1 - value]
-        [1 - value, value, 0]
-      ]
-    else if axis == 2
-      ends = [
-        [0, 1 - value, value]
-        [1 - value, 0, value]
-      ]
-
-    T.path ends
-
+  T.rule = (axis) ->
+    (value)->
+      ends = []
+      if axis == 0
+        ends = [
+          [value, 0, 1 - value]
+          [value, 1 - value, 0]
+        ]
+      else if axis == 1
+        ends = [
+          [0, value, 1 - value]
+          [1 - value, value, 0]
+        ]
+      else if axis == 2
+        ends = [
+          [0, 1 - value, value]
+          [1 - value, 0, value]
+        ]
+      T.path ends
   # this inverse of point i.e. take an x,y positon and get the ternary coordinate
 
   T.getValues = (pos)->
