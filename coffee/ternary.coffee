@@ -1,5 +1,7 @@
 path = undefined
 
+d3.ternary = {}
+
 line = (interpolator) ->
   if !interpolator
     interpolator = 'linear'
@@ -8,70 +10,79 @@ line = (interpolator) ->
     .y (d) -> d[1]
     .interpolate interpolator
 
+d3.ternary.plot = ->
 
-class TernaryPlot
-  options:
-    outerWidth: 500
-    outerHeight: 500
-    margin:
-      top: 50
-      bottom: 50
-      left: 50
-      right: 50
+  outerWidth = 500
+  outerHeight = 500
+  margin =
+    top: 50
+    bottom: 50
+    left: 50
+    right: 50
 
-  constructor: ->
-    @height = Math.sqrt(3)/2
-    @rescale [0,400]
-    @svg = null
+  height = Math.sqrt(3)/2
+  svg = null
 
-  create: (el)=>
-    svg = el
-      .selectAll "svg"
-      .data [null]
-    @svg = svg.enter()
-      .append "svg"
-      .append "g"
+  scale = d3.scale.linear()
+    .domain [0,1]
+    .range [0,1]
 
-  margin: (m)=>
-    return @options.margin unless m?
-    @options.margin = m
-    return @
-
-  rescaleView: =>
-    return unless @svg?
-    @svg.attr
-      transform: "translate(#{@options.margin.left},#{@options.margin.top})"
+  rescaleView = ->
+    return unless svg?
+    svg.attr
+      transform: "translate(#{margin.left},#{margin.top})"
       width: width
       height: height
 
-  point: (coords) =>
+    d3.select svg.node().parentElement
+      .attr
+        width: outerWidth
+        height: outerHeight
+
+    scale.range [0,400]
+
+
+
+  T = (el)->
+    svg_ = el
+      .selectAll "svg"
+      .data [null]
+    svg = svg_.enter()
+      .append "svg"
+      .append "g"
+
+    rescaleView()
+
+  T.node = -> svg
+
+  T.scale = scale
+
+  T.margin = (m)->
+    return margin unless m?
+    margin = m
+    return T
+
+  T.point = (coords) ->
     pos = [0,0]
     sum = d3.sum coords
     if sum != 0
       normalized = coords.map (d) -> d / sum
-      pos[0] = @scale(normalized[1] + normalized[2] / 2)
-      pos[1] = @scale(@height * (normalized[0] + normalized[1]))
+      pos[0] = scale(normalized[1] + normalized[2] / 2)
+      pos[1] = scale(height * (normalized[0] + normalized[1]))
     pos
 
-  line: (coordsList, accessor, interpolator) =>
+  T.line = (coordsList, accessor, interpolator) =>
     #path generator wrapper
     line interpolator
     if !accessor
       accessor = (d) -> d
 
     positions = coordsList.map (d) =>
-      @point accessor(d)
+      T.point accessor(d)
 
     path positions
 
-  rescale: (range) =>
-    if !range.length
-      range = [0,1]
-    @scale = d3.scale.linear()
-      .domain [0,1]
-      .range range
-
-  rule: (value, axis) =>
+  T.rule = (value, axis) =>
     ends = []
     if axis == 0
       ends = [
@@ -89,23 +100,19 @@ class TernaryPlot
         [1 - value, 0, value]
       ]
 
-    @line ends
+    T.line ends
 
   # this inverse of point i.e. take an x,y positon and get the ternary coordinate
 
-  getValues: (pos) =>
+  T.getValues = (pos)->
     #NOTE! haven't checked if this works yet
-    pos = pos.map(@scale.inverse)
+    pos = pos.map(scale.inverse)
     c = 1 - pos[1]
     b = pos[0] - c / 2
     a = y - b
     [a,b,c]
 
-  range: (range) => @
-  radius: (radius) => @
+  T.range = (range) -> T
+  T.radius = (radius) -> T
 
-ternaryPlot = ->
-
-  ternary = new TernaryPlot
-  ternary
-
+  T

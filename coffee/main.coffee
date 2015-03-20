@@ -10,23 +10,14 @@ outerHeight = 500
 width = outerWidth-margin.left-margin.right
 height = outerHeight-margin.top-margin.bottom
 
-myTernary = ternaryPlot()
+myTernary = d3.ternary.plot()
   .range [0,width]
 
 d3.select 'body'
-  .call myTernary.create
-  .select "svg"
-    .attr
-      width: outerWidth
-      height: outerHeight
+  .call myTernary
 
-svg = myTernary.svg
-
-svg.attr
-  transform: "translate(#{margin.left},#{margin.top})"
-  width: width
-  height: height
-
+svg = myTernary.node()
+console.log svg
 axes = svg.append('g').attr('id', 'axes')
 plot = svg.append('g').attr('id', 'plot')
 
