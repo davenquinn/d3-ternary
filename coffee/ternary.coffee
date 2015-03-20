@@ -41,8 +41,6 @@ d3.ternary.plot = ->
 
     scale.range [0,400]
 
-
-
   T = (el)->
     svg_ = el
       .selectAll "svg"
@@ -114,5 +112,23 @@ d3.ternary.plot = ->
 
   T.range = (range) -> T
   T.radius = (radius) -> T
+
+  T.neatline = (el)->
+
+    createPoint = (i)->
+      a = [0,0,0]
+      a[i] = 1
+      a
+
+    el.datum (createPoint(i) for i in [0..2])
+      .attr
+        class: "neatline"
+        points: (d)->
+          console.log d
+          di = d.map (c)->
+            i = myTernary.point c
+            i.join(",")
+          di.join(" ")
+    el
 
   T

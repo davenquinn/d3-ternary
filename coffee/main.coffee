@@ -17,14 +17,9 @@ d3.select 'body'
   .call myTernary
 
 svg = myTernary.node()
-console.log svg
+
 axes = svg.append('g').attr('id', 'axes')
 plot = svg.append('g').attr('id', 'plot')
-
-svg.attr
-  transform: "translate(#{margin.left},#{margin.top})"
-  width: width
-  height: height
 
 gotData = (d) ->
   for type of d
@@ -122,21 +117,9 @@ axes.selectAll ".vertex-label"
           y = offs[1]-Math.cos(a)*(radius+pad)
           "translate(#{x},#{y})rotate(#{rotate[i]})"
 
-createPoint = (i)->
-  a = [0,0,0]
-  a[i] = 1
-  a
 
 svg.append "polygon"
-  .datum (createPoint(i) for i in [0..2])
-  .attr
-    class: "neatline"
-    points: (d)->
-      console.log d
-      di = d.map (c)->
-        i = myTernary.point c
-        i.join(",")
-      di.join(" ")
+  .call myTernary.neatline
 
 d3.json 'data.json', gotData
 
