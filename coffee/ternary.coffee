@@ -24,6 +24,8 @@ d3.ternary.graticule = ->
     .tickValues ticks
 
   graticule = (plot)->
+    # Can currently only be called against plot.
+    # Should be able to call against axis as well.
     gratAxis.scale plot.scale
     plot.axes().selectAll ".graticule"
       .data [gratAxis,gratAxis,gratAxis]
@@ -59,6 +61,8 @@ d3.ternary.scalebars = ->
           "translate(0 #{-y}) rotate(-180 0 #{2*y})"
 
   S = (plot)->
+    # Can currently only be called against plot.
+    # Should allow to call against single axis as well.
     baryAxis.scale plot.scale
     r = plot.radius()
 
@@ -149,6 +153,8 @@ d3.ternary.plot = ->
   axes = null
   plot = null
 
+  callOnCreate = []
+
   scale = d3.scale.linear()
     .domain [0,1]
     .range [0,1]
@@ -183,11 +189,17 @@ d3.ternary.plot = ->
 
     rescaleView()
 
+    callOnCreate.forEach (f)-> f(T)
+    callOnCreate = []
+
   T.node = -> svg
   T.axes = -> axes
   T.plot = -> plot
   T.call = (f)->
-    f(T)
+    if svg?
+      f(T)
+    else
+      callOnCreate.push f
     T
 
   T.scale = scale
