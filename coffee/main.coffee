@@ -25,9 +25,8 @@ gotData = (d) ->
       .append 'path'
       .attr
         d: ->
-          l = myTernary.line d[type], (d) ->
+          myTernary.line d[type], (d) ->
             [d.sand,d.silt,d.clay]
-          l+'Z'
         class: 'ternary-line'
         id: type.replace(' ', '-')
       .on 'click', (d) ->

@@ -11,6 +11,7 @@ line = (interpolator) ->
     .interpolate interpolator
 
 vertexLabels = (plot)->
+  # Builds labels at corners
   # Currently implemented only for apex vertices of triangle.
   sel = null
   angles = [0,120,240]
@@ -18,6 +19,7 @@ vertexLabels = (plot)->
   pad = 20
 
   L = (labels)->
+    # Provide three lables, clockwise from top
     sel = plot.axes()
       .selectAll ".vertex-label"
 
@@ -114,7 +116,7 @@ d3.ternary.plot = ->
       pos[1] = scale(height * (normalized[0] + normalized[1]))
     pos
 
-  T.line = (coordsList, accessor, interpolator) =>
+  T.path = (coordsList, accessor, interpolator) =>
     #path generator wrapper
     line interpolator
     if !accessor
@@ -123,7 +125,7 @@ d3.ternary.plot = ->
     positions = coordsList.map (d) =>
       T.point accessor(d)
 
-    path positions
+    path(positions)+"Z"
 
   T.rule = (value, axis) =>
     ends = []
