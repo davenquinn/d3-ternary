@@ -10,15 +10,50 @@ line = (interpolator) ->
     .y (d) -> d[1]
     .interpolate interpolator
 
-vertexLabels = (plot)->
+angles = [0,120,240]
+
+d3.ternary.scalebars = ->
+  baryAxis = d3.svg.axis()
+    .tickSize 10
+    .tickFormat d3.format("%")
+    .tickValues [.2,.4,.6,.8]
+    .orient "top"
+
+  adjustText = (d,i)->
+    return unless i==1
+    d3.select @
+      .selectAll "text"
+        .attr transform: (d)->
+          y = d3.select(@).attr "y"
+          "translate(0 #{-y}) rotate(-180 0 #{2*y})"
+
+  S = (plot)->
+    baryAxis.scale plot.scale
+
+    offs = plot.center()
+    b_axes = plot.axes().selectAll ".bary-axis"
+      .data angles
+      .enter()
+        .append "g"
+        .attr
+          class: "bary-axis"
+          transform: (d,i)->
+            x = offs[0]
+            y = offs[1]
+            "rotate(#{60+i*120} #{x} #{y}) translate(0 #{radius/2})"
+        .call baryAxis
+        .each adjustText
+
+  S
+
+d3.ternary.vertexLabels = (labels)->
   # Builds labels at corners
   # Currently implemented only for apex vertices of triangle.
   sel = null
-  angles = [0,120,240]
   rotate = [0,60,-60]
   pad = 20
 
-  L = (labels)->
+  L = (plot)->
     # Provide three lables, clockwise from top
     sel = plot.axes()
       .selectAll ".vertex-label"
@@ -45,6 +80,25 @@ vertexLabels = (plot)->
               "translate(#{x},#{y})rotate(#{rotate[i]})"
     sel
   L
+
+d3.ternary.neatline = ->
+
+  createPoint = (i)->
+    a = [0,0,0]
+    a[i] = 1
+    a
+  neatline = (plot)->
+    el = plot.node().append "polygon"
+    el.datum (createPoint(i) for i in [0..2])
+      .attr
+        class: "neatline"
+        points: (d)->
+          di = d.map (c)->
+            i = plot.point c
+            i.join(",")
+          di.join(" ")
+
+  neatline
 
 d3.ternary.plot = ->
 
@@ -99,6 +153,9 @@ d3.ternary.plot = ->
   T.node = -> svg
   T.axes = -> axes
   T.plot = -> plot
+  T.call = (f)->
+    f(T)
+    T
 
   T.scale = scale
 
@@ -145,7 +202,7 @@ d3.ternary.plot = ->
         [1 - value, 0, value]
       ]
 
-    T.line ends
+    T.path ends
 
   # this inverse of point i.e. take an x,y positon and get the ternary coordinate
 
@@ -162,25 +219,5 @@ d3.ternary.plot = ->
     return radius unless r?
     T
   T.center = -> [width/2,radius]
-
-  T.neatline = (el)->
-
-    createPoint = (i)->
-      a = [0,0,0]
-      a[i] = 1
-      a
-
-    el.datum (createPoint(i) for i in [0..2])
-      .attr
-        class: "neatline"
-        points: (d)->
-          console.log d
-          di = d.map (c)->
-            i = myTernary.point c
-            i.join(",")
-          di.join(" ")
-    el
-
-  T.vertexLabels = vertexLabels T
 
   T

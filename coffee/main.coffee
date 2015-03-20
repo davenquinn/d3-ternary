@@ -25,15 +25,12 @@ gotData = (d) ->
       .append 'path'
       .attr
         d: ->
-          myTernary.line d[type], (d) ->
+          myTernary.path d[type], (d) ->
             [d.sand,d.silt,d.clay]
         class: 'ternary-line'
         id: type.replace(' ', '-')
       .on 'click', (d) ->
         console.log @id
-
-labels = ["Clay","Sand","Silt"]
-myTernary.vertexLabels labels
 
 radius = width/Math.sqrt(3)
 pad = 20
@@ -42,33 +39,6 @@ angles = [0,120,240]
 anchors = ["middle","end","start"]
 rotate = [0,60,-60]
 
-baryAxis = d3.svg.axis()
-  .scale myTernary.scale
-  .tickSize 10
-  .tickFormat d3.format("%")
-  .tickValues [.2,.4,.6,.8]
-  .orient "top"
-
-b_axes = myTernary.axes().selectAll ".bary-axis"
-  .data angles
-  .enter()
-    .append "g"
-    .attr
-      class: "bary-axis"
-      transform: (d,i)->
-        x = offs[0]
-        y = offs[1]
-        "rotate(#{60+i*120} #{x} #{y}) translate(0 #{radius/2})"
-    .call baryAxis
-    .each (d,i)->
-      return unless i==1
-      d3.select @
-        .selectAll "text"
-          .attr transform: (d)->
-            y = d3.select(@).attr "y"
-            "translate(0 #{-y}) rotate(-180 0 #{2*y})"
-
-ticks = baryAxis.tickValues()
 
 ticks = []
 int = 0.05
@@ -101,9 +71,11 @@ myTernary.axes().selectAll ".graticule"
                     a+"Z"
 
 
+myTernary
+  .call d3.ternary.scalebars()
+  .call d3.ternary.vertexLabels ["Clay","Sand","Silt"]
+  .call d3.ternary.neatline()
 
-svg.append "polygon"
-  .call myTernary.neatline
 
 d3.json 'data.json', gotData
 
