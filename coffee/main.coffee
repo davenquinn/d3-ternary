@@ -8,16 +8,21 @@ d3.select 'body'
   .call ternary
 
 gotData = (d) ->
-  for type of d
+  data = d3.entries(d).map (d)->
+    v = d.value.map (c)->
+      [c.sand,c.silt,c.clay]
+    {type: d.key, value: v}
 
-    myTernary.plot()
-      .append 'path'
+  paths = ternary.plot()
+    .selectAll "path"
+      .data data
+
+  paths.enter()
+    .append 'path'
       .attr
-        d: ->
-          myTernary.path d[type], (d) ->
-            [d.sand,d.silt,d.clay]
+        d: (d)-> ternary.path d.value
         class: 'ternary-line'
-        id: type.replace(' ', '-')
+        id: (d)->d.type.replace '-', ' '
       .on 'click', (d) ->
         console.log @id
 
