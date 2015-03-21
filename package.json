@@ -1,0 +1,8 @@
+{
+  "name": "d3-ternary",
+  "version": "0.0.1",
+  "description": "An implementation of a reusable chart in ternary barycentric coordinates.",
+  "main": "lib/ternary.js",
+  "author": "Daven Quinn",
+  "license": "MIT"
+}
