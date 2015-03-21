@@ -2,6 +2,7 @@ path = undefined
 
 d3.ternary = {}
 
+
 line = (interpolator) ->
   if !interpolator
     interpolator = 'linear'
