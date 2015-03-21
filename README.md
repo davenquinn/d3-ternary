@@ -10,7 +10,8 @@ Several projects have served as a starting point for this
 work. Thanks especially to:
 
 - *Tom Pearson* for the basic axis representation
-  and sample data [tomgp/d3-ternary](https://github.com/tomgp/d3-ternary)
+  and sample data
+  ([tomgp/d3-ternary](https://github.com/tomgp/d3-ternary))
 - *Seth Brown* for his engaging project [*Ski It If You
   Can*](http://www.drbunsen.org/projects/ski-it-if-you-can/)
 
