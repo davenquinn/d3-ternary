@@ -1,2 +1,2 @@
 all:
-	coffee -wc -o js coffee
+	coffee -wc -o lib src

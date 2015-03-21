@@ -8,7 +8,7 @@ ternary = d3.ternary.plot()
   .call d3.ternary.vertexLabels ["Clay","Sand","Silt"]
   .call d3.ternary.neatline()
   .call grat
-  
+
 d3.select 'body'
   .call ternary
 
