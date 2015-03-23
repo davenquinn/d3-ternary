@@ -2,7 +2,6 @@ path = undefined
 
 d3.ternary = {}
 
-
 line = (interpolator) ->
   if !interpolator
     interpolator = 'linear'
@@ -101,7 +100,7 @@ d3.ternary.scalebars = ->
           y = d3.select(@).attr "y"
           "translate(0 #{-y}) rotate(-180 0 #{2*y})"
 
-  S = (plot)->
+  scalebar = (plot)->
     # Can currently only be called against plot.
     # Should allow to call against single axis as well.
     baryAxis.scale plot.scale
@@ -121,7 +120,7 @@ d3.ternary.scalebars = ->
         .call baryAxis
         .each adjustText
 
-  S
+  scalebar
 
 d3.ternary.vertexLabels = (labels)->
   # Builds labels at corners
@@ -130,7 +129,7 @@ d3.ternary.vertexLabels = (labels)->
   rotate = [0,60,-60]
   pad = 20
 
-  L = (plot)->
+  labels = (plot)->
     # Provide three lables, clockwise from top
     sel = plot.axes()
       .selectAll ".vertex-label"
@@ -156,7 +155,7 @@ d3.ternary.vertexLabels = (labels)->
               y = offs[1]-Math.cos(a)*(radius+pad)
               "translate(#{x},#{y})rotate(#{rotate[i]})"
     sel
-  L
+  labels
 
 d3.ternary.neatline = ->
 
