@@ -1,0 +1,3 @@
+[submodule "examples/soil-types"]
+	path = examples/soil-types
+	url = https://gist.github.com/988167471993bc2ece29.git
