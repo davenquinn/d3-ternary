@@ -45,6 +45,8 @@ I am *very* happy to receive ideas for API improvement.
 ## Future work
 
 - Clean up and generalize graticule API
+- Add an option to install via `bower`
+- List package on `npm` if desired
 - Add support for different scales per-axis (i.e. a zoomed view of part
   of the barycentric coordinate space)
 - Make the neatline optionally support clipping th dataframe
