@@ -2,7 +2,10 @@
 
 An extensible charting library focused on producing accurate
 and pleasing ternary diagrams for all manner of barycentric
-coordinate systems.
+coordinate systems. It depends only on `d3`.
+Here are some examples:
+
+- [Soil types](http://bl.ocks.org/988167471993bc2ece29)
 
 ## Credits
 
