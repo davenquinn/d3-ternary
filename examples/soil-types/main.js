@@ -3,6 +3,7 @@ graticule = d3.ternary.graticule()
   .minorInterval(0.05);
 
 ternary = d3.ternary.plot()
+  .fit(window.innerWidth, window.innerHeight)
   .call(d3.ternary.scalebars())
   .call(d3.ternary.vertexLabels(["Clay", "Sand", "Silt"]))
   .call(d3.ternary.neatline())

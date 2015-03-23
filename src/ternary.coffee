@@ -129,7 +129,7 @@ d3.ternary.vertexLabels = (labels)->
   rotate = [0,60,-60]
   pad = 20
 
-  labels = (plot)->
+  L = (plot)->
     # Provide three lables, clockwise from top
     sel = plot.axes()
       .selectAll ".vertex-label"
@@ -155,7 +155,7 @@ d3.ternary.vertexLabels = (labels)->
               y = offs[1]-Math.cos(a)*(radius+pad)
               "translate(#{x},#{y})rotate(#{rotate[i]})"
     sel
-  labels
+  L
 
 d3.ternary.neatline = ->
 
@@ -199,10 +199,19 @@ d3.ternary.plot = ->
     .domain [0,1]
     .range [0,1]
 
+  events = d3.dispatch "resize"
+
+  innerWidth = (w)->
+    w-margin.left-margin.right
+
+  innerHeight = (h)->
+    h-margin.top-margin.bottom
+
   rescaleView = ->
-    width = outerWidth-margin.left-margin.right
-    height = outerHeight-margin.top-margin.bottom
-    radius = width/Math.sqrt(3)
+    width = innerWidth outerWidth unless width?
+    height = innerHeight outerHeight unless height?
+    radius = width/Math.sqrt(3) unless radius?
+
     center = [width/2,radius]
     return unless svg?
     svg.attr
@@ -214,7 +223,7 @@ d3.ternary.plot = ->
       .attr
         width: outerWidth
         height: outerHeight
-    scale.range [0,400]
+    scale.range [0,width]
 
   T = (el)->
     svg_ = el
@@ -231,6 +240,22 @@ d3.ternary.plot = ->
 
     callOnCreate.forEach (f)-> f(T)
     callOnCreate = []
+
+  T.fit = (w,h)->
+    if arguments.length == 2
+      nw = innerWidth w
+      nh = innerHeight h
+
+      if nh <= Math.sqrt(3)/2*nw
+        r = nh*2/3
+      else
+        r = nw/Math.sqrt(3)
+
+    else
+      r = nw/Math.sqrt(3)
+    T.radius r
+    T
+
 
   T.node = -> svg
   T.axes = -> axes
@@ -300,8 +325,18 @@ d3.ternary.plot = ->
 
   T.range = (range) -> T
   T.radius = (r) ->
-    return radius unless r?
+    if r?
+      radius = r
+      height = r*3/2
+      width = r*Math.sqrt(3)
+      outerHeight = height+margin.top+margin.bottom
+      outerWidth = width+margin.left+margin.right
+      rescaleView()
+    else
+      return radius
     T
   T.center = -> [width/2,radius]
+
+  T.on = events.on
 
   T
