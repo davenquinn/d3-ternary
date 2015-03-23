@@ -1,6 +1,6 @@
 # D3 Ternary Plot
 
-![Soil types example](https://gist.githubusercontent.com/davenquinn/988167471993bc2ece29/raw/f5c0239dc4e35559751e0ccce9eabbc67b2075a7/thumbnail.png)
+<img alt="Soil types" src="https://gist.githubusercontent.com/davenquinn/988167471993bc2ece29/raw/f5c0239dc4e35559751e0ccce9eabbc67b2075a7/thumbnail.png" />
 
 An extensible charting library focused on producing accurate
 and pleasing ternary diagrams for all manner of barycentric
@@ -26,6 +26,11 @@ and you're off to the races.
 The API is currently in flux, but it makes extensive use of `d3`
 shorthands:
 ```javascript
+
+function resize(t) {
+  t.fit(window.innerWidth,window.innerHeight);
+};
+
 var ternary = d3.ternary.plot()
   .call(resize)
   .call(d3.ternary.scalebars())
