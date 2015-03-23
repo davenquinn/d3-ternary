@@ -9,6 +9,43 @@ Here are some examples:
 
 - [Soil types](http://bl.ocks.org/988167471993bc2ece29)
 
+## Usage
+
+Get the code, either by downloading `lib/ternary.js` from this
+repository, cloning the module, or installing via `npm`
+from this repository url
+(`npm install git+https://github.com/davenquinn/d3-ternary.git`).
+
+Simply include the script after `d3` as such
+```html
+<script charset="UTF-8" src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="<module-url>/lib/ternary.js"></script>
+```
+and you're off to the races.
+
+The API is currently in flux, but it makes extensive use of `d3`
+shorthands:
+```javascript
+var ternary = d3.ternary.plot()
+  .call(resize)
+  .call(d3.ternary.scalebars())
+  .call(d3.ternary.vertexLabels(["Wo", "Fs", "En"]))
+  .call(d3.ternary.neatline())
+  .call(d3.ternary.graticule());
+
+d3.select('body').call(ternary);
+```
+I am *very* happy to receive ideas for API improvement.
+
+## Future work
+
+- Clean up and generalize graticule API
+- Add support for different scales per-axis (i.e. a zoomed view of part
+  of the barycentric coordinate space)
+- Make the neatline optionally support clipping th dataframe
+- Add support for partial coordinate systems (e.g. [the pyroxene
+  quadrilateral](http://en.wikipedia.org/wiki/Pyroxene#/media/File:Pyrox_names.svg))
+
 ## Credits
 
 Several projects have served as a starting point for this
