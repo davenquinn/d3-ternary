@@ -2,8 +2,12 @@ graticule = d3.ternary.graticule()
   .majorInterval(0.2)
   .minorInterval(0.05);
 
-ternary = d3.ternary.plot()
-  .fit(window.innerWidth, window.innerHeight)
+function resize(t) {
+  t.fit(window.innerWidth,window.innerHeight);
+};
+
+var ternary = d3.ternary.plot()
+  .call(resize)
   .call(d3.ternary.scalebars())
   .call(d3.ternary.vertexLabels(["Clay", "Sand", "Silt"]))
   .call(d3.ternary.neatline())
@@ -26,11 +30,23 @@ function gotData(d) {
     .enter()
       .append('path')
       .attr({
-        d: function(d) {return ternary.path(d.value);},
         class: 'ternary-line',
         id: function(d) {return d.type.replace('-', ' ')}
         })
       .on('click', function(d) { console.log(this.id);});
-};
+
+  drawPaths = function(){
+    paths.attr("d",function(d) {
+      return ternary.path(d.value);
+    });
+  };
+  drawPaths();
+  ternary.on("resize", drawPaths);
+}
+
 
 d3.json('data.json', gotData);
+
+window.onresize = function(){
+  resize(ternary);
+};

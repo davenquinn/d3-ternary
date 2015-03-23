@@ -2,6 +2,16 @@ path = undefined
 
 d3.ternary = {}
 
+randomid = ->
+    # random UID for namespaced event listeners
+    text = ""
+    possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    for i in [0..3]
+      pos = Math.floor Math.random()*possible.length
+      text += possible.charAt pos
+    console.log text
+    return text
+
 line = (interpolator) ->
   if !interpolator
     interpolator = 'linear'
@@ -42,27 +52,30 @@ d3.ternary.graticule = ->
   graticule = (plot)->
     # Can currently only be called against plot.
     # Should be able to call against axis as well.
-    gratAxis.scale plot.scale
 
     axisGraticule = (axis,i)->
 
       container = d3.select @
 
-      sel = container.selectAll "path.minor"
+      selA = container.selectAll "path.minor"
         .data minorTicks()
-      sel.enter()
+      selA.enter()
         .append "path"
-          .attr
-            class: "minor"
-            d: plot.rule(i)
+          .attr class: "minor"
 
-      sel = container.selectAll "path.major"
+      selB = container.selectAll "path.major"
         .data majorTicks()
-      sel.enter()
+      selB.enter()
         .append "path"
-          .attr
-            class: "major"
-            d: plot.rule(i)
+          .attr class: "major"
+
+      draw = ->
+        gratAxis.scale plot.scale
+        selA.attr d: plot.rule(i)
+        selB.attr d: plot.rule(i)
+
+      plot.on "resize.#{randomid()}", draw
+      draw()
 
     plot.axes().selectAll ".graticule"
       .data [gratAxis,gratAxis,gratAxis]
@@ -103,22 +116,29 @@ d3.ternary.scalebars = ->
   scalebar = (plot)->
     # Can currently only be called against plot.
     # Should allow to call against single axis as well.
-    baryAxis.scale plot.scale
-    r = plot.radius()
 
-    offs = plot.center()
     b_axes = plot.axes().selectAll ".bary-axis"
       .data angles
       .enter()
         .append "g"
+        .attr class: "bary-axis"
+
+    draw = ->
+      baryAxis.scale plot.scale
+      r = plot.radius()
+      offs = plot.center()
+
+      b_axes
+        .call baryAxis
         .attr
-          class: "bary-axis"
           transform: (d,i)->
             x = offs[0]
             y = offs[1]
             "rotate(#{60+i*120} #{x} #{y}) translate(0 #{r/2})"
-        .call baryAxis
         .each adjustText
+
+    plot.on "resize.#{randomid()}", draw
+    draw()
 
   scalebar
 
@@ -131,29 +151,36 @@ d3.ternary.vertexLabels = (labels)->
 
   L = (plot)->
     # Provide three lables, clockwise from top
-    sel = plot.axes()
-      .selectAll ".vertex-label"
-
-    offs = plot.center()
-    radius = plot.radius()
 
     data = labels.map (l,i)->
       {label: l, angle: angles[i]}
-    sel
-      .data data
-      .enter()
-        .append "text"
-          .text (d) -> d.label
-          .attr
-            dy: ".35em"
-            "text-anchor": "middle"
-            class: "vertex-label"
-            transform: (d,i)->
-              a = -d.angle*Math.PI/180
-              console.log a
-              x = offs[0]+Math.sin(a)*(radius+pad)
-              y = offs[1]-Math.cos(a)*(radius+pad)
-              "translate(#{x},#{y})rotate(#{rotate[i]})"
+
+    sel = plot.axes()
+      .selectAll ".vertex-label"
+        .data data
+
+    sel.enter()
+      .append "text"
+        .text (d) -> d.label
+        .attr
+          dy: ".35em"
+          "text-anchor": "middle"
+          class: "vertex-label"
+
+    draw = ->
+      offs = plot.center()
+      radius = plot.radius()
+
+      sel.attr
+        transform: (d,i)->
+          a = -d.angle*Math.PI/180
+          console.log a
+          x = offs[0]+Math.sin(a)*(radius+pad)
+          y = offs[1]-Math.cos(a)*(radius+pad)
+          "translate(#{x},#{y})rotate(#{rotate[i]})"
+
+    plot.on "resize.#{randomid()}", draw
+    draw()
     sel
   L
 
@@ -166,13 +193,18 @@ d3.ternary.neatline = ->
   neatline = (plot)->
     el = plot.node().append "polygon"
     el.datum (createPoint(i) for i in [0..2])
-      .attr
-        class: "neatline"
-        points: (d)->
-          di = d.map (c)->
-            i = plot.point c
-            i.join(",")
-          di.join(" ")
+      .attr class: "neatline"
+
+    draw = ->
+      console.log "Drawing neatline"
+      el.attr points: (d)->
+        di = d.map (c)->
+          i = plot.point c
+          i.join(",")
+        di.join(" ")
+
+    plot.on "resize.#{randomid()}", draw
+    draw()
 
   neatline
 
@@ -225,6 +257,8 @@ d3.ternary.plot = ->
         height: outerHeight
     scale.range [0,width]
 
+    events.resize()
+
   T = (el)->
     svg_ = el
       .selectAll "svg"
@@ -240,6 +274,9 @@ d3.ternary.plot = ->
 
     callOnCreate.forEach (f)-> f(T)
     callOnCreate = []
+
+  T.on = (n,f)->
+    events.on n,f
 
   T.fit = (w,h)->
     if arguments.length == 2
@@ -325,6 +362,8 @@ d3.ternary.plot = ->
 
   T.range = (range) -> T
   T.radius = (r) ->
+    # Changes the radius of the ternary diagram,
+    # also adjusting inner and outer widths as needed.
     if r?
       radius = r
       height = r*3/2
@@ -336,7 +375,5 @@ d3.ternary.plot = ->
       return radius
     T
   T.center = -> [width/2,radius]
-
-  T.on = events.on
 
   T
