@@ -316,8 +316,8 @@ d3.ternary.plot = ->
     sum = d3.sum coords
     if sum != 0
       normalized = coords.map (d) -> d / sum
-      pos[0] = scale(normalized[1] + normalized[2] / 2)
-      pos[1] = scale(Math.sqrt(3)/2 * (normalized[0] + normalized[1]))
+      pos[0] = scale(normalized[1] + normalized[0] / 2)
+      pos[1] = scale(Math.sqrt(3)/2 * (normalized[2] + normalized[1]))
     pos
 
   T.path = (coordsList, accessor, interpolator) =>
@@ -336,8 +336,8 @@ d3.ternary.plot = ->
       ends = []
       if axis == 0
         ends = [
-          [value, 0, 1 - value]
-          [value, 1 - value, 0]
+          [0, 1 - value, value]
+          [1 - value, 0, value]
         ]
       else if axis == 1
         ends = [
@@ -346,8 +346,8 @@ d3.ternary.plot = ->
         ]
       else if axis == 2
         ends = [
-          [0, 1 - value, value]
-          [1 - value, 0, value]
+          [value, 0, 1 - value]
+          [value, 1 - value, 0]
         ]
       T.path ends
   # this inverse of point i.e. take an x,y positon and get the ternary coordinate
