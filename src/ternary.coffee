@@ -9,7 +9,6 @@ randomid = ->
     for i in [0..3]
       pos = Math.floor Math.random()*possible.length
       text += possible.charAt pos
-    console.log text
     return text
 
 line = (interpolator) ->
@@ -174,7 +173,6 @@ d3.ternary.vertexLabels = (labels)->
       sel.attr
         transform: (d,i)->
           a = -d.angle*Math.PI/180
-          console.log a
           x = offs[0]+Math.sin(a)*(radius+pad)
           y = offs[1]-Math.cos(a)*(radius+pad)
           "translate(#{x},#{y})rotate(#{rotate[i]})"
@@ -196,7 +194,6 @@ d3.ternary.neatline = ->
       .attr class: "neatline"
 
     draw = ->
-      console.log "Drawing neatline"
       el.attr points: (d)->
         di = d.map (c)->
           i = plot.point c
