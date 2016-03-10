@@ -96,9 +96,10 @@ d3.ternary.graticule = ->
 
   graticule
 
-d3.ternary.scalebars = ->
+d3.ternary.scalebars = (opts={})->
+  console.log "Calling scalebar"
   plot = null
-  labels = null
+  labels = opts.labels or null
   axes = [0..2].map (i)->
     d3.svg.axis()
       .tickSize 10
@@ -114,18 +115,26 @@ d3.ternary.scalebars = ->
           y = d3.select(@).attr "y"
           "translate(0 #{-y}) rotate(-180 0 #{2*y})"
 
-  addLabel = (d,i)->
+  formatLabel = (d,i)->
+    console.log "Adding label "+d
     width = plot.width()
+    dy = -30
+    t = "translate(#{width/2})"
+    if i == 2
+      dy = 42
+      t = " rotate(-180 0 0) translate(#{-width/2})"
+
     d3.select @
-      .append 'text'
-        .attr
-          class: 'label'
-          transform: "translate(#{width/2} 0)"
-          dy: -30
-          'text-anchor': 'middle'
-        .text labels[i]
+      .attr
+        class: 'label'
+        transform: t
+        y: dy
+        'text-anchor': 'middle'
+      .text d
+
 
   scalebar = (p)->
+    console.log "Adding scalebar to plot"
     plot = p
     # Can currently only be called against plot.
     # Should allow to call against single axis as well.
@@ -134,7 +143,16 @@ d3.ternary.scalebars = ->
       .data angles
       .enter()
         .append "g"
-        .attr class: "bary-axis"
+        .attr class: (d,i)->
+            d = "bary-axis"
+            if i == 2
+              d += ' bottom'
+            return d
+
+    b_axes.each ->
+      d3.select @
+        .append 'text'
+        .attr class: 'label'
 
     draw = ->
       axes.forEach (ax,i)->
@@ -143,6 +161,7 @@ d3.ternary.scalebars = ->
           d = s.domain()
           s.domain d.reverse()
         ax.scale s
+
       r = plot.radius()
       offs = plot.center()
 
@@ -155,12 +174,11 @@ d3.ternary.scalebars = ->
             x = offs[0]
             y = offs[1]
             "rotate(#{-60+i*120} #{x} #{y}) translate(0 #{r/2})"
-        .each (d,i)->
-          return unless i==2
+        .each adjustText
 
-
-      if labels?
-        b_axes.each addLabel
+      labelSel = plot.axes().selectAll '.bary-axis .label'
+        .data labels
+        .each formatLabel
 
     plot.on "resize.#{randomid()}", draw
     draw()
@@ -173,6 +191,7 @@ d3.ternary.scalebars = ->
   scalebar.axes = axes
 
   scalebar
+
 
 d3.ternary.vertexLabels = (labels)->
   # Builds labels at corners
@@ -223,8 +242,15 @@ d3.ternary.neatline = ->
     points = []
 
     for i in [0..2]
-      a = domains.map (d)->0
-      a[i] = 1
+      v = i - 1
+      v = 2 if v == -1
+
+      a = domains.map (d)->d[0]
+      a[v] = domains[v][1]
+      points.push a
+
+      a = domains.map (d)->d[0]
+      a[i] = domains[i][1]
       points.push a
 
     el = plot.node().append "polygon"
@@ -310,6 +336,7 @@ d3.ternary.plot = ->
 
     rescaleView()
 
+    console.log "Calling plot functions"
     callOnCreate.forEach (f)-> f(T)
     callOnCreate = []
 
