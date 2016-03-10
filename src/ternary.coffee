@@ -44,13 +44,12 @@ d3.ternary.graticule = ->
       start += minorInterval
     ticks
 
-  gratAxis = d3.svg.axis()
-    .tickValues majorTicks()
-
-
   graticule = (plot)->
     # Can currently only be called against plot.
     # Should be able to call against axis as well.
+
+    gratAxes = [0..2].map ->
+      d3.svg.axis().tickValues majorTicks()
 
     axisGraticule = (axis,i)->
 
@@ -69,7 +68,7 @@ d3.ternary.graticule = ->
           .attr class: "major"
 
       draw = ->
-        gratAxis.scale plot.scale
+        axis.scale plot.scales[i]
         selA.attr d: plot.rule(i)
         selB.attr d: plot.rule(i)
 
@@ -77,13 +76,13 @@ d3.ternary.graticule = ->
       draw()
 
     plot.axes().selectAll ".graticule"
-      .data [gratAxis,gratAxis,gratAxis]
+      .data gratAxes
       .enter()
         .append "g"
           .attr class: "graticule"
           .each axisGraticule
 
-  graticule.axis = -> gratAxis
+  graticule.axes = -> gratAxes
 
   graticule.majorInterval = (d)->
     return majorInterval unless d
@@ -98,11 +97,12 @@ d3.ternary.graticule = ->
   graticule
 
 d3.ternary.scalebars = ->
-  baryAxis = d3.svg.axis()
-    .tickSize 10
-    .tickFormat d3.format("%")
-    .tickValues [.2,.4,.6,.8]
-    .orient "top"
+  axes = [0..2].map ->
+    d3.svg.axis()
+      .tickSize 10
+      .tickFormat d3.format("%")
+      .tickValues [.2,.4,.6,.8]
+      .orient "top"
 
   adjustText = (d,i)->
     return unless i==1
@@ -123,12 +123,14 @@ d3.ternary.scalebars = ->
         .attr class: "bary-axis"
 
     draw = ->
-      baryAxis.scale plot.scale
+      axes.forEach (ax,i)->ax.scale plot.scales[i]
       r = plot.radius()
       offs = plot.center()
 
       b_axes
-        .call baryAxis
+        .each (d,i)->
+          el = d3.select @
+          axes[i](el)
         .attr
           transform: (d,i)->
             x = offs[0]
@@ -224,9 +226,11 @@ d3.ternary.plot = ->
 
   callOnCreate = []
 
-  scale = d3.scale.linear()
-    .domain [0,1]
-    .range [0,1]
+  # Create three identical scales
+  scales = [0..2].map ->
+    d3.scale.linear()
+      .domain [0,1]
+      .range [0,1]
 
   events = d3.dispatch "resize"
 
@@ -252,7 +256,8 @@ d3.ternary.plot = ->
       .attr
         width: outerWidth
         height: outerHeight
-    scale.range [0,width]
+    for s in scales
+      s.range [0,width]
 
     events.resize()
 
@@ -301,7 +306,7 @@ d3.ternary.plot = ->
       callOnCreate.push f
     T
 
-  T.scale = scale
+  T.scales = scales
 
   T.margin = (m)->
     return margin unless m?
@@ -313,8 +318,8 @@ d3.ternary.plot = ->
     sum = d3.sum coords
     if sum != 0
       normalized = coords.map (d) -> d / sum
-      pos[0] = scale(normalized[1] + normalized[0] / 2)
-      pos[1] = scale(Math.sqrt(3)/2 * (normalized[2] + normalized[1]))
+      pos[0] = scales[2](normalized[0])/2 + scales[1](normalized[1])-width/3
+      pos[1] = scales[1](Math.sqrt(3)/2 * (normalized[2] + normalized[1]))
     pos
 
   T.path = (coordsList, accessor, interpolator) =>
@@ -351,7 +356,7 @@ d3.ternary.plot = ->
 
   T.getValues = (pos)->
     #NOTE! haven't checked if this works yet
-    pos = pos.map(scale.inverse)
+    pos = pos.map (d,i)->scales[i].inverse(d)
     c = 1 - pos[1]
     b = pos[0] - c / 2
     a = y - b
