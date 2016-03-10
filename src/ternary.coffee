@@ -97,7 +97,9 @@ d3.ternary.graticule = ->
   graticule
 
 d3.ternary.scalebars = ->
-  axes = [0..2].map ->
+  plot = null
+  labels = null
+  axes = [0..2].map (i)->
     d3.svg.axis()
       .tickSize 10
       .tickFormat d3.format("%")
@@ -105,14 +107,26 @@ d3.ternary.scalebars = ->
       .orient "top"
 
   adjustText = (d,i)->
-    return unless i==1
+    return unless i==2
     d3.select @
       .selectAll "text"
         .attr transform: (d)->
           y = d3.select(@).attr "y"
           "translate(0 #{-y}) rotate(-180 0 #{2*y})"
 
-  scalebar = (plot)->
+  addLabel = (d,i)->
+    width = plot.width()
+    d3.select @
+      .append 'text'
+        .attr
+          class: 'label'
+          transform: "translate(#{width/2} 0)"
+          dy: -30
+          'text-anchor': 'middle'
+        .text labels[i]
+
+  scalebar = (p)->
+    plot = p
     # Can currently only be called against plot.
     # Should allow to call against single axis as well.
 
@@ -123,7 +137,12 @@ d3.ternary.scalebars = ->
         .attr class: "bary-axis"
 
     draw = ->
-      axes.forEach (ax,i)->ax.scale plot.scales[i]
+      axes.forEach (ax,i)->
+        s = plot.scales[i].copy()
+        if i == 2
+          d = s.domain()
+          s.domain d.reverse()
+        ax.scale s
       r = plot.radius()
       offs = plot.center()
 
@@ -135,11 +154,23 @@ d3.ternary.scalebars = ->
           transform: (d,i)->
             x = offs[0]
             y = offs[1]
-            "rotate(#{60+i*120} #{x} #{y}) translate(0 #{r/2})"
-        .each adjustText
+            "rotate(#{-60+i*120} #{x} #{y}) translate(0 #{r/2})"
+        .each (d,i)->
+          return unless i==2
+
+
+      if labels?
+        b_axes.each addLabel
 
     plot.on "resize.#{randomid()}", draw
     draw()
+
+  scalebar.labels = (l)->
+    return labels if not l?
+    labels = l
+    return scalebar
+
+  scalebar.axes = axes
 
   scalebar
 
@@ -185,20 +216,25 @@ d3.ternary.vertexLabels = (labels)->
   L
 
 d3.ternary.neatline = ->
-
-  createPoint = (i)->
-    a = [0,0,0]
-    a[i] = 1
-    a
   neatline = (plot)->
+    domains = plot.scales.map (s)->s.domain()
+    console.log domains
+
+    points = []
+
+    for i in [0..2]
+      a = domains.map (d)->0
+      a[i] = 1
+      points.push a
+
     el = plot.node().append "polygon"
-    el.datum (createPoint(i) for i in [0..2])
+    el.datum points
       .attr class: "neatline"
 
     draw = ->
       el.attr points: (d)->
         di = d.map (c)->
-          i = plot.point c
+          i = plot.rawPoint c
           i.join(",")
         di.join(" ")
 
@@ -313,14 +349,18 @@ d3.ternary.plot = ->
     margin = m
     return T
 
+  T.rawPoint = (d)->
+    return [0,0] if d3.sum(d) == 0
+    [
+      scales[2](d[0])/2 + scales[1](d[1])-width/3
+      scales[1](Math.sqrt(3)/2 * (d[2] + d[1]))
+    ]
+
   T.point = (coords) ->
-    pos = [0,0]
     sum = d3.sum coords
     if sum != 0
-      normalized = coords.map (d) -> d / sum
-      pos[0] = scales[2](normalized[0])/2 + scales[1](normalized[1])-width/3
-      pos[1] = scales[1](Math.sqrt(3)/2 * (normalized[2] + normalized[1]))
-    pos
+      coords = coords.map (d) -> d / sum
+    T.rawPoint coords
 
   T.path = (coordsList, accessor, interpolator) =>
     #path generator wrapper
@@ -377,5 +417,7 @@ d3.ternary.plot = ->
       return radius
     T
   T.center = -> [width/2,radius]
+  T.width = ->
+    return width
 
   T
