@@ -79,7 +79,9 @@ d3.ternary.graticule = ->
       .data gratAxes
       .enter()
         .append "g"
-          .attr class: "graticule"
+          .attr
+            class: "graticule"
+            'clip-path': "url(#axesClip)"
           .each axisGraticule
 
   graticule.axes = -> gratAxes
@@ -236,38 +238,48 @@ d3.ternary.vertexLabels = (labels)->
 
 d3.ternary.neatline = ->
   neatline = (plot)->
-    domains = plot.scales.map (s)->s.domain()
-    console.log domains
-
-    points = []
-
-    for i in [0..2]
-      v = i - 1
-      v = 2 if v == -1
-
-      a = domains.map (d)->d[0]
-      a[v] = domains[v][1]
-      points.push a
-
-      a = domains.map (d)->d[0]
-      a[i] = domains[i][1]
-      points.push a
-
-    el = plot.node().append "polygon"
-    el.datum points
-      .attr class: "neatline"
-
-    draw = ->
-      el.attr points: (d)->
-        di = d.map (c)->
-          i = plot.rawPoint c
-          i.join(",")
-        di.join(" ")
-
-    plot.on "resize.#{randomid()}", draw
-    draw()
+    el = plot.node().append "use"
+      .attr
+         class: 'neatline'
+         "xlink:href":"#bounds"
 
   neatline
+
+_plotBounds = (plot)->
+  domains = plot.scales.map (s)->s.domain()
+  console.log domains
+
+  points = []
+
+  for i in [0..2]
+    v = i - 1
+    v = 2 if v == -1
+
+    a = domains.map (d)->d[0]
+    a[v] = domains[v][1]
+    points.push a
+
+    a = domains.map (d)->d[0]
+    a[i] = domains[i][1]
+    points.push a
+
+  _ = d3.select @
+  el = _.select("#bounds")
+  if not el.node()?
+    el = _.append "polygon"
+
+  el.datum points
+    .attr id: 'bounds'
+
+  draw = ->
+    el.attr points: (d)->
+      di = d.map (c)->
+        i = plot.rawPoint c
+        i.join(",")
+      di.join(" ")
+
+  plot.on "resize.#{randomid()}", draw
+  draw()
 
 d3.ternary.plot = ->
 
@@ -285,6 +297,8 @@ d3.ternary.plot = ->
   svg = null
   axes = null
   plot = null
+  defs = null
+  shouldClip = false
 
   callOnCreate = []
 
@@ -321,6 +335,10 @@ d3.ternary.plot = ->
     for s in scales
       s.range [0,width]
 
+    _plotBounds.call defs.node(), T
+    if shouldClip
+      plot.attr 'clip-path': "url(#axesClip)"
+
     events.resize()
 
   T = (el)->
@@ -331,10 +349,16 @@ d3.ternary.plot = ->
       .append "svg"
       .append "g"
 
+    defs = svg.append 'defs'
     axes = svg.append('g').attr 'id', 'axes'
     plot = svg.append('g').attr 'id', 'plot'
 
     rescaleView()
+
+    defs.append 'clipPath'
+      .attr id: 'axesClip'
+      .append 'use'
+        .attr 'xlink:href':"#bounds"
 
     console.log "Calling plot functions"
     callOnCreate.forEach (f)-> f(T)
@@ -446,5 +470,8 @@ d3.ternary.plot = ->
   T.center = -> [width/2,radius]
   T.width = ->
     return width
-
+  T.clip = (c)->
+    return shouldClip unless c?
+    shouldClip = c
+    return T
   T
