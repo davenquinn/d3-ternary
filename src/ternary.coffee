@@ -342,12 +342,7 @@ d3.ternary.plot = ->
     events.resize()
 
   T = (el)->
-    svg_ = el
-      .selectAll "svg"
-      .data [null]
-    svg = svg_.enter()
-      .append "svg"
-      .append "g"
+    svg = el.append "g"
 
     defs = svg.append 'defs'
     axes = svg.append('g').attr 'id', 'axes'
@@ -468,6 +463,8 @@ d3.ternary.plot = ->
       return radius
     T
   T.center = -> [width/2,radius]
+  T.height = ->
+    return height
   T.width = ->
     return width
   T.clip = (c)->
