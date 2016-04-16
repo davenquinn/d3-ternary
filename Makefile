@@ -1,5 +1,7 @@
+COFFEE=node_modules/.bin/coffee
+
 all:
-	coffee -c -o lib src
+	$(COFFEE) -c -o lib src
 
 watch:
-	coffee -wc -o lib src
+	$(COFFEE) -wc -o lib src

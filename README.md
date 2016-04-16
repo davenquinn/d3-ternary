@@ -23,8 +23,7 @@ Simply include the script after `d3` as such
 ```
 and you're off to the races.
 
-The API is currently in flux, but it makes extensive use of `d3`
-shorthands:
+The API  makes extensive use of `d3` shorthands:
 ```javascript
 
 function resize(t) {
@@ -49,7 +48,6 @@ I am *very* happy to receive ideas for API improvement.
 - List package on `npm` if desired
 - Add support for different scales per-axis (i.e. a zoomed view of part
   of the barycentric coordinate space)
-- Make the neatline optionally support clipping th dataframe
 - Add support for partial coordinate systems (e.g. [the pyroxene
   quadrilateral](http://en.wikipedia.org/wiki/Pyroxene#/media/File:Pyrox_names.svg))
 

@@ -1,8 +1,20 @@
 {
   "name": "d3-ternary",
   "version": "0.1.0",
-  "description": "An implementation of a reusable chart in ternary barycentric coordinates.",
+  "description": "A reusable chart in ternary barycentric coordinates.",
   "main": "lib/ternary.js",
   "author": "Daven Quinn",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register"
+  },
+  "peerDependencies": {
+    "d3": "*"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "coffee-script": "^1.10.0",
+    "mocha": "^2.4.5",
+    "underscore": "^1.8.3"
+  }
 }

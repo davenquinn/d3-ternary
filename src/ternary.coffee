@@ -1,6 +1,7 @@
 path = undefined
 
 d3.ternary = {}
+cos30 = Math.sqrt(3)/2
 
 randomid = ->
     # random UID for namespaced event listeners
@@ -367,7 +368,7 @@ d3.ternary.plot = ->
       nw = innerWidth w
       nh = innerHeight h
 
-      if nh <= Math.sqrt(3)/2*nw
+      if nh <= cos30*nw
         r = nh*2/3
       else
         r = nw/Math.sqrt(3)
@@ -395,19 +396,27 @@ d3.ternary.plot = ->
     margin = m
     return T
 
-  T.rawPoint = (d)->
-    [x,y,z] = d
-    return [0,0] if d3.sum(d) == 0
-    [
-      scales[0](x)/2+scales[1](y)
-      scales[1](Math.sqrt(3)/2 * (d[2] + d[1]))
-    ]
-
   T.point = (coords) ->
     sum = d3.sum coords
     if sum != 0
       coords = coords.map (d) -> d / sum
     T.rawPoint coords
+
+  T.rawPoint = (d)->
+    return [0,0] if d3.sum(d) == 0
+    [A,B,C] = scales
+    [a,b,c] = d
+    x = A(a)/2+B(b)
+    y = B((1-a)*cos30)
+    [x,y]
+
+  T.value = ([x,y])->
+    # Get barycentric coordinates from x,y location
+    [A,B,C] = scales
+    a = 1-B.invert(y)/cos30
+    b = B.invert(x - A(a)/2)
+    c = 1-a-b
+    [a,b,c]
 
   T.path = (coordsList, accessor, interpolator) =>
     #path generator wrapper
@@ -439,15 +448,6 @@ d3.ternary.plot = ->
           [value, 1 - value, 0]
         ]
       T.path ends
-  # this inverse of point i.e. take an x,y positon and get the ternary coordinate
-
-  T.getValues = (pos)->
-    #NOTE! haven't checked if this works yet
-    pos = pos.map (d,i)->scales[i].inverse(d)
-    c = 1 - pos[1]
-    b = pos[0] - c / 2
-    a = y - b
-    [a,b,c]
 
   T.range = (range) -> T
   T.radius = (r) ->
