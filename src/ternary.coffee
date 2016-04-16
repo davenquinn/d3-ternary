@@ -378,7 +378,6 @@ d3.ternary.plot = ->
     T.radius r
     T
 
-
   T.node = -> svg
   T.axes = -> axes
   T.plot = -> plot
@@ -393,7 +392,15 @@ d3.ternary.plot = ->
 
   T.margin = (m)->
     return margin unless m?
-    margin = m
+    if m.left?
+      margin = m
+    else
+      margin =
+        left: m
+        right: m
+        top: m
+        bottom: m
+    rescaleView()
     return T
 
   T.point = (coords) ->
@@ -448,6 +455,16 @@ d3.ternary.plot = ->
           [value, 1 - value, 0]
         ]
       T.path ends
+
+  T.vertices = (pad=0)->
+    # Method to get vertices
+    # Currently only a getter
+    rotate = [0,120,-120]
+    rotate.map (d)->
+      a = d*Math.PI/180
+      x = width/2+Math.sin(a)*(radius+pad)
+      y = radius-Math.cos(a)*(radius+pad)
+      [x,y]
 
   T.range = (range) -> T
   T.radius = (r) ->
