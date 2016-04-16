@@ -200,14 +200,15 @@ d3.ternary.vertexLabels = (labels)->
   # Builds labels at corners
   # Currently implemented only for apex vertices of triangle.
   sel = null
-  rotate = [0,60,-60]
+  rotate = [0,-60,60]
   pad = 20
 
   L = (plot)->
     # Provide three lables, clockwise from top
 
+    verts = plot.vertices(pad)
     data = labels.map (l,i)->
-      {label: l, angle: angles[i]}
+      {label: l, vertex: verts[i]}
 
     sel = plot.axes()
       .selectAll ".vertex-label"
@@ -222,14 +223,9 @@ d3.ternary.vertexLabels = (labels)->
           class: "vertex-label"
 
     draw = ->
-      offs = plot.center()
-      radius = plot.radius()
-
       sel.attr
         transform: (d,i)->
-          a = -d.angle*Math.PI/180
-          x = offs[0]+Math.sin(a)*(radius+pad)
-          y = offs[1]-Math.cos(a)*(radius+pad)
+          [x,y] = d.vertex
           "translate(#{x},#{y})rotate(#{rotate[i]})"
 
     plot.on "resize.#{randomid()}", draw
