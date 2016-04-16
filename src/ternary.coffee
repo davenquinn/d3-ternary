@@ -396,9 +396,10 @@ d3.ternary.plot = ->
     return T
 
   T.rawPoint = (d)->
+    [x,y,z] = d
     return [0,0] if d3.sum(d) == 0
     [
-      scales[2](d[0])/2 + scales[1](d[1])-width/3
+      scales[0](x)/2+scales[1](y)
       scales[1](Math.sqrt(3)/2 * (d[2] + d[1]))
     ]
 
