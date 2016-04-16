@@ -12,6 +12,8 @@ and pleasing ternary diagrams for all manner of barycentric
 coordinate systems. It depends only on `d3`.
 Here are some examples:
 
+- [Modal
+  mineralogy](http://github.com/davenquinn/crystal-knob-modal-mineralogy)
 - [Soil types](http://bl.ocks.org/988167471993bc2ece29)
 
 ## Usage
