@@ -200,7 +200,7 @@ d3.ternary.vertexLabels = (labels)->
   # Builds labels at corners
   # Currently implemented only for apex vertices of triangle.
   sel = null
-  rotate = [0,-60,60]
+  rotate = [0,60,-60]
   pad = 20
 
   L = (plot)->
@@ -455,7 +455,7 @@ d3.ternary.plot = ->
   T.vertices = (pad=0)->
     # Method to get vertices
     # Currently only a getter
-    rotate = [0,120,-120]
+    rotate = [0,-120,120]
     rotate.map (d)->
       a = d*Math.PI/180
       x = width/2+Math.sin(a)*(radius+pad)
