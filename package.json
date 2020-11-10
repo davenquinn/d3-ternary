@@ -9,7 +9,7 @@
     "test": "mocha --compilers coffee:coffee-script/register"
   },
   "peerDependencies": {
-    "d3": "*"
+    "d3": "3.*.*"
   },
   "devDependencies": {
     "chai": "^3.5.0",
