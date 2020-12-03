@@ -1,4 +1,4 @@
-// import { sum } from "d3-array";
+import { sum } from "d3-array";
 
 export default function () {
   const { sin, cos, PI } = Math,
@@ -14,7 +14,7 @@ export default function () {
 
   function normalize(_) {
     const values = [a(_), b(_), c(_)];
-    const total = d3.sum(values);
+    const total = sum(values);
     if (total === 0) return [0, 0, 0];
     return values.map((d) => d / total);
   }

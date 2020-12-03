@@ -1,4 +1,4 @@
-// import { scaleLinear } from "d3-scale";
+import { scaleLinear } from "d3-scale";
 
 const epsilon = 1e-6;
 
@@ -31,7 +31,7 @@ export default function ternaryPlot(ternary) {
     labelOffset: 30,
     gridLine: lineBetween(svC, svA),
     gridLineCount: 20,
-    scale: d3.scaleLinear().domain([0, 100]),
+    scale: scaleLinear().domain([0, 100]),
     tickAngle: 0,
     tickCount: 15,
     tickSize: 6,
@@ -46,7 +46,7 @@ export default function ternaryPlot(ternary) {
     labelOffset: 30,
     gridLine: lineBetween(svA, svB),
     gridLineCount: 20,
-    scale: d3.scaleLinear().domain([0, 100]),
+    scale: scaleLinear().domain([0, 100]),
     tickAngle: 60,
     tickCount: 15,
     tickSize: 6,
@@ -61,7 +61,7 @@ export default function ternaryPlot(ternary) {
     labelOffset: 30,
     gridLine: lineBetween(svB, svC),
     gridLineCount: 20,
-    scale: d3.scaleLinear().domain([0, 100]),
+    scale: scaleLinear().domain([0, 100]),
     tickAngle: -60,
     tickCount: 15,
     tickSize: 6,
