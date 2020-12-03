@@ -1,0 +1,47 @@
+{
+  "name": "d3-ternary",
+  "version": "2.0.0",
+  "description": "Generate ternary plots",
+  "keywords": [
+    "d3",
+    "d3-module",
+    "visualization",
+    "geology",
+    "ternaryplot",
+    "diagram",
+    "barycentric"
+  ],
+  "scripts": {
+    "pretest": "rm -rf dist && mkdir dist && rollup -c --banner \"$(preamble)\"",
+    "test": "tape 'test/**/*-test.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davenquinn/d3-ternary"
+  },
+  "author": {
+    "name": "Jules Blom",
+    "url": "http://jules.engineer/"
+  },
+  "main": "dist/d3-ternary.js",
+  "module": "index",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/davenquinn/d3-ternary/issues"
+  },
+  "homepage": "https://github.com/davenquinn/d3-ternary#readme",
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "@rollup/plugin-babel": "^5.2.2",
+    "@rollup/plugin-node-resolve": "^11.0.0",
+    "babel": "^6.23.0",
+    "rollup": "^2.34.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "tape": "^5.0.1"
+  },
+  "dependencies": {
+    "d3-array": "^2.8.x",
+    "d3-scale": "^3.2.x"
+  }
+}
