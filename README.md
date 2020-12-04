@@ -4,7 +4,7 @@ d3-ternary is a JavaScript library and D3.js plugin that makes it easy to create
 
 [Try d3-ternary in your browser](https://observablehq.com/@julesblm/scratchpad-d3-ternary-plot-ii)
 
-![Example ternary plot][https://raw.githubusercontent.com/davenquinn/d3-ternary/dev-new-version/demo.png]
+<img alt="Example ternary plot" src="https://raw.githubusercontent.com/davenquinn/d3-ternary/dev-new-version/demo.png" />
 
 ## Installing
 
