@@ -1,5 +1,7 @@
 # D3 Ternary Plot
 
+> ⚠️ A new version of d3-ternary is being developed and this version will soon be deprecated. [See this issue](https://github.com/davenquinn/d3-ternary/issues/2) and [the development branch](https://github.com/davenquinn/d3-ternary/tree/dev-new-version)
+
 ![Soil
 types](https://gist.githubusercontent.com/davenquinn/988167471993bc2ece29/raw/f5c0239dc4e35559751e0ccce9eabbc67b2075a7/thumbnail.png)
 
