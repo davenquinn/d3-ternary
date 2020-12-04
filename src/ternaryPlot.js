@@ -5,23 +5,24 @@ const epsilon = 1e-6;
 export default function ternaryPlot(ternary) {
   let radius = 500,
     k = 1, // scale
-    tx = 0, // translate
-    ty = 0;
-  
+    tx = 0,
+    ty = 0, // translate
+    tickFormat = "%";
+
   const vertices = ternary.vertices();
   const [vA, vB, vC] = vertices;
 
   // boundary conditions for transform
-  // 🚨 these should update when
+  // 🚨 these should be updated when
   // 1. domains are reversed
   // 2. vertices are moved
   let slopeAB = slope(vA, vB),
     slopeAC = slope(vA, vC);
 
   let solveAB = solveX(slopeAB, vA[1]),
-  solveAC = solveX(slopeAC, vA[1]);
+    solveAC = solveX(slopeAC, vA[1]);
 
-  let [svA, svB, svC]  = vertices.map(([x, y]) => [x * radius, y * radius]); // scaled vertices for drawing gridlines and axis labels
+  let [svA, svB, svC] = vertices.map(([x, y]) => [x * radius, y * radius]); // scaled vertices for drawing gridlines and axis labels
 
   // axes configurations
   // from vC (angle: 30°) to vA (angle: -90°)
@@ -31,7 +32,7 @@ export default function ternaryPlot(ternary) {
     labelOffset: 30,
     gridLine: lineBetween(svC, svA),
     gridLineCount: 20,
-    scale: scaleLinear().domain([0, 100]),
+    scale: scaleLinear().domain([0, 1]),
     tickAngle: 0,
     tickCount: 15,
     tickSize: 6,
@@ -46,12 +47,12 @@ export default function ternaryPlot(ternary) {
     labelOffset: 30,
     gridLine: lineBetween(svA, svB),
     gridLineCount: 20,
-    scale: scaleLinear().domain([0, 100]),
+    scale: scaleLinear().domain([0, 1]),
     tickAngle: 60,
     tickCount: 15,
     tickSize: 6,
     tickTextAnchor: "end",
-    vertex: vertices[1]
+    vertex: vertices[1],
   };
 
   //  from vB (angle: 150°) to vC (angle: 30°)
@@ -61,12 +62,12 @@ export default function ternaryPlot(ternary) {
     labelOffset: 30,
     gridLine: lineBetween(svB, svC),
     gridLineCount: 20,
-    scale: scaleLinear().domain([0, 100]),
+    scale: scaleLinear().domain([0, 1]),
     tickAngle: -60,
     tickCount: 15,
     tickSize: 6,
     tickTextAnchor: "end",
-    vertex: vertices[2]
+    vertex: vertices[2],
   };
 
   // just a nicety for the gridlines function
@@ -74,9 +75,8 @@ export default function ternaryPlot(ternary) {
   B.conjugate = C;
   C.conjugate = A;
 
-
   // returns array of object with coords, rotation and label text for plot
-  // 🚨 TODO: option for labels at center of line
+  // 🚨 TODO: more flexible or option for labels at center of line
   ternaryPlot.axisLabels = function () {
     return [A, B, C].map((d) => ({
       position: [
@@ -138,9 +138,13 @@ export default function ternaryPlot(ternary) {
   ternaryPlot.ticks = function () {
     return [A, B, C].map((axis) => {
       const tickValues = axis.scale.ticks(axis.tickCount);
+      const format =
+        typeof tickFormat === "function"
+          ? tickFormat
+          : axis.scale.tickFormat(axis.tickCount, tickFormat);
 
       return tickValues.map((tick) => ({
-        tick,
+        tick: format(tick),
         position: axis.gridLine(axis.scale(tick)),
         angle: axis.tickAngle,
         size: axis.tickSize,
@@ -148,6 +152,14 @@ export default function ternaryPlot(ternary) {
       }));
     });
   };
+
+  // return tickValues.map((tick) => Object.create({ tickFormat: axis.scale.tickFormat(axis.tickCount, "%")}, {
+  //   tick: tick,
+  //   position: axis.gridLine(axis.scale(tick)),
+  //   angle: axis.tickAngle,
+  //   size: axis.tickSize,
+  //   textAnchor: axis.tickTextAnchor,
+  // }));
 
   ternaryPlot.tickAngles = function (_) {
     return arguments.length
@@ -179,6 +191,14 @@ export default function ternaryPlot(ternary) {
           ternaryPlot)
       : [A.tickSize, B.tickSize, C.tickSize];
   };
+
+  // ternaryPlot.tickFormat = function (_) {
+  //   return arguments.length
+  //     ? typeof _ === "function"
+  //       ? ((tickFormat = _), ternaryPlot)
+  //       : ((tickFormat = d3.tickFormat(_)), ternaryPlot)
+  //     : tickFormat;
+  // };
 
   ternaryPlot.tickTextAnchors = function (_) {
     return arguments.length
@@ -290,11 +310,11 @@ export default function ternaryPlot(ternary) {
     const domainLengths = new Set(
       domains.map((domain) => Math.abs(domain[1] - domain[0]))
     ); // 🚨 TODO should give it a margin of error
-    const domainLength = [...domainLengths][0]; // !Just taking the first one of the set is stupid!
+    const domainLength = [...domainLengths][0]; // 🚨!Just taking the first one of the set is stupid!
 
     const transform = {};
 
-    transform.k = 100 / domainLength;
+    transform.k = 1 / domainLength;
 
     const untranslatedDomainStart = domainStartFromScale(k);
 
@@ -306,7 +326,7 @@ export default function ternaryPlot(ternary) {
     const [shiftX, shiftY] = [
       vA[0] * shiftA + vB[0] * shiftB + vC[0] * shiftC,
       vA[1] * shiftA + vB[1] * shiftB + vC[1] * shiftC,
-    ].map((d) => (d / 100) * transform.k);
+    ].map((d) => d * transform.k);
 
     transform.x = shiftX;
     transform.y = shiftY;
@@ -333,12 +353,12 @@ export default function ternaryPlot(ternary) {
 }
 
 function insideDomain(n) {
-  return (n > 0.999999 ? 1 : n < 0.000001 ? 0 : n) * 100;
+  return n > 0.999999 ? 1 : n < 0.000001 ? 0 : n;
 }
 
 // find start value of centered, untranslated domain for this scale
 function domainStartFromScale(k) {
-  return ((k - 1) / (k * 3)) * 100;
+  return (k - 1) / (k * 3);
 }
 
 function lineBetween([x1, y1], [x2, y2]) {
