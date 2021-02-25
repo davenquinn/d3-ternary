@@ -1,8 +1,9 @@
 import { sum } from "d3-array";
+const { sin, cos, PI } = Math;
 
-export default function () {
-  const { sin, cos, PI } = Math,
-    rad = PI / 180;
+export default function barycentric() {
+  rad = PI / 180;
+  // let normalizeData = true;
 
   // accessors
   let a = (d) => d[0];
@@ -12,6 +13,8 @@ export default function () {
   const angles = [-90, 150, 30]; // angles for equilateral triangle
   let [vA, vB, vC] = angles.map((d) => [cos(d * rad), sin(d * rad)]); // default vertices
 
+  // Composition closure operator: https://en.wikipedia.org/wiki/Compositional_data
+  // Returns a composition version of the array where the elements are normalized to sum to 1
   function normalize(_) {
     const values = [a(_), b(_), c(_)];
     const total = sum(values);
@@ -19,17 +22,17 @@ export default function () {
     return values.map((d) => d / total);
   }
 
-  function ternary(d) {
-    const [normA, normB, normC] = normalize(d);
+  const barycentric = function (d) {
+    const [dA, dB, dC] =  normalize(d) // normalizeData ? normalize(d) : d;
 
     return [
-      vA[0] * normA + vB[0] * normB + vC[0] * normC,
-      vA[1] * normA + vB[1] * normB + vC[1] * normC,
+      vA[0] * dA + vB[0] * dB + vC[0] * dC,
+      vA[1] * dA + vB[1] * dB + vC[1] * dC,
     ];
-  }
+  };
 
   // en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
-  ternary.invert = function ([x, y]) {
+  barycentric.invert = function ([x, y]) {
     const [xA, yA] = vA,
       [xB, yB] = vB,
       [xC, yC] = vC;
@@ -50,25 +53,25 @@ export default function () {
     return [lambda1, lambda2, lambda3];
   };
 
-  ternary.a = function (fn) {
-    return arguments.length ? ((a = fn), ternary) : a;
+  barycentric.a = function (fn) {
+    return arguments.length ? ((a = fn), barycentric) : a;
   };
 
-  ternary.b = function (fn) {
-    return arguments.length ? ((b = fn), ternary) : b;
+  barycentric.b = function (fn) {
+    return arguments.length ? ((b = fn), barycentric) : b;
   };
 
-  ternary.c = function (fn) {
-    return arguments.length ? ((c = fn), ternary) : c;
+  barycentric.c = function (fn) {
+    return arguments.length ? ((c = fn), barycentric) : c;
   };
 
-  ternary.normalize = normalize;
+  barycentric.normalize = normalize;
 
-  ternary.vertices = function (ABC) {
+  barycentric.vertices = function (ABC) {
     return arguments.length
-      ? ((vA = ABC[0]), (vB = ABC[1]), (vC = ABC[2]), ternary)
+      ? ((vA = ABC[0]), (vB = ABC[1]), (vC = ABC[2]), barycentric)
       : [vA, vB, vC];
   };
 
-  return ternary;
+  return barycentric;
 }
