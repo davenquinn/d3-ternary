@@ -2,7 +2,7 @@ import { sum } from "d3-array";
 const { sin, cos, PI } = Math;
 
 export default function barycentric() {
-  rad = PI / 180;
+  const rad = PI / 180;
   // let normalizeData = true;
 
   // accessors
