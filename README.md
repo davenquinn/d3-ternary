@@ -26,7 +26,6 @@ Computes `[x,y]` coordinates from a ternary values (a single three-element array
 
 Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
 
-
 [#](#barycentricADoc) _barycentric_.**a**([_a_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L56)
 
 If `a` is specified, sets the a-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current a-value accessor, which defaults to:
@@ -50,7 +49,6 @@ If `c` is specified, sets the c-accessor to the specified function and returns t
 ```javascript
 const c = (d) => d[2];
 ```
-
 
 [#](#barycentricNormalizeDoc) _barycentric_.**normalize**(_ternaryData_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L68)
 
@@ -85,7 +83,6 @@ Computes ternary values from `[x, y]` coordinates that are scaled by the radius.
 [#](#tod) _ternaryPlot_.**convert**(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L359)
 
 Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the _barycentric_.[convert()](#barycentricInvertDoc) method, this method takes the plot radius into account.
-
 
 #### Configuration methods
 
@@ -227,7 +224,15 @@ Sets the domains in order `[A, B, C]`. This method is needed when setting domain
 
 ## Credits
 
-Several projects have served as a starting point for this
-work. Thanks especially to:
+## Acknowledgments
+
+Several projects have served as a starting point for this module.
+
+- The initial [d3-ternary](https://github.com/davenquinn/d3-ternary) module by [Daven Quinn](https://github.com/davenquinn/)
+- [Ternary slider](https://observablehq.com/@yurivish/ternary-slider) notebook by Yuri Vishnevsky
+- [D3 Ternary Plot](https://observablehq.com/@toja/d3-ternary-plot) notebook by Torben Jansen
+- [Zoomable Ternary Plot](https://observablehq.com/@dixonj13/zoomable-ternary-plot) notebook by dixonj13
+
+All authors are thanked.
 
 ## Contributing

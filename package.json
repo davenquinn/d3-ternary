@@ -12,7 +12,7 @@
     "barycentric"
   ],
   "scripts": {
-    "pretest": "rm -rf dist && mkdir dist && rollup -c --banner \"$(preamble)\"",
+    "pretest": "rm -rf dist && mkdir dist && rollup -c",
     "test": "tape 'test/**/*-test.js'"
   },
   "repository": {
