@@ -86,7 +86,6 @@ const curveMap = new Map([
 ]);
 
 export function Lines({ lines, convert }) {
-  // TODO move into linesSelector?
   const linesToDraw = seperate(lines)
     .filter((d) => d.length > 1)
     .map((linePoints) => {
