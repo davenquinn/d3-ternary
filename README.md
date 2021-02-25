@@ -18,16 +18,16 @@ TODO after publishing to npm and adding release to GitHub
 
 Constructs a new default ternary/barycentric converter. By default, it makes an equilateral triangle on the unit circle centered the origin.
 
-[#](#baryCentricConvertDoc) _barycentric_(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L25)
+[#](#barycentricConvertDoc) _barycentric_(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L25)
 
-Computes `[x,y]` coordinates from a ternary values (a single three-element array). Note that the [x, y] coordinates here are unscaled (radius of 1). All values are [normalized](#baryCentricNormalizeDoc) by default.
+Computes `[x,y]` coordinates from a ternary values (a single three-element array). Note that the [x, y] coordinates here are unscaled (radius of 1). All values are [normalized](#barycentricNormalizeDoc) by default.
 
-[#](#baryCentricInvertDoc) _barycentric_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L35)
+[#](#barycentricInvertDoc) _barycentric_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L35)
 
 Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
 
 
-[#](#baryCentricADoc) _barycentric_.**a**([_a_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L56)
+[#](#barycentricADoc) _barycentric_.**a**([_a_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L56)
 
 If `a` is specified, sets the a-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current a-value accessor, which defaults to:
 
@@ -35,7 +35,7 @@ If `a` is specified, sets the a-accessor to the specified function and returns t
 const a = (d) => d[0];
 ```
 
-[#](#baryCentricBDoc) _barycentric_.**b**([_b_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L60)
+[#](#barycentricBDoc) _barycentric_.**b**([_b_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L60)
 
 If `b` is specified, sets the b-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current b-value accessor, which defaults to:
 
@@ -43,7 +43,7 @@ If `b` is specified, sets the b-accessor to the specified function and returns t
 const b = (d) => d[1];
 ```
 
-[#](#baryCentricCDoc) _barycentric_.**c**([_c_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L64)
+[#](#barycentricCDoc) _barycentric_.**c**([_c_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L64)
 
 If `c` is specified, sets the c-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current c-value accessor, which defaults to:
 
@@ -52,11 +52,11 @@ const c = (d) => d[2];
 ```
 
 
-[#](#baryCentricNormalizeDoc) _barycentric_.**normalize**(_ternaryData_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L68)
+[#](#barycentricNormalizeDoc) _barycentric_.**normalize**(_ternaryData_) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#L68)
 
 Computes normalized ternary values by summing and taking proportions of ternary data using the value accessors.
 
-[#](#baryCentricVerticesDoc) _barycentric_.**vertices**([_vertices_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#70)
+[#](#barycentricVerticesDoc) _barycentric_.**vertices**([_vertices_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/barycentric.js#70)
 
 If `vertices` is specified, sets the vertices to the specified array and returns this barycentric converter. If `vertices` is not specified, returns the current vertices, which defaults to the vertices of an equilateral triangle with radius 1 with angles -90°, 150°, 30°.
 
@@ -80,11 +80,11 @@ Constructs a new default ternary plot generator with the default options.
 
 [#](#densityPlotDensityDoc) _ternaryPlot_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L365)
 
-Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#baryCentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
+Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
 
 [#](#tod) _ternaryPlot_.**convert**(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L359)
 
-Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the _barycentric_.[convert()](#baryCentricInvertDoc) method, this method takes the plot radius into account.
+Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the _barycentric_.[convert()](#barycentricInvertDoc) method, this method takes the plot radius into account.
 
 
 #### Configuration methods
