@@ -14,7 +14,6 @@ const getDomainLengths = (domains) => new Set(
   })
 );
 
-const domainFromScale = k => (k - 1) / (k * 3) // find start value of centered, untranslated domain for this scale
 const insideDomain = n => (n > 0.999999 ? 1 : n < 0.000001 ? 0 : n)
 // https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
 const parallelLinesDistance = (b1, b2, m) =>
@@ -454,6 +453,8 @@ export default function ternaryPlot(barycentric) {
     const transform = {};
 
     transform.k = 1 / domainLength;
+
+    const domainFromScale = k => (k - 1) / (k * 3) // find start value of centered, untranslated domain for this scale
 
     const untranslatedDomainStart = domainFromScale(k);
     // const untranslatedDomain = [domainFromScale(k), 1 - 2 * domainFromScale(k)]
