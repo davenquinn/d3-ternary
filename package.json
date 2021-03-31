@@ -41,6 +41,8 @@
     "tape": "^5.2.0"
   },
   "dependencies": {
+    "@types/d3-array": "^2.9.0",
+    "@types/d3-scale": "^3.2.2",
     "d3-array": "2",
     "d3-scale": "3"
   }
