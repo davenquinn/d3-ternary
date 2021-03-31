@@ -3,21 +3,22 @@ const { cos, sin, atan, sign } = Math;
 
 const epsilon = 1e-6;
 
-const getDomainLengths = (domains) => new Set(
-  domains.map(domain => {
-    // round differences
-    // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
-    const d0 = Math.round((domain[0] + Number.EPSILON) * 100) / 100;
-    const d1 = Math.round((domain[1] + Number.EPSILON) * 100) / 100;
+const getDomainLengths = (domains) =>
+  new Set(
+    domains.map((domain) => {
+      // round differences
+      // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
+      const d0 = Math.round((domain[0] + Number.EPSILON) * 100) / 100;
+      const d1 = Math.round((domain[1] + Number.EPSILON) * 100) / 100;
 
-    return Math.abs(d1 - d1);
-  })
-);
+      return Math.abs(d1 - d0);
+    })
+  );
 
-const insideDomain = n => (n > 0.999999 ? 1 : n < 0.000001 ? 0 : n)
+const insideDomain = (n) => (n > 0.999999 ? 1 : n < 0.000001 ? 0 : n);
 // https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
 const parallelLinesDistance = (b1, b2, m) =>
-  ((b2 - b1) * Math.sign(b1)) / Math.sqrt(m ** 2 + 1) // using sign() is hacky tho
+  ((b2 - b1) * Math.sign(b1)) / Math.sqrt(m ** 2 + 1); // using sign() is hacky tho
 
 const getTranslateCorrections = (m, distance) => {
   // 🌶 distance shouldn't always have negative sign
@@ -26,12 +27,12 @@ const getTranslateCorrections = (m, distance) => {
   const inverseSlope = -1 / m;
 
   return getdXdY(inverseSlope, distance);
-}
+};
 
-const lineBetween = ([x1, y1], [x2, y2]) => t => [
+const lineBetween = ([x1, y1], [x2, y2]) => (t) => [
   x1 + t * (x2 - x1),
-  y1 + t * (y2 - y1)
-]
+  y1 + t * (y2 - y1),
+];
 
 const getdXdY = (m, c) => {
   // m = dy/dx = tan(Θ)
@@ -40,9 +41,9 @@ const getdXdY = (m, c) => {
   const dy = c * sin(theta) * sign(theta);
 
   return [dx, dy];
-}
+};
 
-const getSlope = ([x1, y1], [x2, y2]) => (y2 - y1) / (x2 - x1)
+const getSlope = ([x1, y1], [x2, y2]) => (y2 - y1) / (x2 - x1);
 
 export default function ternaryPlot(barycentric) {
   let radius = 500,
@@ -55,8 +56,10 @@ export default function ternaryPlot(barycentric) {
   let unscaledVertices = barycentric.vertices(); // original unscaled vertices
 
   // return this function, has access to all closed over variables in the parent 'ternaryPlot' function
-  function ternaryPlot() {
-    // what should go in here though?
+  function ternaryPlot(_) {
+    const [x, y] = barycentric(_);
+
+    return [x * radius, y * radius];
   }
 
   let [svA, svB, svC] = scaleVertices();
@@ -73,7 +76,7 @@ export default function ternaryPlot(barycentric) {
     tickAngle: 0,
     tickCount: 10,
     tickSize: 6,
-    tickTextAnchor: "start"
+    tickTextAnchor: "start",
   };
 
   // domain from svA (angle: -90°) to svB (angle: 150°)
@@ -87,7 +90,7 @@ export default function ternaryPlot(barycentric) {
     tickAngle: 60,
     tickCount: 10,
     tickSize: 6,
-    tickTextAnchor: "end"
+    tickTextAnchor: "end",
   };
 
   // domain from vB (angle: 150°) to vC (angle: 30°)
@@ -101,7 +104,7 @@ export default function ternaryPlot(barycentric) {
     tickAngle: -60,
     tickCount: 10,
     tickSize: 6,
-    tickTextAnchor: "end"
+    tickTextAnchor: "end",
   };
 
   // just a nicety for the gridlines function
@@ -115,7 +118,7 @@ export default function ternaryPlot(barycentric) {
     if (newScaledVertices) {
       const newUnscaledVertices = newScaledVertices.map(([x, y]) => [
         x / radius,
-        y / radius
+        y / radius,
       ]);
 
       barycentric.vertices(newUnscaledVertices);
@@ -131,25 +134,25 @@ export default function ternaryPlot(barycentric) {
   }
 
   // returns array of objects with coords, rotation and label text for plot
-  ternaryPlot.axisLabels = function({ center = false } = {}) {
-    return [A, B, C].map(d => {
+  ternaryPlot.axisLabels = function ({ center = false } = {}) {
+    return [A, B, C].map((d) => {
       const { label, labelAngle } = d;
       const [x, y] = d.gridLine(center ? 0.5 : 1);
       const position = [
         (x / radius) * (radius + d.labelOffset),
-        (y / radius) * (radius + d.labelOffset)
+        (y / radius) * (radius + d.labelOffset),
       ];
 
       return {
         position,
         label,
-        angle: labelAngle
+        angle: labelAngle,
       };
     });
   };
 
   // set domains without applying matching transform
-  ternaryPlot.setDomains = function(domains) {
+  ternaryPlot.setDomains = function (domains) {
     const [domainA, domainB, domainC] = domains;
 
     A.scale.domain(domainA);
@@ -159,12 +162,11 @@ export default function ternaryPlot(barycentric) {
     return ternaryPlot;
   };
 
-  ternaryPlot.reverseVertices = function() {
+  ternaryPlot.reverseVertices = function () {
     // 'swap' vertices clockwise
     reverse = true;
     const swappedVertices = [svC, svA, svB];
     const [vA, vB, vC] = unscaledVertices;
-    // [vC, vA, vB]
     unscaledVertices = [vC, vA, vB]; // needed for .transform() and transformFromDomains() & .domainsFromVertices() to work
     ternaryPlot.vertices(swappedVertices);
 
@@ -177,19 +179,19 @@ export default function ternaryPlot(barycentric) {
   };
 
   // set domains checks if domains are reversed and applies appropriate transform
-  ternaryPlot.domains = function(domains) {
+  ternaryPlot.domains = function (domains) {
     if (!arguments.length)
       return [A.scale.domain(), B.scale.domain(), C.scale.domain()];
 
-    const domainLengths = getDomainLengths(domains)
+    const domainLengths = getDomainLengths(domains);
     if (domainLengths.size !== 1) {
       throw new Error("Domains must all be of equal length");
     }
 
-    const isReverseDomain = domains.every(d => d[0] > d[1]);
+    const isReverseDomain = domains.every((d) => d[0] > d[1]);
 
     if (isReverseDomain) {
-      ternaryPlot.reverseVertices(domains);
+      ternaryPlot.reverseVertices();
     } else {
       reverse = false; // in case domains switch from reverse to normal
     }
@@ -206,23 +208,23 @@ export default function ternaryPlot(barycentric) {
     return ternaryPlot;
   };
 
-  ternaryPlot.gridLines = function() {
-    return [A, B, C].map(axis => {
+  ternaryPlot.gridLines = function () {
+    return [A, B, C].map((axis) => {
       const gridValues = axis.scale.ticks(axis.gridLineCount - 1);
 
-      return gridValues.map(d => [
+      return gridValues.map((d) => [
         axis.gridLine(axis.scale(d)),
-        axis.conjugate.gridLine(1 - axis.scale(d))
+        axis.conjugate.gridLine(1 - axis.scale(d)),
       ]);
     });
   };
 
-  ternaryPlot.gridLineCounts = function(_) {
+  ternaryPlot.gridLineCounts = function (_) {
     return arguments.length
       ? Array.isArray(_)
-        ? ((A.gridLineCount = _[0]),
-          (B.gridLineCount = _[1]),
-          (C.gridLineCount = _[2]),
+        ? ((A.gridLineCount = +_[0]),
+          (B.gridLineCount = +_[1]),
+          (C.gridLineCount = +_[2]),
           ternaryPlot)
         : (((A.gridLineCount = +_),
           (B.gridLineCount = +_),
@@ -231,8 +233,8 @@ export default function ternaryPlot(barycentric) {
       : [A.gridLineCount, B.gridLineCount, C.gridLineCount];
   };
 
-  ternaryPlot.ticks = function() {
-    return [A, B, C].map(axis => {
+  ternaryPlot.ticks = function () {
+    return [A, B, C].map((axis) => {
       const tickValues = axis.scale.ticks(axis.tickCount);
 
       const format =
@@ -240,20 +242,20 @@ export default function ternaryPlot(barycentric) {
           ? tickFormat
           : axis.scale.tickFormat(axis.tickCount, tickFormat);
 
-      return tickValues.map(tick => {
+      return tickValues.map((tick) => {
         const tickPos = reverse ? 1 - axis.scale(tick) : axis.scale(tick); // not a fan of this
         return {
           tick: format(tick),
           position: axis.gridLine(tickPos),
           angle: axis.tickAngle,
           size: axis.tickSize,
-          textAnchor: axis.tickTextAnchor
+          textAnchor: axis.tickTextAnchor,
         };
       });
     });
   };
 
-  ternaryPlot.tickAngles = function(_) {
+  ternaryPlot.tickAngles = function (_) {
     return arguments.length
       ? ((A.tickAngle = _[0]),
         (B.tickAngle = _[1]),
@@ -262,7 +264,7 @@ export default function ternaryPlot(barycentric) {
       : [A.tickAngle, B.tickAngle, C.tickAngle];
   };
 
-  ternaryPlot.tickCounts = function(_) {
+  ternaryPlot.tickCounts = function (_) {
     return arguments.length
       ? Array.isArray(_)
         ? ((A.tickCount = _[0]),
@@ -274,7 +276,7 @@ export default function ternaryPlot(barycentric) {
       : [A.tickCount, B.tickCount, C.tickCount];
   };
 
-  ternaryPlot.tickSizes = function(_) {
+  ternaryPlot.tickSizes = function (_) {
     return arguments.length
       ? !Array.isArray(_)
         ? ((A.tickSize = B.tickSize = C.tickSize = +_), ternaryPlot)
@@ -285,11 +287,11 @@ export default function ternaryPlot(barycentric) {
       : [A.tickSize, B.tickSize, C.tickSize];
   };
 
-  ternaryPlot.tickFormat = function(_) {
+  ternaryPlot.tickFormat = function (_) {
     return arguments.length ? ((tickFormat = _), ternaryPlot) : tickFormat;
   };
 
-  ternaryPlot.tickTextAnchors = function(_) {
+  ternaryPlot.tickTextAnchors = function (_) {
     return arguments.length
       ? ((A.tickTextAnchor = _[0]),
         (B.tickTextAnchor = _[1]),
@@ -298,13 +300,13 @@ export default function ternaryPlot(barycentric) {
       : [A.tickTextAnchor, B.tickTextAnchor, C.tickTextAnchor];
   };
 
-  ternaryPlot.labels = function(_) {
+  ternaryPlot.labels = function (_) {
     return arguments.length
       ? ((A.label = _[0]), (B.label = _[1]), (C.label = _[2]), ternaryPlot)
       : [A.label, B.label, C.label];
   };
 
-  ternaryPlot.labelAngles = function(_) {
+  ternaryPlot.labelAngles = function (_) {
     return arguments.length
       ? ((A.labelAngle = _[0]),
         (B.labelAngle = _[1]),
@@ -313,7 +315,7 @@ export default function ternaryPlot(barycentric) {
       : [A.labelAngle, B.labelAngle, C.labelAngle];
   };
 
-  ternaryPlot.labelOffsets = function(_) {
+  ternaryPlot.labelOffsets = function (_) {
     return arguments.length
       ? ((A.labelOffset = _[0]),
         (B.labelOffset = _[1]),
@@ -322,12 +324,12 @@ export default function ternaryPlot(barycentric) {
       : [A.labelOffset, B.labelOffset, C.labelOffset];
   };
 
-  ternaryPlot.triangle = function() {
+  ternaryPlot.triangle = function () {
     // 🚨 todo: use d3-path or d3-line for canvas support
     return `M${svA}L${svB}L${svC}Z`;
   };
 
-  ternaryPlot.radius = function(_) {
+  ternaryPlot.radius = function (_) {
     if (!arguments.length) return radius;
 
     radius = +_;
@@ -343,26 +345,20 @@ export default function ternaryPlot(barycentric) {
   };
 
   // sets the scale
-  ternaryPlot.scale = function(_) {
+  ternaryPlot.scale = function (_) {
     return arguments.length
       ? ((k = +_), ternaryPlot.transform(), ternaryPlot)
       : k;
   };
 
   // sets x and y translation
-  ternaryPlot.translate = function(_) {
+  ternaryPlot.translate = function (_) {
     return arguments.length
       ? ((tx = _[0]), (ty = _[1]), ternaryPlot.transform(), ternaryPlot)
       : [tx, ty];
   };
 
-  ternaryPlot.convert = function(_) {
-    const [x, y] = barycentric(_);
-
-    return [x * radius, y * radius];
-  };
-
-  ternaryPlot.invert = function(_) {
+  ternaryPlot.invert = function (_) {
     const xy = [_[0] / radius, _[1] / radius];
     const inverted = barycentric.invert(xy);
 
@@ -370,7 +366,7 @@ export default function ternaryPlot(barycentric) {
   };
 
   // apply scale and translate to vertices
-  ternaryPlot.transform = function() {
+  ternaryPlot.transform = function () {
     if (k === 1) {
       tx = 0;
       ty = 0;
@@ -380,7 +376,7 @@ export default function ternaryPlot(barycentric) {
     const [vA, vB, vC] = unscaledVertices;
     const [newvA, newvB, newvC] = unscaledVertices.map(([vx, vy]) => [
       vx * k + tx,
-      vy * k + ty
+      vy * k + ty,
     ]); // these are the newly transformed vertices BEFORE checking if they within bounds of original triangle
 
     const mAB = getSlope(vA, vB),
@@ -430,7 +426,7 @@ export default function ternaryPlot(barycentric) {
     // apply scale & adjusted translations
     const transformedVertices = unscaledVertices.map(([vx, vy]) => [
       vx * k + tx,
-      vy * k + ty
+      vy * k + ty,
     ]);
 
     barycentric.vertices(transformedVertices); // update barycentic coordinates
@@ -440,21 +436,16 @@ export default function ternaryPlot(barycentric) {
 
   // something like a static method
   // or call transform from this function?
-  ternaryPlot.transformFromDomains = function(domains) {
+  ternaryPlot.transformFromDomains = function (domains) {
     const [domainA, domainB, domainC] = domains;
 
-    const domainLengths = new Set(
-      domains.map(domain => Math.abs(domain[1] - domain[0]))
-    ); // 🚨 TODO should give it a margin of error
-    // const domainLengths = getDomainLengths(domains) // but this bugs out!!
+    const domainLengths = getDomainLengths(domains);
     const domainLength = [...domainLengths][0];
 
     const [uvA, uvB, uvC] = unscaledVertices;
-    const transform = {};
+    const k = 1 / domainLength;
 
-    transform.k = 1 / domainLength;
-
-    const domainFromScale = k => (k - 1) / (k * 3) // find start value of centered, untranslated domain for this scale
+    const domainFromScale = (k) => (k - 1) / (k * 3); // find start value of centered, untranslated domain for this scale
 
     const untranslatedDomainStart = domainFromScale(k);
     // const untranslatedDomain = [domainFromScale(k), 1 - 2 * domainFromScale(k)]
@@ -465,17 +456,14 @@ export default function ternaryPlot(barycentric) {
 
     const [tx, ty] = [
       uvA[0] * shiftA + uvB[0] * shiftB + uvC[0] * shiftC,
-      uvA[1] * shiftA + uvB[1] * shiftB + uvC[1] * shiftC
-    ].map(d => d * transform.k);
+      uvA[1] * shiftA + uvB[1] * shiftB + uvC[1] * shiftC,
+    ].map((d) => d * transform.k);
 
-    transform.x = tx;
-    transform.y = ty;
-
-    return transform;
+    return { k, x: tx, y: ty };
   };
 
   // get barycentric value of initial vertices to updated vertices
-  ternaryPlot.domainsFromVertices = function() {
+  ternaryPlot.domainsFromVertices = function () {
     // 'vertices' is an array the original unscaled, untranslated vertices here
     // find their barycentric values in the transformed barycentric coordinate system
     // assumes barycentic coord system is already transformed

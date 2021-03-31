@@ -74,16 +74,13 @@ The following diagram makes it more clear
 
 Constructs a new default ternary plot generator with the default options.
 
-#### Utility methods
+[#](#ternaryPlotConvertDoc) _ternaryPlot(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L359)
+
+Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the [_barycentric_](#barycentricConvertDoc) method, this method takes the plot radius into account.
 
 [#](#densityPlotDensityDoc) _ternaryPlot_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L365)
 
 Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
-
-[#](#tod) _ternaryPlot_.**convert**(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L359)
-
-Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the _barycentric_.[convert()](#barycentricInvertDoc) method, this method takes the plot radius into account.
-
 #### Configuration methods
 
 [#](#ternaryPlotRadiusDoc) _ternaryPlot_.**radius**([_radius_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#L330)
