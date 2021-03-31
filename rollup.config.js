@@ -1,10 +1,10 @@
 import babel from "@rollup/plugin-babel";
-import { nodeResolve } from '@rollup/plugin-node-resolve'; // ?????
 import * as pkg from "./package.json";
 import { terser } from "rollup-plugin-terser";
 
 const config = {
   input: "src/index.js",
+  external: Object.keys(pkg.dependencies || {}).filter(key => /^(d3-)/.test(key)),
   output: {
     file: `dist/${pkg.name}.js`,
     // dir: 'output',
@@ -13,7 +13,7 @@ const config = {
       pkg.version
     } Copyright ${new Date().getFullYear()} ${pkg.author.name}`,
   },
-  plugins: [nodeResolve(), babel({ babelHelpers: "bundled", exclude: "node_modules/**" })],
+  plugins: [ babel({ babelHelpers: "bundled", exclude: "node_modules/**" })],
 };
 
 const minifiedConfig = {

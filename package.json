@@ -8,11 +8,13 @@
     "visualization",
     "geology",
     "ternaryplot",
+    "ternary plot",
+    "ternary diagram",
     "diagram",
     "barycentric"
   ],
   "scripts": {
-    "pretest": "rm -rf dist && mkdir dist && rollup -c",
+    "build": "rm -rf dist && mkdir dist && rollup -c",
     "test": "tape 'test/**/*-test.js'"
   },
   "repository": {
