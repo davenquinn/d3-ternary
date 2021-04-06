@@ -112,17 +112,9 @@ If _angles_ is specified, sets the angles of the axis labels to the specified an
 
 The label offset is the extra distance of the label to the vertex. If _offsets_ is specified, sets the axis label offsets to the specified angles in order `[A, B, C]` and returns the ternary plot. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]\
 
-[#](#ternaryPlotGridLineCountsDoc) _ternaryPlot_.**gridLineCounts**([_counts_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#220)
-
-If _counts_ is specified and an array, sets the grid line counts of the axes to the specified counts in order `[A, B, C]` and returns the ternary plot. If _counts_ is a number, sets the grid line counts of all axes to _counts_. If counts is not specified, returns the current counts, which defaults to `[20, 20, 20]`.
-
 [#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#256)
 
 If _angles_ is specified, sets the angle axis ticks to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
-
-[#](#ternaryPlotTickCountsDoc) _ternaryPlot_.**tickCounts**([_counts_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#265)
-
-If _counts_ is specified and an array, sets the tick counts of the axes to the specified counts in order `[A, B, C]` and returns the ternary plot. If _counts_ is a number, sets the tick counts of all axes to _counts_. If _counts_ is not specified, returns the current counts, which defaults to `[10, 10, 10]`.
 
 [#](#ternaryPlotTickAnchorsDoc) _ternaryPlot_.**tickTextAnchors**([_textAnchors_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#292)
 
@@ -140,7 +132,7 @@ If _format_ is specified, sets the tick format. _format_ can either be a [format
 
 [#](#ternaryPlotGridLinesDoc) _ternaryPlot_.**gridLines**() [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#209)
 
-Generates and return an array of arrays containing each grid line objects. Each array contains `axis.gridLineCount` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
+Generates and return an array of arrays containing each grid line objects. If counts is not specified, it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of a, b,c. Each array contains \`counts\` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
 
 Grid lines are generated using [d3._scale_.ticks()](https://github.com/d3/d3-scale/blob/master/README.md#continuous_ticks). The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
 

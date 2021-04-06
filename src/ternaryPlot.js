@@ -71,10 +71,8 @@ export default function ternaryPlot(barycentric) {
     labelAngle: 0,
     labelOffset: 45, // 🤔💭 or relative to radius? labelOffset: radius / 10
     gridLine: lineBetween(svC, svA),
-    gridLineCount: 20,
     scale: scaleLinear().domain([0, 1]),
     tickAngle: 0,
-    tickCount: 10,
     tickSize: 6,
     tickTextAnchor: "start",
   };
@@ -85,10 +83,8 @@ export default function ternaryPlot(barycentric) {
     labelAngle: 60,
     labelOffset: 45,
     gridLine: lineBetween(svA, svB),
-    gridLineCount: 20,
     scale: scaleLinear().domain([0, 1]),
     tickAngle: 60,
-    tickCount: 10,
     tickSize: 6,
     tickTextAnchor: "end",
   };
@@ -99,10 +95,8 @@ export default function ternaryPlot(barycentric) {
     labelAngle: -60,
     labelOffset: 45,
     gridLine: lineBetween(svB, svC),
-    gridLineCount: 20,
     scale: scaleLinear().domain([0, 1]),
     tickAngle: -60,
-    tickCount: 10,
     tickSize: 6,
     tickTextAnchor: "end",
   };
@@ -208,9 +202,10 @@ export default function ternaryPlot(barycentric) {
     return ternaryPlot;
   };
 
-  ternaryPlot.gridLines = function () {
-    return [A, B, C].map((axis) => {
-      const gridValues = axis.scale.ticks(axis.gridLineCount - 1);
+  ternaryPlot.gridLines = function (counts = 20) {
+    return [A, B, C].map((axis, i) => {
+      const gridCount = Array.isArray(counts) ? +counts[i] : +counts
+      const gridValues = axis.scale.ticks(gridCount - 1); // forgot what the -1 was for
 
       return gridValues.map((d) => [
         axis.gridLine(axis.scale(d)),
@@ -219,31 +214,18 @@ export default function ternaryPlot(barycentric) {
     });
   };
 
-  ternaryPlot.gridLineCounts = function (_) {
-    return arguments.length
-      ? Array.isArray(_)
-        ? ((A.gridLineCount = +_[0]),
-          (B.gridLineCount = +_[1]),
-          (C.gridLineCount = +_[2]),
-          ternaryPlot)
-        : (((A.gridLineCount = +_),
-          (B.gridLineCount = +_),
-          (C.gridLineCount = +_)),
-          ternaryPlot)
-      : [A.gridLineCount, B.gridLineCount, C.gridLineCount];
-  };
-
-  ternaryPlot.ticks = function () {
-    return [A, B, C].map((axis) => {
-      const tickValues = axis.scale.ticks(axis.tickCount);
+  ternaryPlot.ticks = function (counts = 10) {
+    return [A, B, C].map((axis,i) => {
+      const tickCount = Array.isArray(counts) ? +counts[i] : +counts
+      const tickValues = axis.scale.ticks(tickCount); //
 
       const format =
         typeof tickFormat === "function"
           ? tickFormat
-          : axis.scale.tickFormat(axis.tickCount, tickFormat);
+          : axis.scale.tickFormat(tickCount, tickFormat);
 
       return tickValues.map((tick) => {
-        const tickPos = reverse ? 1 - axis.scale(tick) : axis.scale(tick); // not a fan of this
+        const tickPos = reverse ? 1 - axis.scale(tick) : axis.scale(tick); // not a fan of using 'reverse' boolean
         return {
           tick: format(tick),
           position: axis.gridLine(tickPos),
@@ -262,18 +244,6 @@ export default function ternaryPlot(barycentric) {
         (C.tickAngle = _[2]),
         ternaryPlot)
       : [A.tickAngle, B.tickAngle, C.tickAngle];
-  };
-
-  ternaryPlot.tickCounts = function (_) {
-    return arguments.length
-      ? Array.isArray(_)
-        ? ((A.tickCount = _[0]),
-          (B.tickCount = _[1]),
-          (C.tickCount = _[2]),
-          ternaryPlot)
-        : (((A.tickCount = +_), (B.tickCount = +_), (C.tickCount = +_)),
-          ternaryPlot)
-      : [A.tickCount, B.tickCount, C.tickCount];
   };
 
   ternaryPlot.tickSizes = function (_) {
