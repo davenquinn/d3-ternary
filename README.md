@@ -138,10 +138,10 @@ Grid lines are generated using [d3._scale_.ticks()](https://github.com/d3/d3-sca
 
 [#](#ternaryPlotTicksDoc) _ternaryPlot_.**ticks**() [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#234)
 
-Generates and return an array for each axis, which contains an array with axis tick objects.
+Generates and return an array of tick objects for each axis. If counts is not specified, it defaults to 10. *Counts* can be a number or an array of numbers, one for each axis in order of a, b,c.
 Each tick object contains the following properties
 
-- `tick`: The tick text
+- `tick`: The formatted tick text
 - `position`: An array of x, y coords
 - `angle`: The tick rotation
 - `size`: The length of the tick
