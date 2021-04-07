@@ -17,19 +17,17 @@ export function TernaryPlot({
 
   const { plot } = useTernaryPlot({
     domains,
-    gridLineCounts,
     labels,
     labelAngles,
     labelOffsets,
     tickAngles,
-    tickCounts,
     tickSizes,
     radius,
   });
 
   const axisLabels = plot.axisLabels();
-  const gridLines = plot.gridLines();
-  const ticks = plot.ticks();
+  const gridLines = plot.gridLines(gridLineCounts);
+  const ticks = plot.ticks(tickCounts);
   const trianglePath = plot.triangle();
 
   return (
@@ -66,10 +64,10 @@ export function TernaryPlot({
         <AxisTicks ticks={ticks} />
         <path d={trianglePath} stroke="black" fill="none" id="triangle" />
         <g className="data" clipPath="url(#triangle-path)">
-          <Points convert={plot.convert} />
-          <Areas convert={plot.convert} />
-          <Lines convert={plot.convert} />
-          <Text convert={plot.convert} />
+          <Points plot={plot} />
+          <Areas plot={plot} />
+          <Lines plot={plot} />
+          <Text plot={plot} />
         </g>
       </g>
     </svg>

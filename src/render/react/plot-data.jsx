@@ -32,9 +32,9 @@ const symbolMap = new Map([
   ["wye", symbolWye],
 ]);
 
-export function Points({ points, convert }) {
+export function Points({ points, plot }) {
   const ternaryPoints = points.filter(filterEmpties).map((d) => {
-    const position = convert(d);
+    const position = plot(d);
     const type = symbolMap.get(d.symbol);
     const path = symbolGenerator.type(type).size(+d.size)();
 
@@ -85,11 +85,11 @@ const curveMap = new Map([
   ["catmullRom", line().curve(curveCatmullRom)],
 ]);
 
-export function Lines({ lines, convert }) {
+export function Lines({ lines, plot }) {
   const linesToDraw = seperate(lines)
     .filter((d) => d.length > 1)
     .map((linePoints) => {
-      const ternaryPoints = linePoints.map(convert);
+      const ternaryPoints = linePoints.map(plot);
 
       // only use style props of first point of line!
       const {
@@ -135,11 +135,11 @@ const curveMapClosed = new Map([
   ["catmullRom", line().curve(curveCatmullRomClosed)],
 ]);
 
-export function Areas({ areas, convert }) {
+export function Areas({ areas, plot }) {
   const drawAreas = seperate(areas)
     .filter((d) => d.length > 1)
     .map((areaPoints) => {
-      const ternaryPoints = areaPoints.map(convert);
+      const ternaryPoints = areaPoints.map(plot);
 
       // only use style props of first point of area!
       const { curve, opacity, fill, title } = areaPoints[0];
@@ -163,10 +163,10 @@ export function Areas({ areas, convert }) {
   );
 }
 
-export function Text({ text, convert }) {
+export function Text({ text, plot }) {
 
   const ternaryText = text.map((d) => {
-    const position = convert(d);
+    const position = plot(d);
 
     const strokeWidth = d.fontSize / 6.5;
 
