@@ -427,7 +427,7 @@ export default function ternaryPlot(barycentric) {
     const [tx, ty] = [
       uvA[0] * shiftA + uvB[0] * shiftB + uvC[0] * shiftC,
       uvA[1] * shiftA + uvB[1] * shiftB + uvC[1] * shiftC,
-    ].map((d) => d * transform.k);
+    ].map((d) => d * k);
 
     return { k, x: tx, y: ty };
   };
