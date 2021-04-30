@@ -1,30 +1,38 @@
 import { sum } from "d3-array";
-import { Coord, Barycentric } from "./types";
-const { sin, cos, PI } = Math;
+import { Coord } from "./types";
 
-export default function barycentricInit() {
-  const rad = PI / 180;
-  // let normalizeData = true;
+const barycenrtricHmm = barycentric();
+
+export type Barycentric = typeof barycenrtricHmm;
+
+type Accessor = (d: any) => number; // number[] | Record<string,unknown>
+
+export default function barycentric() {
+  const { sin, cos, PI } = Math,
+    rad = PI / 180;
+  let normalizeData = true; // TODO make toggleable
 
   // accessor functions
-  let a = (d: number[] | object) => d[0];
-  let b = (d: number[] | object) => d[1];
-  let c = (d: number[] | object) => d[2];
+  let a: Accessor = (d) => d[0];
+  let b: Accessor = (d) => d[1];
+  let c: Accessor = (d) => d[2];
 
   const angles = [-90, 150, 30]; // angles for equilateral triangle
-  let [vA, vB, vC] = angles.map((d) => [cos(d * rad), sin(d * rad)]); // default vertices
+  let [vA, vB, vC] = angles.map((d): Coord => [cos(d * rad), sin(d * rad)]); // default vertices
 
   // Composition closure operator: https://en.wikipedia.org/wiki/Compositional_data
   // Returns a composition version of the array where the elements are normalized to sum to 1
-  function normalize(_: object | any[]) {
-    const values = [a(_), b(_), c(_)];
+  function normalize(_: any): [number, number, number] {
+    // number[] | Record<string, unknown>
+    const values: [number, number, number] = [a(_), b(_), c(_)];
     const total = sum(values);
     if (total === 0) return [0, 0, 0];
-    return values.map((d) => d / total);
+    return values.map((d) => d / total) as [number, number, number];
   }
 
-  const barycentric = function (d: object | any[]): Coord {
-    const [dA, dB, dC] = normalize(d); // normalizeData ? normalize(d) : d;
+  const barycentric = function (d: any): Coord {
+    // number[] | Record<string, unknown>
+    const [dA, dB, dC] = normalizeData ? normalize(d) : d;
 
     return [
       vA[0] * dA + vB[0] * dB + vC[0] * dC,
@@ -54,28 +62,29 @@ export default function barycentricInit() {
     return [lambda1, lambda2, lambda3];
   };
 
-
-  barycentric.a = function (fn?: () => number | Barycentric) {
-    return arguments.length ? ((a = fn), barycentric) : a;
+  barycentric.a = function (fn?: Accessor): Accessor | typeof barycentric {
+    return fn ? ((a = fn), barycentric) : a;
   };
 
-  barycentric.b = function (fn?: () => number | Barycentric) {
-    return arguments.length ? ((b = fn), barycentric) : b;
+  barycentric.b = function (fn?: Accessor): Accessor | typeof barycentric {
+    return fn ? ((b = fn), barycentric) : b;
   };
 
-  barycentric.c = function (fn?: () => number | Barycentric) {
-    return arguments.length ? ((c = fn), barycentric) : c;
+  barycentric.c = function (fn?: Accessor): Accessor | typeof barycentric {
+    return fn ? ((c = fn), barycentric) : c;
   };
 
   barycentric.normalize = normalize;
 
-  // todo type: IF IT HAS PARAM ABC RETURN TYPE THREE COORDS 
-  barycentric.vertices = function (ABC?: [Coord, Coord, Coord] | Barycentric) {
-    //: [number, number, number] | (() => void)
-    return arguments.length
+  function vertices(ABC: [Coord, Coord, Coord]): typeof barycentric;  
+  function vertices(): [Coord, Coord, Coord];
+  function vertices(ABC?: [Coord, Coord, Coord]) {
+    return ABC
       ? ((vA = ABC[0]), (vB = ABC[1]), (vC = ABC[2]), barycentric)
-      : [vA, vB, vC];
+      : ([vA, vB, vC] as [Coord, Coord, Coord]);
   };
+
+  barycentric.vertices = vertices
 
   return barycentric;
 }
