@@ -1,9 +1,9 @@
-import babel from "@rollup/plugin-babel";
 import * as pkg from "./package.json";
 import { terser } from "rollup-plugin-terser";
+import typescript from '@rollup/plugin-typescript';
 
 const config = {
-  input: "src/index.js",
+  input: "src/index.ts",
   external: Object.keys(pkg.dependencies || {}).filter(key => /^(d3-)/.test(key)),
   output: {
     file: `dist/${pkg.name}.js`,
@@ -13,7 +13,7 @@ const config = {
       pkg.version
     } Copyright ${new Date().getFullYear()} ${pkg.author.name}`,
   },
-  plugins: [ babel({ babelHelpers: "bundled", exclude: "node_modules/**" })],
+  plugins: [ typescript({ exclude: "node_modules/**" })],
 };
 
 const minifiedConfig = {
