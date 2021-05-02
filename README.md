@@ -81,7 +81,8 @@ Computes `[x, y]` coordinates that are scaled by the plot radius from ternary da
 [#](#densityPlotDensityDoc) _ternaryPlot_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L365)
 
 Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
-#### Configuration methods
+
+#### Configuration Methods
 
 [#](#ternaryPlotRadiusDoc) _ternaryPlot_.**radius**([_radius_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#L330)
 
@@ -110,7 +111,7 @@ If _angles_ is specified, sets the angles of the axis labels to the specified an
 
 [#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#L316)
 
-The label offset is the extra distance of the label to the vertex. If _offsets_ is specified, sets the axis label offsets to the specified angles in order `[A, B, C]` and returns the ternary plot. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]\
+The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified, sets the axis label offsets to the specified angles in order `[A, B, C]` and returns the ternary plot. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
 
 [#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#256)
 
@@ -126,9 +127,9 @@ If _sizes_ is specified and an array, sets the axis tick sizes to the specified 
 
 [#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#288)
 
-If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat). To implement your own tick format function, pass a custom formatter function, for example `x => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
+If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat). To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
 
-### The functions that actually return the plot
+### Plot Methods
 
 [#](#ternaryPlotGridLinesDoc) _ternaryPlot_.**gridLines**() [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#209)
 
@@ -166,9 +167,10 @@ ternaryPlot.axisLabels({ center: true });
 
 Returns an [SVG path command](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) for a the outer triangle. This is used for the bounds of the ternary plot and its [clipPath](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath).
 
-### Hairy methods that handle zooming and interactivity
+### Methods that handle zooming, panning
 
-Best not to touch these really.
+These methods are used internally for _ternaryPlot*.**domains()**, and can be used for interactivity like zooming and panning. See [Introducing-d3-ternary: Zooming](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots#zooming) for an example of this.
+Other than that, best not to touch these really.
 
 [#](#ternaryPlotTranslateDoc) _ternaryPlot_.**translate**([scale]) [<>](https://github.com/davenquinn/d3-ternary/blob/dev-new-version/src/ternaryPlot.js#353)
 
@@ -184,21 +186,24 @@ The scale factor corresponds inversely to the domain length. For example a domai
 
 [#](#ternaryPlotTransformDoc) _ternaryPlot_.**transform**() [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L373)
 
-Applies the plot's scale factor and translation to the plot. Before scale and translation are applied, they are tested if they are within bounds, if not a correction is applied. At last, returns the ternary plot.
+Applies the plot's scale factor and translation to the plots *barycentric()*. Or more simply, this moves and scales the triangle defined by *barycentric()* used to calculate the ternary values. This is used to set custom domains. And r
+
+ Before scale and translation are applied, they are checked if they are within bounds, if not, a correction is applied. At last, the ternary plot is returned.
 
 [#](#ternaryPlotReverseVerticesDoc) _ternaryPlot_.**reverseVertices**() [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L162)
 
-Swaps vertices so reversed domains are displayed correctly. _ternaryPlot_.[domains()](#ternaryPlotDomainsDoc) checks wether the domains are reversed and calls this method if so. You'll rarely need to call this method directly.
+Swaps the vertices so reversed domains are displayed correctly.
+_ternaryPlot_.[domains()](#ternaryPlotDomainsDoc) checks wether the domains are reversed and calls this method if so. You'll rarely need to call this method directly.
 
 [#](#ternaryPlotTransformFromDomainsDoc) _ternaryPlot_.**transformFromDomains**(_domains_) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L443)
 
-Computes the scale and translation that match the passed _domains_ and return a transform object containing. This is used to sync the zoom and pan of the plot to the specified domains set by [.domains()](ternaryPlotDomainsDoc). You'll rarely need to call this method directly.
+Computes the scale and translation for the given _domains_ and returns a transform object containing scale *k*, and translation offsets *x*, and *y*. This is used to sync the zoom and pan of the plot to the specified domains set by [.domains()](ternaryPlotDomainsDoc). You'll rarely need to call this method directly.
 
 Note that the translation returned here is unscaled by radius.
 
 [#](#ternaryPlotDomainsFromVerticesDoc) _ternaryPlot_.**domainsFromVertices**() [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L478)
 
-Computes and returns the domains corresponding to current transform. This is used for syncing domains while zooming and panning.
+Computes and returns the domains corresponding to the current transform. This is used for syncing domains while zooming and panning.
 
 [#](#ternaryPlotSetDomainsDoc) _ternaryPlot_.**setDomains**(domains) [<>](https://github.com/davenquinn/d3-ternary/blob/src/ternaryPlot.js#L152)
 
