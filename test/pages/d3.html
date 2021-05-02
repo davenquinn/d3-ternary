@@ -4,12 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Test d3-ternary</title>
   </head>
   <body>
     <svg id="plot"></svg>
-    <script type="module">
-      import { ternaryPlot, barycentric } from "./d3-ternary.js";
+<!--     <script type="module">
+      import { scaleLinear } from "d3-scale";
+      import { ternaryPlot, barycentric } from "../dist/d3-ternary.js";
       console.log(ternaryPlot, barycentric);
 
       const axisLabels = (g, labels) =>
@@ -34,19 +35,19 @@
               )
           );
 
-      /*  
+        /*  
 
-Example usage: ticks data has to be joined for each axis as follows
+        Example usage: ticks data has to be joined for each axis as follows
 
-const axisTicksGroups = chart
-  .append("g")
-  .attr("class", "ticks")
-  .selectAll("g")
-  .data(someTernaryPlot.ticks())
-  .join("g")
-    .attr("class", "axis-ticks")
-    .call(ticks); 
-*/
+        const axisTicksGroups = chart
+          .append("g")
+          .attr("class", "ticks")
+          .selectAll("g")
+          .data(someTernaryPlot.ticks())
+          .join("g")
+            .attr("class", "axis-ticks")
+            .call(ticks); 
+        */
 
       const ticks = (g) =>
         g
@@ -164,8 +165,9 @@ const axisTicksGroups = chart
         .join("g")
         .attr("class", "axis-ticks")
         .call(ticks);
-    </script>
-    <script type="module" src="./../dist/d3-ternary.js"></script>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
+    </script> -->
+    <script src="https://unpkg.com/d3-scale@3.3.0/dist/d3-scale.min.js" ></script>
+    <script type="module" src="./../../dist/d3-ternary.js"></script>
+
   </body>
 </html>
