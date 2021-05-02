@@ -1,5 +1,5 @@
 import tape from "tape";
-import { ternaryPlot, barycentric } from "../dist/d3-ternary.js";
+import { ternaryPlot, barycentric } from "../dist/d3-ternary";
 
 // example test: https://github.com/Fil/d3-tricontour/blob/master/test/tricontours-test.js
 
