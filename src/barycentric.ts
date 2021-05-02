@@ -31,7 +31,7 @@ export default function barycentric() {
   }
 
   const barycentric = function (d: any): Coord {
-    // number[] | Record<string, unknown>
+    // TODO: ternary data type : number[] | Record<string, unknown> | Map | Set more?
     const [dA, dB, dC] = normalizeData ? normalize(d) : d;
 
     return [

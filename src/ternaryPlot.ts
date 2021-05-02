@@ -426,16 +426,17 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
     const [uvA, uvB, uvC] = unscaledVertices;
 
-    const scaleTranslateVertex = ([vx, vy]: Coord): Coord => [
+    const scaleAndTranslateVertex = ([vx, vy]: Coord): Coord => [
       vx * k + tx,
       vy * k + ty,
     ];
 
+    // typescript tuples need exact nr of elements which makes using Array.map() a pain ¯\_(ツ)_/¯
     // apply scale & adjusted translations
     const transformedVertices: [Coord, Coord, Coord] = [
-      scaleTranslateVertex(uvA),
-      scaleTranslateVertex(uvB),
-      scaleTranslateVertex(uvC),
+      scaleAndTranslateVertex(uvA),
+      scaleAndTranslateVertex(uvB),
+      scaleAndTranslateVertex(uvC),
     ];
 
     barycentric.vertices(transformedVertices); // update barycentic coordinates
