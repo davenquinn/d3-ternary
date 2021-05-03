@@ -8,9 +8,8 @@
   </head>
   <body>
     <svg id="plot"></svg>
-<!--     <script type="module">
-      import { scaleLinear } from "d3-scale";
-      import { ternaryPlot, barycentric } from "../dist/d3-ternary.js";
+    <script type="module">
+      import { ternaryPlot, barycentric } from "./../../dist/d3-ternary.js";
       console.log(ternaryPlot, barycentric);
 
       const axisLabels = (g, labels) =>
@@ -35,7 +34,7 @@
               )
           );
 
-        /*  
+      /*  
 
         Example usage: ticks data has to be joined for each axis as follows
 
@@ -99,7 +98,7 @@
                 .attr("stroke", "#e3e3e3")
                 .attr("stroke-width", (d, i) => (i & 1 ? 1 : 2)),
             (update) => update.attr("d", (d) => d)
-            // theres no exit, lines are only drawn upto 'initial' triangle bounds
+            // theres no exit selection, lines are only drawn upto 'initial' triangle bounds
           );
 
       const normalBarycentric = barycentric();
@@ -121,7 +120,7 @@
         .append("g")
         .attr("transform", `translate(${width / 2} ${height / 2 + yOffset})`)
         .attr("font-family", "sans-serif")
-        .attr("id", "chart")
+        .attr("id", "chart");
 
       const defs = chart.append("defs");
 
@@ -165,9 +164,14 @@
         .join("g")
         .attr("class", "axis-ticks")
         .call(ticks);
-    </script> -->
-    <script src="https://unpkg.com/d3-scale@3.3.0/dist/d3-scale.min.js" ></script>
-    <script type="module" src="./../../dist/d3-ternary.js"></script>
 
+      const triangle = defs
+        .append("path")
+        .attr("id", "triangel")
+        .append("path")
+        .attr("d", normalTernaryPlot.triangle());
+    </script>
+    <script type="module" src="../../dist/d3-ternary.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
   </body>
 </html>

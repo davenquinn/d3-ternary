@@ -1,27 +1,4 @@
-export const axisLabels = (g, labels) =>
-  g
-    .selectAll("text")
-    .data(labels, (d) => d.label)
-    .join(
-      (enter) =>
-        enter
-          .append("text")
-          .attr("dy", (d, i) => (i === 2 ? "-0.5em" : ".5em"))
-          .attr(
-            "transform",
-            (d, i) => `translate(${d.position})rotate(${d.angle})`
-          )
-          .attr("text-anchor", "middle")
-          .text((d) => d.label),
-      (update) =>
-        update.attr(
-          "transform",
-          (d, i) => `translate(${d.position})rotate(${d.angle})`
-        )
-    );
-
 /*  
-
 Example usage: ticks data has to be joined for each axis as follows
 
 const axisTicksGroups = chart
@@ -69,19 +46,4 @@ export const ticks = (g) =>
       },
       (update) => update.attr("transform", (d) => `translate(${d.position})`),
       (exit) => exit.attr("opacity", epsilon).remove()
-    );
-
-export const grid = (g, gridLines) =>
-  g
-    .selectAll("path")
-    .data(gridLines)
-    .join(
-      (enter) =>
-        enter
-          .append("path")
-          .attr("d", (d) => d)
-          .attr("stroke", "#e3e3e3")
-          .attr("stroke-width", (d, i) => (i & 1 ? 1 : 2)),
-      (update) => update.attr("d", (d) => d)
-      // theres no exit, lines are only drawn upto 'initial' triangle bounds
     );

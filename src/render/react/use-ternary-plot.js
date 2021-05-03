@@ -1,5 +1,4 @@
-import { barycentric, ternaryPlot } from "./d3-ternary/index";
-import { useRef } from "react";
+import { barycentric, ternaryPlot } from "../../index";
 
 export default function useTernaryPlot({
   radius = 500,
@@ -13,12 +12,10 @@ export default function useTernaryPlot({
   labelOffsets = 45,
 }) {
 
-  const { current: ternaryProjection } = useRef(
-    barycentric()
+  const ternaryProjection = barycentric()
       .a((d) => d.a)
       .b((d) => d.b)
       .c((d) => d.c)
-  );
 
   // maybe in a useMemo?
   const plot = ternaryPlot(ternaryProjection)

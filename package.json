@@ -1,6 +1,7 @@
 {
   "name": "d3-ternary",
   "version": "2.0.0",
+  "type": "module",
   "description": "Generate ternary plots",
   "keywords": [
     "d3",
@@ -15,7 +16,7 @@
   ],
   "scripts": {
     "build": "rm -rf dist && mkdir dist && rollup -c",
-    "test": "tape 'test/**/*-test.js'"
+    "test": "tape-es 'test/**/*-test.js'"
   },
   "repository": {
     "type": "git",
@@ -37,7 +38,8 @@
     "babel": "^6.23.0",
     "rollup": "^2.44.0",
     "rollup-plugin-terser": "^7.0.2",
-    "tape": "^5.2.0"
+    "tape": "^5.2.0",
+    "tape-es": "^1.2.13"
   },
   "dependencies": {
     "@types/d3-array": "2.9",
