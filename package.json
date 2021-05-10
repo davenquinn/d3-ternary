@@ -35,10 +35,9 @@
   "homepage": "https://github.com/davenquinn/d3-ternary#readme",
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.2.1",
-    "babel": "^6.23.0",
-    "rollup": "^2.44.0",
+    "rollup": "^2.47.0",
     "rollup-plugin-terser": "^7.0.2",
-    "tape": "^5.2.0",
+    "tape": "^5.2.2",
     "tape-es": "^1.2.13"
   },
   "dependencies": {
