@@ -15,7 +15,7 @@ export function TernaryPlot({
 }) {
   const yOffset = radius / 4;
 
-  const { plot } = useTernaryPlot({
+  const plot = useTernaryPlot({
     domains,
     labels,
     labelAngles,

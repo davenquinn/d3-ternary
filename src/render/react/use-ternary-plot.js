@@ -29,5 +29,5 @@ export default function useTernaryPlot({
     .labelAngles(labelAngles)
     .labelOffsets(labelOffsets);
 
-  return { ternaryProjection, plot };
+  return plot;
 }
