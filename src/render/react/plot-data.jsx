@@ -58,8 +58,6 @@ export function Points({ points, plot }) {
   );
 }
 
-const lineGen = line().curve(curveLinear);
-
 function seperate(lines) {
   const linesToDraw = lines.reduce(
     (acc, point) => {
@@ -174,7 +172,7 @@ export function Text({ text, plot }) {
   });
 
   return (
-    <g className="text">
+    <g className="ternary-text">
       {ternaryText.map((d, i) => (
         <text
           key={i}
