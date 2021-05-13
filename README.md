@@ -1,6 +1,8 @@
 # D3 Ternary Plot
 
-d3-ternary is a JavaScript library and D3.js module that makes it easy to create ternary plots, its API exposes configurable functions in the manner of other D3 modules. Ternary plots depict three-component systems, each side corresponds to an individual component.
+Ternary plots are a type of diagram that depict three-component systems. d3-ternary is a JavaScript library and D3.js module that makes it easy to create ternary plots, its API exposes configurable functions in the manner of other D3 modules.
+
+At the moment, d3-ternary is focussed on drawing to an SVG.
 
 [Try d3-ternary in your browser on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary-plot?collection=@julesblm/ternary-plots). View this [Observable notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples.
 
@@ -9,6 +11,14 @@ d3-ternary is a JavaScript library and D3.js module that makes it easy to create
 ## Installing
 
 TODO after publishing to npm and adding release to GitHub
+
+```bash
+npm install d3-ternary
+```
+
+```bash
+yarn add d3-ternary
+```
 
 ## API Reference
 
@@ -211,12 +221,12 @@ Sets the domains in order `[A, B, C]`. This method is needed when setting domain
 
 ## Future work
 
-- The transform method is hacky, bug-prone piece of work made through trial and error.
-- Canvas support
-- Support for [ternary binning](https://observablehq.com/@fil/ternary-binning)
+- [ ] Add JSDoc docstrings
+- [ ] Improve transform method, right now it's a hacky, bug-prone piece of work made through trial and error.
+- [ ]Canvas support
+- [ ] Support for [ternary binning](https://observablehq.com/@fil/ternary-binning)
 - Testing!
-
-## Credits
+- [ ] Jupyter Notebook integration
 
 ## Acknowledgments
 

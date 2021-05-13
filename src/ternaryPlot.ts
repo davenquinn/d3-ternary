@@ -31,7 +31,7 @@ const getTranslateCorrections = (
   m: number,
   distance: number
 ): [number, number] => {
-  // 🌶 distance shouldn't always have negative sign
+  // !🌶 distance shouldn't always have negative sign
   if (m === 0) return [0, -distance]; // for horizontal lines
 
   const inverseSlope = -1 / m;
@@ -82,7 +82,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
   ): typeof ternaryPlot;
   function scaleVertices(): [Coord, Coord, Coord];
   function scaleVertices(newScaledVertices?: [Coord, Coord, Coord]) {
-    // TODO: split into two functions which are called here?
     if (newScaledVertices) {
       const newUnscaledVertices = newScaledVertices.map(
         ([x, y]: Coord): Coord => [x / radius, y / radius]
@@ -329,7 +328,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
   };
 
   ternaryPlot.triangle = function () {
-    // 🚨 todo: use d3-path or d3-line for canvas support
+    // TODO: use d3-path or d3-line for canvas support
     return `M${svA}L${svB}L${svC}Z`;
   };
 
