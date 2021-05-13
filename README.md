@@ -1,8 +1,8 @@
 # D3 Ternary Plot
 
-Ternary plots are a type of diagram that depict three-component systems. d3-ternary is a JavaScript library and D3.ts module that makes it easy to create ternary plots, its API exposes configurable functions in the manner of other D3 modules.
+Ternary plots are a type of diagram that depict three-component systems. d3-ternary is a JavaScript library and [D3.js](https://d3js.org/) module that makes it easy to create ternary plots, its API exposes configurable functions in the manner of other D3 modules.
 
-Try d3-ternary your browser, [view the introductory notebook on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots) and see the 'Ternary Plots' [notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples.
+Try d3-ternary your browser, [view the introductory notebook on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots) and see the 'Ternary Plots' [notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples. Or make ternary plots in the browser on [TernaryPlot.com](https://www.ternaryplot.com) which is built using d3-ternary.
 
 <img alt="Example ternary plot" src="https://raw.githubusercontent.com/davenquinn/d3-ternary/master/demoPlot.png" />
 
