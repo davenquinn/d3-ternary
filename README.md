@@ -2,9 +2,7 @@
 
 Ternary plots are a type of diagram that depict three-component systems. d3-ternary is a JavaScript library and D3.ts module that makes it easy to create ternary plots, its API exposes configurable functions in the manner of other D3 modules.
 
-At the moment, d3-ternary is focussed on drawing to an SVG.
-
-[Try d3-ternary in your browser on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary-plot?collection=@julesblm/ternary-plots). View this [Observable notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples.
+Try d3-ternary your browser, [view the introductory notebook on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots) and see the 'Ternary Plots' [notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples.
 
 <img alt="Example ternary plot" src="https://raw.githubusercontent.com/davenquinn/d3-ternary/master/demoPlot.png" />
 
@@ -22,7 +20,7 @@ For yarn
 yarn add d3-ternary
 ```
 
-Otherwise, download the latest [release]().
+Otherwise, download the latest release.
 
 ## API Reference
 
