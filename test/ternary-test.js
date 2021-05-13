@@ -3,19 +3,9 @@ import { ternaryPlot, barycentric } from "../dist/d3-ternary.js";
 
 // example test: https://github.com/Fil/d3-tricontour/blob/master/test/tricontours-test.js
 
-tape("barycentric() has the expected default vertices", (test) => {
+tape("ternaryPlot() convert ternary data correctly", (test) => {
   const b = barycentric();
-
-  test.deepEqual(b.vertices(), [
-    [6.123233995736766e-17, -1], // -90° [0, 1]
-    [-0.8660254037844387, 0.49999999999999994], // 150° [-sqrt(3)/2, 1/2]
-    [0.8660254037844387, 0.49999999999999994], // 30° [sqrt(3)/2, 1/2]
-  ]);
-  test.end()
-});
-
-tape("barycentric() converts ternary data correctly", (test) => {
-  const b = barycentric();
+  const t = ternaryPlot(b);
 
   const ternaryValues = [
     [100, 0, 0],
@@ -27,35 +17,18 @@ tape("barycentric() converts ternary data correctly", (test) => {
     [33, 33, 33],
   ];
 
-  const coordinates = ternaryValues.map(b);
-
   const testCoordinates = [
-    [6.123233995736766e-17, -1],
-    [0.8660254037844387, 0.49999999999999994],
-    [-0.8660254037844387, 0.49999999999999994],
-    [-0.4330127018922193, -0.25],
-    [0, 0.49999999999999994],
-    [0.4330127018922194, -0.25],
-    [0, -5.551115123125783e-17],
+    [3.061616997868383e-14, -500],
+    [433.01270189221935, 249.99999999999997],
+    [-433.01270189221935, 249.99999999999997],
+    [-216.50635094610965, -125],
+    [0, 249.99999999999997],
+    [216.5063509461097, -125],
+    [0, -2.7755575615628914e-14],
   ];
 
-  test.deepEqual(coordinates, testCoordinates);
-  test.end()
-
-});
-
-tape("barycentric().a() sets the a accessor", (test) => {
-  const b = barycentric();
-
-  const accessor = (d) => d[3];
-
-  b.a(accessor);
-
-  const data = [, 0, 0, 100];
-
-  test.deepEqual(b(data), [6.123233995736766e-17, -1]) // [0, -1]
-  test.end()
-
+  test.deepEqual(ternaryValues.map(t), testCoordinates);
+  test.end();
 });
 
 tape("ternaryPlot() has the expected default domains", (test) => {
@@ -67,6 +40,13 @@ tape("ternaryPlot() has the expected default domains", (test) => {
     [0, 1],
     [0, 1],
   ]);
-  test.end()
+  test.end();
+});
 
+tape("ternaryPlot() has the expected default radius", (test) => {
+  const b = barycentric();
+  const t = ternaryPlot(b);
+
+  test.equal(t.radius(), 500);
+  test.end();
 });
