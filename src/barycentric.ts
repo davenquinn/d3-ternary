@@ -10,7 +10,7 @@ type Accessor = (d: any) => number; // number[] | Record<string,unknown>
 export default function barycentric() {
   const { sin, cos, PI } = Math,
     rad = PI / 180;
-  let normalizeData = true; // TODO make toggleable
+  let normalizeData = true; // TODO make normalizeData toggleable
 
   // accessor functions
   let a: Accessor = (d) => d[0];
@@ -55,9 +55,9 @@ export default function barycentric() {
       yyC = y - yC;
 
     const d = yByC * xAxC + xCxB * yAyC,
-      lambda1 = (yByC * xxC + xCxB * yyC) / d,
-      lambda2 = (yCyA * xxC + xAxC * yyC) / d,
-      lambda3 = 1 - lambda1 - lambda2;
+      lambda1 = Math.abs((yByC * xxC + xCxB * yyC) / d),
+      lambda2 = Math.abs((yCyA * xxC + xAxC * yyC) / d),
+      lambda3 = Math.abs(1 - lambda1 - lambda2);
 
     return [lambda1, lambda2, lambda3];
   };
