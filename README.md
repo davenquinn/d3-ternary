@@ -1,80 +1,244 @@
 # D3 Ternary Plot
 
-> ⚠️ A new version of d3-ternary is being developed and this version will soon be deprecated. [See this issue](https://github.com/davenquinn/d3-ternary/issues/2) and [the development branch](https://github.com/davenquinn/d3-ternary/tree/dev-new-version)
+Ternary plots are a type of diagram that depict three-component systems. d3-ternary is a JavaScript library and [D3.js](https://d3js.org/) module that makes it easy to create ternary plots, its API exposes configurable functions in the manner of other D3 modules.
 
-![Soil
-types](https://gist.githubusercontent.com/davenquinn/988167471993bc2ece29/raw/f5c0239dc4e35559751e0ccce9eabbc67b2075a7/thumbnail.png)
+Try d3-ternary your browser, [view the introductory notebook on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots) and see the 'Ternary Plots' [notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples. Or make ternary plots in the browser on [TernaryPlot.com](https://www.ternaryplot.com) which is built using d3-ternary.
 
-![Modal
-Mineralogy](https://raw.githubusercontent.com/davenquinn/crystal-knob-modal-mineralogy/master/preview.png)
+<img alt="Example ternary plot" src="https://raw.githubusercontent.com/davenquinn/d3-ternary/master/demoPlot.png" />
 
+## Installing
 
-An extensible charting library focused on producing accurate
-and pleasing ternary diagrams for all manner of barycentric
-coordinate systems. It depends only on `d3`.
-Here are some examples:
+For npm
 
-- [Modal
-  mineralogy](http://github.com/davenquinn/crystal-knob-modal-mineralogy)
-- [Soil types](http://bl.ocks.org/988167471993bc2ece29)
-
-## Usage
-
-Get the code, either by downloading `lib/ternary.js` from this
-repository, cloning the module, or installing via `npm`
-from this repository url
-(`npm install git+https://github.com/davenquinn/d3-ternary.git`).
-
-Simply include the script after `d3` as such
-```html
-<script charset="UTF-8" src="http://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="<module-url>/lib/ternary.js"></script>
+```bash
+npm install d3-ternary
 ```
-and you're off to the races.
 
-The API  makes extensive use of `d3` shorthands:
+For yarn
+
+```bash
+yarn add d3-ternary
+```
+
+Otherwise, download the latest release.
+
+## API Reference
+
+### `barycentric()`
+
+**barycentric**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L4)
+
+Constructs a new default ternary/barycentric converter. By default, it makes an equilateral triangle on the unit circle centered the origin.
+
+[#](#barycentricConvertDoc) _barycentric_(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L25)
+
+Computes `[x,y]` coordinates from a ternary values (a single three-element array). Note that the [x, y] coordinates here are unscaled (radius of 1). All values are [normalized](#barycentricNormalizeDoc) by default.
+
+[#](#barycentricInvertDoc) _barycentric_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L35)
+
+Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
+
+[#](#barycentricADoc) _barycentric_.**a**([_a_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L56)
+
+If `a` is specified, sets the a-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current a-value accessor, which defaults to:
+
 ```javascript
-
-function resize(t) {
-  t.fit(window.innerWidth,window.innerHeight);
-};
-
-var ternary = d3.ternary.plot()
-  .call(resize)
-  .call(d3.ternary.scalebars())
-  .call(d3.ternary.vertexLabels(["Wo", "Fs", "En"]))
-  .call(d3.ternary.neatline())
-  .call(d3.ternary.graticule());
-
-d3.select('body').call(ternary);
+const a = (d) => d[0];
 ```
-I am *very* happy to receive ideas for API improvement.
+
+[#](#barycentricBDoc) _barycentric_.**b**([_b_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L60)
+
+If `b` is specified, sets the b-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current b-value accessor, which defaults to:
+
+```javascript
+const b = (d) => d[1];
+```
+
+[#](#barycentricCDoc) _barycentric_.**c**([_c_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L64)
+
+If `c` is specified, sets the c-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current c-value accessor, which defaults to:
+
+```javascript
+const c = (d) => d[2];
+```
+
+[#](#barycentricNormalizeDoc) _barycentric_.**normalize**(_ternaryData_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L68)
+
+Computes normalized ternary values by summing and taking proportions of ternary data using the value accessors.
+
+[#](#barycentricVerticesDoc) _barycentric_.**vertices**([_vertices_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#70)
+
+If `vertices` is specified, sets the vertices to the specified array and returns this barycentric converter. If `vertices` is not specified, returns the current vertices, which defaults to the vertices of an equilateral triangle with radius 1 with angles -90°, 150°, 30°.
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{400}A=\left[0,%201\right]" height="20" />
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{400}B%20=%20\left[-\frac{\sqrt{3}}{2},\frac{1}{2}\right]" height="50" />
+
+<img src="https://latex.codecogs.com/png.latex?\dpi{400}C%20=%20\left[\frac{\sqrt{3}}{2},\frac{1}{2}\right]" height="50" />
+
+The following diagram makes it more clear
+
+![barycentricDiagram](img/barycentricDiagram.png)
+
+### `ternaryPlot()`
+
+**ternaryPlot**(_barycentric_) [<>](https://observablehq.com/@julesblm/)
+
+Constructs a new default ternary plot generator with the default options.
+
+[#](#ternaryPlotConvertDoc) _ternaryPlot(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L359)
+
+Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the [_barycentric_](#barycentricConvertDoc) method, this method takes the plot radius into account.
+
+[#](#densityPlotDensityDoc) _ternaryPlot_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L365)
+
+Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
+
+#### Configuration Methods
+
+[#](#ternaryPlotRadiusDoc) _ternaryPlot_.**radius**([_radius_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L330)
+
+If _radius_ is specified, sets the radius of the ternary plot to the specified number. If \_radius_e is not specified, returns the current radius, which defaults to 500 (px).
+
+[#](#ternaryPlotDomainsDoc) _ternaryPlot_.**domains**([_domains_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L180)
+
+If _domains_ is specified, sets the domains of the ternary plot to the specified domains in order `[A, B, C]` and checks if the supplied domains are reversed. If this is the case, [`reverseVertices()`](#ternaryPlotReverseVertices) is called. The scale and translation offset associated with the domains are [applied](#ternarPlotTransformDoc) to correctly scale and translate the plot, last it returns the ternary plot.
+If _domains_ is not specified, returns the current domains, which defaults to `[[0, 1], [0, 1], [0, 1]]`.
+
+To set domains without these extra checks use _ternaryPlot_.[setDomains(_domains_)](#ternaryPlotSetDomains).
+
+[#](#ternaryPlotVerticesDoc) _ternaryPlot_.**vertices**(_vertices_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L112)
+
+If _vertices_ is specified, unscales _vertices_ and sets the vertices of the _barycentric()_ function passed to _ternaryPlot()_. If _vertices_ is not specified, return the current scaled vertices.
+
+##### Styling
+
+[#](#ternaryPlotLabelsDoc) _ternaryPlot_.**labels**([_labels_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L301)
+
+If _labels_ is specified, sets the axis labels to the labels in order `[A, B, C]` and returns the ternary plot. If _labels_ is not specified, returns the current labels, which defaults to `[A, B, C]`.
+
+[#](#ternaryPlotLabelAnglesDoc) _ternaryPlot_.**labelAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L307)
+
+If _angles_ is specified, sets the angles of the axis labels to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current label angles, which defaults to `[0, 60, -60]`
+
+[#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L316)
+
+The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified, sets the axis label offsets to the specified angles in order `[A, B, C]` and returns the ternary plot. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
+
+[#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#256)
+
+If _angles_ is specified, sets the angle axis ticks to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
+
+[#](#ternaryPlotTickAnchorsDoc) _ternaryPlot_.**tickTextAnchors**([_textAnchors_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#292)
+
+If _textAnchors_ is specified, sets the axis tick [text-anchor](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the specified text-anchors in order `[A, B, C]` and returns the ternary plot. If _textAnchors_ is not specified, returns the current tick text-anchors, which defaults to `["start", "start", "end"]`.
+
+[#](#ternaryPlotTickSizesDoc) _ternaryPlot_.**tickSizes**([_sizes_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#277)
+
+If _sizes_ is specified and an array, sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot. If _sizes_ is a number, sets the tick sizes of all axes to _sizes_. If _sizes_ is not specified, returns the current tick sizes, which defaults to `[6, 6, 6]`.
+
+[#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#288)
+
+If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat). To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
+
+### Plot Methods
+
+[#](#ternaryPlotGridLinesDoc) _ternaryPlot_.**gridLines**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#209)
+
+Generates and return an array of arrays containing each grid line objects. If counts is not specified, it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of a, b,c. Each array contains \`counts\` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
+
+Grid lines are generated using [d3._scale_.ticks()](https://github.com/d3/d3-scale/blob/master/README.md#continuous_ticks). The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
+
+[#](#ternaryPlotTicksDoc) _ternaryPlot_.**ticks**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#234)
+
+Generates and return an array of tick objects for each axis. If counts is not specified, it defaults to 10. *Counts* can be a number or an array of numbers, one for each axis in order of a, b,c.
+Each tick object contains the following properties
+
+- `tick`: The formatted tick text
+- `position`: An array of x, y coords
+- `angle`: The tick rotation
+- `size`: The length of the tick
+
+Ticks are generated using [d3._scale_.ticks()](https://github.com/d3/d3-scale/blob/master/README.md#continuous_ticks). The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
+
+[#](#ternaryPlotAxisLabelsDoc) _ternaryPlot_.**axisLabels**(_[{center: false}]_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#134)
+
+Generates and return an array containing axis label objects. Each axis label object contains the following properties.
+
+- `position`: an array of [x,y] coords
+- `labelAngle`: the rotation of the axis label
+- `label`: The axis label
+
+Takes an optional configuration object that specifies whether axis labels should be placed at the center of the axis, the default is `false`.
+
+```javascript
+ternaryPlot.axisLabels({ center: true });
+```
+
+[#](#ternaryPlotTriangleDoc) _ternaryPlot_.**triangle**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L330)
+
+Returns an [SVG path command](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) for a the outer triangle. This is used for the bounds of the ternary plot and its [clipPath](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath).
+
+### Methods that handle zooming, panning
+
+These methods are used internally for _ternaryPlot*.**domains()**, and can be used for interactivity like zooming and panning. See [Introducing-d3-ternary: Zooming](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots#zooming) for an example of this.
+Other than that, best not to touch these really.
+
+[#](#ternaryPlotTranslateDoc) _ternaryPlot_.**translate**([scale]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#353)
+
+If translate is specified, sets the plot’s translation offset to the specified two-element array `[tx, ty]`. Note that these are **unscaled by the radius**. Then it applies the transform and returns the ternary plot. If translate is not specified, returns the current translation offset which defaults to `[0, 0]`.
+
+Note when setting the translation, the offsets **should not** be scaled by the plot radius.
+
+[#](#ternaryPlotScaleDoc) _ternaryPlot_.**scale**(_[scale]_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L346)
+
+If _scale_ is specified, sets the plot’s scale factor to the specified value, applies the transform and returns the plot. If _scale_ is not specified, returns the current scale factor, which defaults to `1`.
+
+The scale factor corresponds inversely to the domain length. For example a domains of `[[0, 0.5], [0, 0.5], [0.5, 1]` corresponds to a scale of 2.
+
+[#](#ternaryPlotTransformDoc) _ternaryPlot_.**transform**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L373)
+
+Applies the plot's scale factor and translation to the plots *barycentric()* conversion function. Or more simply, calling this method moves and scales the triangle defined by *barycentric()* used to calculate the ternary values.
+
+Before scale and translation are applied, they are checked if they are within bounds, if not, a correction is applied such that they are within bounds. Finally, the ternary plot is returned.
+
+[#](#ternaryPlotReverseVerticesDoc) _ternaryPlot_.**reverseVertices**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L162)
+
+Swaps the vertices so reversed domains are displayed correctly.
+_ternaryPlot_.[domains()](#ternaryPlotDomainsDoc) checks wether the domains are reversed and calls this method if so. You'll rarely need to call this method directly.
+
+[#](#ternaryPlotTransformFromDomainsDoc) _ternaryPlot_.**transformFromDomains**(_domains_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L443)
+
+Computes the scale and translation for the given _domains_ and returns a transform object containing scale *k*, and translation offsets *x*, and *y*. This is used to sync the zoom and pan of the plot to the specified domains set by [.domains()](ternaryPlotDomainsDoc). You'll rarely need to call this method directly.
+
+Note that the translation returned here is unscaled by radius.
+
+[#](#ternaryPlotDomainsFromVerticesDoc) _ternaryPlot_.**domainsFromVertices**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L478)
+
+Computes and returns the domains corresponding to the current transform. This is used for syncing domains while zooming and panning.
+
+[#](#ternaryPlotSetDomainsDoc) _ternaryPlot_.**setDomains**(domains) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L152)
+
+Sets the domains in order `[A, B, C]`. This method is needed when setting domains that are returned by _ternaryPlot_.domainsFromVertices() while zooming and panning. Usually _ternaryPlot._[domains()](#ternaryPlotDomainsDoc) is the preferred method for setting domains.
 
 ## Future work
 
-- Clean up and generalize graticule API
-- Add an option to install via `bower`
-- List package on `npm` if desired
-- Add support for different scales per-axis (i.e. a zoomed view of part
-  of the barycentric coordinate space)
-- Add support for partial coordinate systems (e.g. [the pyroxene
-  quadrilateral](http://en.wikipedia.org/wiki/Pyroxene#/media/File:Pyrox_names.svg))
+- [ ] Improve transform method, right now it's a hacky, bug-prone piece of work made through trial and error.
+- [ ] Add JSDoc docstrings
+- [ ] Canvas support
+- [ ] Support for [ternary binning](https://observablehq.com/@fil/ternary-binning)
+- [ ] More and better tests
+- [ ] Jupyter Notebook integration
 
-## Credits
+## Acknowledgments
 
-Several projects have served as a starting point for this
-work. Thanks especially to:
+Several projects have served as a starting point for this module.
 
-- *Tom Pearson* for the basic axis representation
-  and sample data
-  ([tomgp/d3-ternary](https://github.com/tomgp/d3-ternary))
-- *Seth Brown* for his engaging project [*Ski It If You
-  Can*](http://www.drbunsen.org/projects/ski-it-if-you-can/)
+- The initial [d3-ternary](https://github.com/davenquinn/d3-ternary) module by [Daven Quinn](https://github.com/davenquinn/)
+- [Ternary slider](https://observablehq.com/@yurivish/ternary-slider) notebook by Yuri Vishnevsky
+- [D3 Ternary Plot](https://observablehq.com/@toja/d3-ternary-plot) notebook by Torben Jansen
+- [Zoomable Ternary Plot](https://observablehq.com/@dixonj13/zoomable-ternary-plot) notebook by dixonj13
+
+All authors are thanked.
 
 ## Contributing
-
-The source code is currently written in `coffeescript`. The
-only development dependency is the `coffee` CLI program,
-which can be installed using `npm install -g coffee-script`.
-After this setup, the library can be compiled from source
-using `make`, or `make watch` for continuous re-compilation.
