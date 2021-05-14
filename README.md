@@ -4,7 +4,7 @@ Ternary plots are a type of diagram that depict three-component systems. d3-tern
 
 Try d3-ternary your browser, [view the introductory notebook on Observable](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots) and see the 'Ternary Plots' [notebook collection](https://observablehq.com/collection/@julesblm/ternary-plots) for examples. Or make ternary plots in the browser on [TernaryPlot.com](https://www.ternaryplot.com) which is built using d3-ternary.
 
-<img alt="Example ternary plot" src="https://raw.githubusercontent.com/davenquinn/d3-ternary/master/demoPlot.png" />
+<img alt="Example ternary plot" src="img/demoPlot.png" />
 
 ## Installing
 
