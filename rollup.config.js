@@ -1,20 +1,34 @@
 import * as pkg from "./package.json";
 import { terser } from "rollup-plugin-terser";
 import typescript from '@rollup/plugin-typescript';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 
+// standalone ES module
 const config = {
   input: "src/index.ts",
-  external: Object.keys(pkg.dependencies || {}).filter(key => /^(d3-)/.test(key)),
   output: {
     file: `dist/${pkg.name}.js`,
-    // dir: 'output',
     format: "esm",
-    banner: `// ${pkg.homepage} v${
-      pkg.version
-    } Copyright ${new Date().getFullYear()} ${pkg.author.name}`,
+    indent: false,
+    banner: `// ${pkg.homepage} v${pkg.version} Copyright ${new Date().getFullYear()} ${pkg.author.name}`,
   },
-  plugins: [ typescript({ exclude: "node_modules/**" })],
+  plugins: [ nodeResolve(), typescript()],
 };
+
+// d3 module: d3.ternaryPlot() and d3.barycentric()
+const umdConfig = {
+ ...config,
+ external: Object.keys(pkg.dependencies || {}).filter(key => /^(d3-)/.test(key)),
+ output: {
+   ...config.output,
+   file: `dist/${pkg.name}.umd.js`,
+   name: "d3",
+   extend: true,
+   format: "umd",
+   globals: Object.assign({}, ...Object.keys(pkg.dependencies || {}).filter(key => /^d3-/.test(key)).map(key => ({[key]: "d3"})))
+ },
+ plugins: [ typescript() ]
+}
 
 const minifiedConfig = {
   ...config,
@@ -32,7 +46,25 @@ const minifiedConfig = {
   ],
 };
 
+const minifiedUmdConfig = {
+  ...umdConfig,
+  output: {
+    ...umdConfig.output,
+    file: `dist/${pkg.name}.umd.min.js`,
+  },
+  plugins: [
+    ...umdConfig.plugins,
+    terser({
+      output: {
+        preamble: config.output.banner,
+      },
+    }),
+  ],
+};
+
 export default [
   config,
+  umdConfig,
+  minifiedUmdConfig,
   minifiedConfig
 ];

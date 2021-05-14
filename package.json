@@ -1,6 +1,6 @@
 {
   "name": "d3-ternary",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "type": "module",
   "description": "Generate ternary plots",
   "keywords": [
@@ -27,8 +27,9 @@
     "name": "Jules Blom",
     "url": "http://jules.engineer/"
   },
-  "main": "dist/d3-ternary.min.js",
-  "module": "src/index.js",
+  "main": "dist/d3-ternary.umd.min.js",
+  "unpkg": "dist/d3-ternary.umd.min.js",
+  "module": "dist/d3-ternary.js",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/davenquinn/d3-ternary/issues"
@@ -43,6 +44,7 @@
     "tape-es": "1.2"
   },
   "dependencies": {
+    "@rollup/plugin-node-resolve": "13",
     "@types/d3-array": "2.9",
     "@types/d3-scale": "3.2",
     "d3-array": "2",

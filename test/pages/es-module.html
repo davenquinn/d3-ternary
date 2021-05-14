@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test d3-ternary</title>
+    <title>Test d3-ternary ES module</title>
   </head>
   <body>
     <svg id="plot"></svg>
     <script type="module">
       import { ternaryPlot, barycentric } from "./../../dist/d3-ternary.js";
-      console.log(ternaryPlot, barycentric);
+      import { select } from "https://unpkg.com/d3-selection@2?module"
+      import { line } from "https://unpkg.com/d3-shape@2?module"
 
       const axisLabels = (g, labels) =>
         g
@@ -33,20 +34,6 @@
                 (d, i) => `translate(${d.position})rotate(${d.angle})`
               )
           );
-
-      /*  
-
-        Example usage: ticks data has to be joined for each axis as follows
-
-        const axisTicksGroups = chart
-          .append("g")
-          .attr("class", "ticks")
-          .selectAll("g")
-          .data(someTernaryPlot.ticks())
-          .join("g")
-            .attr("class", "axis-ticks")
-            .call(ticks); 
-        */
 
       const ticks = (g) =>
         g
@@ -109,8 +96,7 @@
 
       const height = 300;
       const width = 300;
-      const svg = d3
-        .select("#plot")
+      const svg = select("#plot")
         .attr("width", width)
         .attr("height", height);
 
@@ -148,7 +134,7 @@
 
       const gridLinesPaths = normalTernaryPlot
         .gridLines()
-        .map((axisGrid) => axisGrid.map(d3.line()).join(" "));
+        .map((axisGrid) => axisGrid.map(line()).join(" "));
 
       const gridGroup = chart
         .append("g")
@@ -170,8 +156,13 @@
         .attr("id", "triangel")
         .append("path")
         .attr("d", normalTernaryPlot.triangle());
+
+      const triangle = chart
+        .append("path")
+        .attr("d", t.triangle())
+        .attr("fill", "none")
+        .attr("stroke", "black");
+
     </script>
-    <script type="module" src="../../dist/d3-ternary.js"></script>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
   </body>
 </html>

@@ -20,7 +20,30 @@ For yarn
 yarn add d3-ternary
 ```
 
-Otherwise, download the latest release.
+Otherwise, download the [latest release](https://github.com/davenquinn/d3-ternary/releases).
+
+d3-ternary is available as a D3.js module, in which a d3 global is exported.
+
+```html
+<script src="https://unpkg.com/d3-ternary@2"></script>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script>
+
+const b = d3.barycentric();
+const t = d3.ternaryPlot(b)
+  
+</script>
+```
+
+And d3-ternary is available as a standalone ES module. This version bundles the d3-scale and d3-array dependencies.
+
+```javascript
+import { barycentric, ternaryPlot } from "d3-ternary"
+
+const b = d3.barycentric();
+const t = d3.ternaryPlot(b)
+
+```
 
 ## API Reference
 

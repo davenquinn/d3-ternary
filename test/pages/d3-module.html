@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test d3-ternary</title>
+  </head>
+  <body>
+    <svg id="plot"></svg>
+
+    <script type="module">
+      const axisLabels = (g, labels) =>
+        g
+          .selectAll("text")
+          .data(labels, (d) => d.label)
+          .join(
+            (enter) =>
+              enter
+                .append("text")
+                .attr("dy", (d, i) => (i === 2 ? "-0.5em" : ".5em"))
+                .attr(
+                  "transform",
+                  (d, i) => `translate(${d.position})rotate(${d.angle})`
+                )
+                .attr("text-anchor", "middle")
+                .text((d) => d.label),
+            (update) =>
+              update.attr(
+                "transform",
+                (d, i) => `translate(${d.position})rotate(${d.angle})`
+              )
+          );
+
+      const ticks = (g) =>
+        g
+          .selectAll("g")
+          .data(
+            (d) => d,
+            (d) => d.tick
+          )
+          .join(
+            (enter) => {
+              const tickGroups = enter
+                .append("g")
+                .attr("class", "tick")
+                .attr("transform", (d) => `translate(${d.position})`);
+
+              tickGroups
+                .append("text")
+                .attr("text-anchor", (d) => d.textAnchor)
+                .attr("transform", (d) => `rotate(${d.angle})`)
+                .attr(
+                  "dx",
+                  (d) => (-d.size - 5) * (d.textAnchor === "start" ? -1 : 1)
+                )
+                .attr("dy", ".5em")
+                .text((d) => d.tick);
+
+              tickGroups
+                .append("line")
+                .attr("transform", (d) => `rotate(${d.angle + 90})`)
+                .attr("y2", (d) => d.size * (d.textAnchor === "start" ? -1 : 1))
+                .attr("stroke", "grey");
+
+              return tickGroups;
+            },
+            (update) =>
+              update.attr("transform", (d) => `translate(${d.position})`),
+            (exit) => exit.remove()
+          );
+
+      const grid = (g, gridLines) =>
+        g
+          .selectAll("path")
+          .data(gridLines)
+          .join(
+            (enter) =>
+              enter
+                .append("path")
+                .attr("d", (d) => d)
+                .attr("stroke", "#e3e3e3")
+                .attr("stroke-width", (d, i) => (i & 1 ? 1 : 2)),
+            (update) => update.attr("d", (d) => d)
+            // theres no exit selection, lines are only drawn upto 'initial' triangle bounds
+          );
+
+      const width = 600;
+      const radius = width/2.2;
+
+      const b = d3.barycentric();
+      const t = d3.ternaryPlot(b).radius(radius);
+      
+      const svg = d3
+        .select("#plot")
+        .attr("width", width)
+        .attr("height", width);
+
+      const yOffset = radius / 4;
+
+      const chart = svg
+        .append("g")
+        .attr("transform", `translate(${width / 2} ${width / 2 + yOffset})`)
+        .attr("font-family", "sans-serif")
+        .attr("id", "chart");
+
+      const defs = chart.append("defs");
+
+      const clipPath = defs
+        .append("clipPath")
+        .attr("id", "trianglePath")
+        .append("path")
+        .attr("d", t.triangle());
+
+      chart
+        .append("circle")
+        .attr("r", 2)
+        .attr("fill", "gold")
+        .append("title")
+        .text("Center point");
+
+      const axisLabelsGroups = chart
+        .append("g")
+        .attr("class", "axis-labels")
+        .append("g")
+        .attr("class", "labels")
+        .attr("font-size", 16);
+
+      axisLabelsGroups.call(axisLabels, t.axisLabels());
+
+      const gridLinesPaths = t
+        .gridLines()
+        .map((axisGrid) => axisGrid.map(d3.line()).join(" "));
+
+      const gridGroup = chart
+        .append("g")
+        .attr("class", "grid")
+        .call(grid, gridLinesPaths);
+
+      const axisTicksGroups = chart
+        .append("g")
+        .attr("class", "ternary-ticks")
+        .attr("font-size", 10)
+        .selectAll("g")
+        .data(t.ticks())
+        .join("g")
+        .attr("class", "axis-ticks")
+        .call(ticks);
+
+      const triangle = chart
+        .append("path")
+        .attr("d", t.triangle())
+        .attr("fill", "none")
+        .attr("stroke", "black");
+    </script>
+    <script src="../../dist/d3-ternary.umd.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+  </body>
+</html>
