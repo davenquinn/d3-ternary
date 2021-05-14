@@ -121,7 +121,7 @@ Computes ternary values from `[x, y]` coordinates that are scaled by the radius.
 
 [#](#ternaryPlotRadiusDoc) _ternaryPlot_.**radius**([_radius_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L330)
 
-If _radius_ is specified, sets the radius of the ternary plot to the specified number. If \_radius_e is not specified, returns the current radius, which defaults to 500 (px).
+If _radius_ is specified, sets the radius of the ternary plot to the specified number. If \_radius_e is not specified, returns the current radius, which defaults to 300 (px).
 
 [#](#ternaryPlotDomainsDoc) _ternaryPlot_.**domains**([_domains_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L180)
 

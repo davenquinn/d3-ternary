@@ -1,4 +1,4 @@
-// https://github.com/davenquinn/d3-ternary#readme v2.0.2 Copyright 2021 Jules Blom
+// https://github.com/davenquinn/d3-ternary#readme v2.0.3 Copyright 2021 Jules Blom
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('d3-scale'), require('d3-array')) :
 typeof define === 'function' && define.amd ? define(['exports', 'd3-scale', 'd3-array'], factory) :
@@ -34,7 +34,7 @@ const getdXdY = (m, c) => {
     return [dx, dy];
 };
 function ternaryPlot(barycentric) {
-    let radius = 500, k = 1, // scale
+    let radius = 300, k = 1, // scale
     tx = 0, // translate
     ty = 0, tickFormat = "%", reverse = false;
     let unscaledVertices = barycentric.vertices(); // original unscaled vertices

@@ -7,7 +7,7 @@ export function TernaryPlot({
   tickAngles,
   tickCounts,
   tickSizes,
-  radius = 500,
+  radius = 300,
   points = [],
   areas = [],
   text = [],

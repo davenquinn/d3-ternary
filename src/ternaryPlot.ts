@@ -61,7 +61,7 @@ const getdXdY = (m: number, c: number): [number, number] => {
 };
 
 export default function ternaryPlot(barycentric: Barycentric) {
-  let radius = 500,
+  let radius = 300,
     k = 1, // scale
     tx = 0, // translate
     ty = 0,

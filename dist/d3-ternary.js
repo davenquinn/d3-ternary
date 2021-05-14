@@ -1,4 +1,4 @@
-// https://github.com/davenquinn/d3-ternary#readme v2.0.2 Copyright 2021 Jules Blom
+// https://github.com/davenquinn/d3-ternary#readme v2.0.3 Copyright 2021 Jules Blom
 function ascending(a, b) {
   return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
 }
@@ -1295,7 +1295,7 @@ const getdXdY = (m, c) => {
     return [dx, dy];
 };
 function ternaryPlot(barycentric) {
-    let radius = 500, k = 1, // scale
+    let radius = 300, k = 1, // scale
     tx = 0, // translate
     ty = 0, tickFormat = "%", reverse = false;
     let unscaledVertices = barycentric.vertices(); // original unscaled vertices

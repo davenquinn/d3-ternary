@@ -1,7 +1,7 @@
 import { barycentric, ternaryPlot } from "../../index";
 
 export default function useTernaryPlot({
-  radius = 500,
+  radius = 300,
   labels = ['A', 'B', 'C'],
   domains = [[0,1], [0,1], [0,1]],
   tickAngles = 60,
