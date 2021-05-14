@@ -17,7 +17,7 @@
   "scripts": {
     "build": "rm -rf dist && mkdir dist && rollup -c",
     "test": "tape-es 'test/**/*-test.js'",
-    "postpublish": "zip -j dist/d3-ternary.zip -- LICENSE README.md dist/d3-ternary.js dist/d3-ternary.min.js"
+    "postpublish": "zip -j dist/d3-ternary.zip -- LICENSE README.md dist/*"
   },
   "repository": {
     "type": "git",
