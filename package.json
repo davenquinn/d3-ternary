@@ -1,6 +1,6 @@
 {
   "name": "d3-ternary",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "type": "module",
   "description": "Generate ternary plots",
   "keywords": [

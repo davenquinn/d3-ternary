@@ -3,6 +3,8 @@ import { Domains, Coord, TickProps, TextAnchor } from "./types";
 import { Barycentric } from "./barycentric";
 const { cos, sin, atan, sign } = Math;
 
+type TernaryPlot = ReturnType<typeof ternaryPlot>;
+
 interface TernaryAxis {
   label: string;
   labelAngle: number;
@@ -39,9 +41,11 @@ const getTranslateCorrections = (
   return getdXdY(inverseSlope, distance);
 };
 
-const lineBetween = ([x1, y1]: Coord, [x2, y2]: Coord) => (
-  t: number
-): Coord => [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+function lineBetween([x1, y1]: Coord, [x2, y2]: Coord) {
+  return function (t: number): Coord {
+    return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+  };
+}
 const getSlope = ([x1, y1]: Coord, [x2, y2]: Coord) => (y2 - y1) / (x2 - x1);
 const epsilon = 1e-4;
 
@@ -195,10 +199,11 @@ export default function ternaryPlot(barycentric: Barycentric) {
     return ternaryPlot;
   };
 
-  // set domains checks if domains are reversed and applies appropriate transform
-  ternaryPlot.domains = function (domains: Domains) {
-    if (!arguments.length)
-      return [A.scale.domain(), B.scale.domain(), C.scale.domain()];
+  // checks if domains are reversed and applies appropriate transform for partial domain
+  function domainsFunc(): Domains;
+  function domainsFunc(domains: Domains): TernaryPlot;
+  function domainsFunc(domains?: Domains) {
+    if (!domains) return [A.scale.domain(), B.scale.domain(), C.scale.domain()];
 
     const domainLengths = getDomainLengths(domains);
     if (domainLengths.size !== 1) {
@@ -223,7 +228,9 @@ export default function ternaryPlot(barycentric: Barycentric) {
     ternaryPlot.scale(k);
 
     return ternaryPlot;
-  };
+  }
+
+  ternaryPlot.domains = domainsFunc;
 
   ternaryPlot.gridLines = function (counts = 20) {
     return [A, B, C].map((axis, i) => {
@@ -247,31 +254,36 @@ export default function ternaryPlot(barycentric: Barycentric) {
           ? tickFormat
           : axis.scale.tickFormat(tickCount, tickFormat);
 
-      return tickValues.map(
-        (tick: number): TickProps => {
-          const tickPos = reverse ? 1 - axis.scale(tick) : axis.scale(tick); // not a fan of using 'reverse' boolean
-          return {
-            tick: format(tick),
-            position: axis.gridLine(tickPos),
-            angle: axis.tickAngle,
-            size: axis.tickSize,
-            textAnchor: axis.tickTextAnchor,
-          };
-        }
-      );
+      return tickValues.map((tick: number): TickProps => {
+        const tickPos = reverse ? 1 - axis.scale(tick) : axis.scale(tick); // not a fan of using 'reverse' boolean
+        return {
+          tick: format(tick),
+          position: axis.gridLine(tickPos),
+          angle: axis.tickAngle,
+          size: axis.tickSize,
+          textAnchor: axis.tickTextAnchor,
+        };
+      });
     });
   };
 
-  ternaryPlot.tickAngles = function (_?: [number, number, number]) {
-    return _
-      ? ((A.tickAngle = _[0]),
-        (B.tickAngle = _[1]),
-        (C.tickAngle = _[2]),
+  function tickAngles(): [number, number, number];
+  function tickAngles(tickAngles: [number, number, number]): TernaryPlot;
+  function tickAngles(tickAngles?: [number, number, number]) {
+    return tickAngles
+      ? ((A.tickAngle = tickAngles[0]),
+        (B.tickAngle = tickAngles[1]),
+        (C.tickAngle = tickAngles[2]),
         ternaryPlot)
       : [A.tickAngle, B.tickAngle, C.tickAngle];
-  };
+  }
 
-  ternaryPlot.tickSizes = function (_?: [number, number, number] | number) {
+  ternaryPlot.tickAngles = tickAngles;
+
+  function tickSizes(): [number, number, number];
+  function tickSizes(_: number): TernaryPlot;
+  function tickSizes(_: [number, number, number]): TernaryPlot;
+  function tickSizes(_?: [number, number, number] | number) {
     return _
       ? Array.isArray(_)
         ? ((A.tickSize = _[0]),
@@ -280,59 +292,85 @@ export default function ternaryPlot(barycentric: Barycentric) {
           ternaryPlot)
         : ((A.tickSize = B.tickSize = C.tickSize = +_), ternaryPlot)
       : [A.tickSize, B.tickSize, C.tickSize];
-  };
+  }
 
-  ternaryPlot.tickFormat = function (_?: string | ((tick: number) => string)) {
-    // TODO type
+  ternaryPlot.tickSizes = tickSizes;
+
+  function setTickFormat(): typeof tickFormat;
+  function setTickFormat(_: string | ((tick: number) => string)): TernaryPlot; // this?
+  function setTickFormat(_?: any) {
     return _ ? ((tickFormat = _), ternaryPlot) : tickFormat;
-  };
+  }
 
-  ternaryPlot.tickTextAnchors = function (
-    _?: [TextAnchor, TextAnchor, TextAnchor]
-  ) {
+  ternaryPlot.tickFormat = setTickFormat;
+
+  function tickTextAnchors(): [TextAnchor, TextAnchor, TextAnchor];
+  function tickTextAnchors(
+    _: [TextAnchor, TextAnchor, TextAnchor]
+  ): TernaryPlot;
+  function tickTextAnchors(_?: any) {
     return _
       ? ((A.tickTextAnchor = _[0]),
         (B.tickTextAnchor = _[1]),
         (C.tickTextAnchor = _[2]),
         ternaryPlot)
       : [A.tickTextAnchor, B.tickTextAnchor, C.tickTextAnchor];
-  };
+  }
 
-  ternaryPlot.labels = function (
-    _?: [string | number, string | number, string | number]
-  ) {
+  ternaryPlot.tickTextAnchors = tickTextAnchors;
+
+  function labels(): [string, string, string];
+  function labels(
+    _: [string | number, string | number, string | number]
+  ): TernaryPlot;
+  function labels(_?: any) {
     return _
       ? ((A.label = String(_[0])),
         (B.label = String(_[1])),
         (C.label = String(_[2])),
         ternaryPlot)
       : [A.label, B.label, C.label];
-  };
+  }
 
-  ternaryPlot.labelAngles = function (_?: [number, number, number]) {
+  ternaryPlot.labels = labels;
+
+  function labelAngles(): [number, number, number];
+  function labelAngles(_: [number, number, number]): TernaryPlot;
+  function labelAngles(_?: [number, number, number]) {
     return _
       ? ((A.labelAngle = _[0]),
         (B.labelAngle = _[1]),
         (C.labelAngle = _[2]),
         ternaryPlot)
       : [A.labelAngle, B.labelAngle, C.labelAngle];
-  };
+  }
 
-  ternaryPlot.labelOffsets = function (_?: [number, number, number]) {
+  ternaryPlot.labelAngles = labelAngles;
+
+  function labelOffsets(): [number, number, number];
+  function labelOffsets(_: number): TernaryPlot;
+  function labelOffsets(_: [number, number, number]): TernaryPlot;
+  function labelOffsets(_?: number | [number, number, number]) {
     return _
-      ? ((A.labelOffset = _[0]),
-        (B.labelOffset = _[1]),
-        (C.labelOffset = _[2]),
-        ternaryPlot)
+      ? Array.isArray(_)
+        ? ((A.labelOffset = _[0]),
+          (B.labelOffset = _[1]),
+          (C.labelOffset = _[2]),
+          ternaryPlot)
+        : ((A.labelOffset = B.labelOffset = C.labelOffset = +_), ternaryPlot)
       : [A.labelOffset, B.labelOffset, C.labelOffset];
-  };
+  }
+
+  ternaryPlot.labelOffsets = labelOffsets;
 
   ternaryPlot.triangle = function () {
     // TODO: use d3-path or d3-line for canvas support
     return `M${svA}L${svB}L${svC}Z`;
   };
 
-  ternaryPlot.radius = function (_?: number) {
+  function setRadius(): number;
+  function setRadius(_: number): TernaryPlot;
+  function setRadius(_?: number) {
     if (!_) return radius;
 
     radius = +_;
@@ -345,19 +383,26 @@ export default function ternaryPlot(barycentric: Barycentric) {
     C.gridLine = lineBetween(svB, svC);
 
     return ternaryPlot;
-  };
+  }
 
-  // sets the scale
-  ternaryPlot.scale = function (_?: number) {
+  ternaryPlot.radius = setRadius;
+
+  function setScale(): number;
+  function setScale(_: number): TernaryPlot;
+  function setScale(_?: number) {
     return _ ? ((k = +_), ternaryPlot.transform(), ternaryPlot) : k;
-  };
+  }
 
-  // sets x and y translation
-  ternaryPlot.translate = function (_: [number, number]) {
+  ternaryPlot.scale = setScale;
+
+  function setTranslate(): [number, number];
+  function setTranslate(_: [number, number]): TernaryPlot;
+  function setTranslate(_?: [number, number]) {
     return _
       ? ((tx = _[0]), (ty = _[1]), ternaryPlot.transform(), ternaryPlot)
       : [tx, ty];
-  };
+  }
+  ternaryPlot.translate = setTranslate;
 
   ternaryPlot.invert = function (_: Coord): [number, number, number] {
     const xy: Coord = [_[0] / radius, _[1] / radius];

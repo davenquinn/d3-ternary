@@ -1,11 +1,9 @@
 import { sum } from "d3-array";
 import { Coord } from "./types";
 
-const barycenrtricHmm = barycentric();
-
-export type Barycentric = typeof barycenrtricHmm;
-
 type Accessor = (d: any) => number; // number[] | Record<string,unknown>
+
+export type Barycentric = ReturnType<typeof barycentric>
 
 export default function barycentric() {
   const { sin, cos, PI } = Math,
@@ -62,18 +60,40 @@ export default function barycentric() {
     return [lambda1, lambda2, lambda3];
   };
 
-  barycentric.a = function (fn?: Accessor): Accessor | typeof barycentric {
+  function aAccessor(fn: Accessor): Barycentric
+  function aAccessor(): Accessor 
+  function aAccessor(fn?: Accessor) {
     return fn ? ((a = fn), barycentric) : a;
   };
 
-  barycentric.b = function (fn?: Accessor): Accessor | typeof barycentric {
+  barycentric.a = aAccessor
+
+
+  function bAccessor(fn: Accessor): Barycentric
+  function bAccessor(): Accessor 
+  function bAccessor(fn?: Accessor) {
     return fn ? ((b = fn), barycentric) : b;
   };
 
-  barycentric.c = function (fn?: Accessor): Accessor | typeof barycentric {
+  barycentric.b = bAccessor
+
+  function cAccessor(fn: Accessor): Barycentric
+  function cAccessor(): Accessor 
+  function cAccessor(fn?: Accessor) {
     return fn ? ((c = fn), barycentric) : c;
   };
+  
+  barycentric.c = cAccessor
 
+  // barycentric.c = function (fn?: Accessor): CAccessor {
+  //   return fn ? ((c = fn), barycentric) : c;
+  // };
+  // interface CAccessor {
+  //   (fn: Accessor): Barycentric,
+  //   (): Accessor
+  // }
+
+  
   barycentric.normalize = normalize;
 
   function vertices(ABC: [Coord, Coord, Coord]): typeof barycentric;  

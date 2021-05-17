@@ -10,8 +10,8 @@
     <svg id="plot"></svg>
     <script type="module">
       import { ternaryPlot, barycentric } from "./../../dist/d3-ternary.js";
-      import { select } from "https://unpkg.com/d3-selection@2?module"
-      import { line } from "https://unpkg.com/d3-shape@2?module"
+      import { select } from "https://unpkg.com/d3-selection@2?module";
+      import { line } from "https://unpkg.com/d3-shape@2?module";
 
       const axisLabels = (g, labels) =>
         g
@@ -88,17 +88,15 @@
             // theres no exit selection, lines are only drawn upto 'initial' triangle bounds
           );
 
-      const normalBarycentric = barycentric();
+      const b = barycentric();
 
-      const normalTernaryPlot = ternaryPlot(normalBarycentric).radius(100);
+      const t = ternaryPlot(b).radius(100);
 
-      const radius = normalTernaryPlot.radius();
+      const radius = t.radius();
 
       const height = 300;
       const width = 300;
-      const svg = select("#plot")
-        .attr("width", width)
-        .attr("height", height);
+      const svg = select("#plot").attr("width", width).attr("height", height);
 
       const yOffset = radius / 4;
 
@@ -114,7 +112,7 @@
         .append("clipPath")
         .attr("id", "trianglePath")
         .append("path")
-        .attr("d", normalTernaryPlot.triangle());
+        .attr("d", t.triangle());
 
       chart
         .append("circle")
@@ -130,9 +128,9 @@
         .attr("class", "labels")
         .attr("font-size", 16);
 
-      axisLabelsGroups.call(axisLabels, normalTernaryPlot.axisLabels());
+      axisLabelsGroups.call(axisLabels, t.axisLabels());
 
-      const gridLinesPaths = normalTernaryPlot
+      const gridLinesPaths = t
         .gridLines()
         .map((axisGrid) => axisGrid.map(line()).join(" "));
 
@@ -146,23 +144,18 @@
         .attr("class", "ternary-ticks")
         .attr("font-size", 10)
         .selectAll("g")
-        .data(normalTernaryPlot.ticks())
+        .data(t.ticks())
         .join("g")
         .attr("class", "axis-ticks")
         .call(ticks);
 
-      const triangle = defs
-        .append("path")
-        .attr("id", "triangel")
-        .append("path")
-        .attr("d", normalTernaryPlot.triangle());
-
       const triangle = chart
         .append("path")
+        .attr("id", "triangle")
         .attr("d", t.triangle())
-        .attr("fill", "none")
-        .attr("stroke", "black");
-
+        .attr("stroke", "black")
+        .attr("stroke-width", "1px")
+        .attr("fill", "none");
     </script>
   </body>
 </html>

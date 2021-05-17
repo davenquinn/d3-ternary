@@ -1281,7 +1281,11 @@ const getTranslateCorrections = (m, distance) => {
     const inverseSlope = -1 / m;
     return getdXdY(inverseSlope, distance);
 };
-const lineBetween = ([x1, y1], [x2, y2]) => (t) => [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+function lineBetween([x1, y1], [x2, y2]) {
+    return function (t) {
+        return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
+    };
+}
 const getSlope = ([x1, y1], [x2, y2]) => (y2 - y1) / (x2 - x1);
 const epsilon = 1e-4;
 const insideDomain = (n) => (n > 0.999999 ? 1 : n < 0.000001 ? 0 : n);
@@ -1394,9 +1398,8 @@ function ternaryPlot(barycentric) {
         C.gridLine = lineBetween(svC, svB);
         return ternaryPlot;
     };
-    // set domains checks if domains are reversed and applies appropriate transform
-    ternaryPlot.domains = function (domains) {
-        if (!arguments.length)
+    function domainsFunc(domains) {
+        if (!domains)
             return [A.scale.domain(), B.scale.domain(), C.scale.domain()];
         const domainLengths = getDomainLengths(domains);
         if (domainLengths.size !== 1) {
@@ -1416,7 +1419,8 @@ function ternaryPlot(barycentric) {
         ternaryPlot.translate([x, y]);
         ternaryPlot.scale(k);
         return ternaryPlot;
-    };
+    }
+    ternaryPlot.domains = domainsFunc;
     ternaryPlot.gridLines = function (counts = 20) {
         return [A, B, C].map((axis, i) => {
             const gridCount = Array.isArray(counts) ? +counts[i] : +counts;
@@ -1449,15 +1453,16 @@ function ternaryPlot(barycentric) {
             });
         });
     };
-    ternaryPlot.tickAngles = function (_) {
-        return _
-            ? ((A.tickAngle = _[0]),
-                (B.tickAngle = _[1]),
-                (C.tickAngle = _[2]),
+    function tickAngles(tickAngles) {
+        return tickAngles
+            ? ((A.tickAngle = tickAngles[0]),
+                (B.tickAngle = tickAngles[1]),
+                (C.tickAngle = tickAngles[2]),
                 ternaryPlot)
             : [A.tickAngle, B.tickAngle, C.tickAngle];
-    };
-    ternaryPlot.tickSizes = function (_) {
+    }
+    ternaryPlot.tickAngles = tickAngles;
+    function tickSizes(_) {
         return _
             ? Array.isArray(_)
                 ? ((A.tickSize = _[0]),
@@ -1466,48 +1471,55 @@ function ternaryPlot(barycentric) {
                     ternaryPlot)
                 : ((A.tickSize = B.tickSize = C.tickSize = +_), ternaryPlot)
             : [A.tickSize, B.tickSize, C.tickSize];
-    };
-    ternaryPlot.tickFormat = function (_) {
-        // TODO type
+    }
+    ternaryPlot.tickSizes = tickSizes;
+    function setTickFormat(_) {
         return _ ? ((tickFormat = _), ternaryPlot) : tickFormat;
-    };
-    ternaryPlot.tickTextAnchors = function (_) {
+    }
+    ternaryPlot.tickFormat = setTickFormat;
+    function tickTextAnchors(_) {
         return _
             ? ((A.tickTextAnchor = _[0]),
                 (B.tickTextAnchor = _[1]),
                 (C.tickTextAnchor = _[2]),
                 ternaryPlot)
             : [A.tickTextAnchor, B.tickTextAnchor, C.tickTextAnchor];
-    };
-    ternaryPlot.labels = function (_) {
+    }
+    ternaryPlot.tickTextAnchors = tickTextAnchors;
+    function labels(_) {
         return _
             ? ((A.label = String(_[0])),
                 (B.label = String(_[1])),
                 (C.label = String(_[2])),
                 ternaryPlot)
             : [A.label, B.label, C.label];
-    };
-    ternaryPlot.labelAngles = function (_) {
+    }
+    ternaryPlot.labels = labels;
+    function labelAngles(_) {
         return _
             ? ((A.labelAngle = _[0]),
                 (B.labelAngle = _[1]),
                 (C.labelAngle = _[2]),
                 ternaryPlot)
             : [A.labelAngle, B.labelAngle, C.labelAngle];
-    };
-    ternaryPlot.labelOffsets = function (_) {
+    }
+    ternaryPlot.labelAngles = labelAngles;
+    function labelOffsets(_) {
         return _
-            ? ((A.labelOffset = _[0]),
-                (B.labelOffset = _[1]),
-                (C.labelOffset = _[2]),
-                ternaryPlot)
+            ? Array.isArray(_)
+                ? ((A.labelOffset = _[0]),
+                    (B.labelOffset = _[1]),
+                    (C.labelOffset = _[2]),
+                    ternaryPlot)
+                : ((A.labelOffset = B.labelOffset = C.labelOffset = +_), ternaryPlot)
             : [A.labelOffset, B.labelOffset, C.labelOffset];
-    };
+    }
+    ternaryPlot.labelOffsets = labelOffsets;
     ternaryPlot.triangle = function () {
         // TODO: use d3-path or d3-line for canvas support
         return `M${svA}L${svB}L${svC}Z`;
     };
-    ternaryPlot.radius = function (_) {
+    function setRadius(_) {
         if (!_)
             return radius;
         radius = +_;
@@ -1517,17 +1529,18 @@ function ternaryPlot(barycentric) {
         B.gridLine = lineBetween(svA, svB);
         C.gridLine = lineBetween(svB, svC);
         return ternaryPlot;
-    };
-    // sets the scale
-    ternaryPlot.scale = function (_) {
+    }
+    ternaryPlot.radius = setRadius;
+    function setScale(_) {
         return _ ? ((k = +_), ternaryPlot.transform(), ternaryPlot) : k;
-    };
-    // sets x and y translation
-    ternaryPlot.translate = function (_) {
+    }
+    ternaryPlot.scale = setScale;
+    function setTranslate(_) {
         return _
             ? ((tx = _[0]), (ty = _[1]), ternaryPlot.transform(), ternaryPlot)
             : [tx, ty];
-    };
+    }
+    ternaryPlot.translate = setTranslate;
     ternaryPlot.invert = function (_) {
         const xy = [_[0] / radius, _[1] / radius];
         const inverted = barycentric.invert(xy);
@@ -1608,7 +1621,6 @@ function ternaryPlot(barycentric) {
     return ternaryPlot;
 }
 
-barycentric();
 function barycentric() {
     const { sin, cos, PI } = Math, rad = PI / 180;
     // accessor functions
@@ -1642,15 +1654,25 @@ function barycentric() {
         const d = yByC * xAxC + xCxB * yAyC, lambda1 = Math.abs((yByC * xxC + xCxB * yyC) / d), lambda2 = Math.abs((yCyA * xxC + xAxC * yyC) / d), lambda3 = Math.abs(1 - lambda1 - lambda2);
         return [lambda1, lambda2, lambda3];
     };
-    barycentric.a = function (fn) {
+    function aAccessor(fn) {
         return fn ? ((a = fn), barycentric) : a;
-    };
-    barycentric.b = function (fn) {
+    }
+    barycentric.a = aAccessor;
+    function bAccessor(fn) {
         return fn ? ((b = fn), barycentric) : b;
-    };
-    barycentric.c = function (fn) {
+    }
+    barycentric.b = bAccessor;
+    function cAccessor(fn) {
         return fn ? ((c = fn), barycentric) : c;
-    };
+    }
+    barycentric.c = cAccessor;
+    // barycentric.c = function (fn?: Accessor): CAccessor {
+    //   return fn ? ((c = fn), barycentric) : c;
+    // };
+    // interface CAccessor {
+    //   (fn: Accessor): Barycentric,
+    //   (): Accessor
+    // }
     barycentric.normalize = normalize;
     function vertices(ABC) {
         return ABC
