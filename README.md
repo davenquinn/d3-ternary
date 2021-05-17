@@ -63,7 +63,7 @@ Computes ternary values from coordinates (a two-element array `[x, y]`). Note th
 
 [#](#barycentricADoc) _barycentric_.**a**([_a_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L56)
 
-If `a` is specified, sets the a-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current a-value accessor, which defaults to:
+If __a__ is specified, sets the a-accessor to the specified function and returns this barycentric converter. If _a_ is not specified, returns the current a-value accessor, which defaults to:
 
 ```javascript
 const a = (d) => d[0];
@@ -71,7 +71,7 @@ const a = (d) => d[0];
 
 [#](#barycentricBDoc) _barycentric_.**b**([_b_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L60)
 
-If `b` is specified, sets the b-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current b-value accessor, which defaults to:
+If __b__ is specified, sets the b-accessor to the specified function and returns this barycentric converter. If _b_ is not specified, returns the current b-value accessor, which defaults to:
 
 ```javascript
 const b = (d) => d[1];
@@ -79,7 +79,7 @@ const b = (d) => d[1];
 
 [#](#barycentricCDoc) _barycentric_.**c**([_c_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L64)
 
-If `c` is specified, sets the c-accessor to the specified function and returns this barycentric converter. If a is not specified, returns the current c-value accessor, which defaults to:
+If _c_ is specified, sets the c-accessor to the specified function and returns this barycentric converter. If _c_ is not specified, returns the current c-value accessor, which defaults to:
 
 ```javascript
 const c = (d) => d[2];
@@ -109,7 +109,7 @@ The following diagram makes it more clear
 
 Constructs a new default ternary plot generator with the default options.
 
-[#](#ternaryPlotConvertDoc) _ternaryPlot(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L359)
+[#](#ternaryPlotConvertDoc) _ternaryPlot_(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L359)
 
 Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the [_barycentric_](#barycentricConvertDoc) method, this method takes the plot radius into account.
 
@@ -117,24 +117,24 @@ Computes `[x, y]` coordinates that are scaled by the plot radius from ternary da
 
 Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
 
-#### Configuration Methods
+#### Configuration methods
 
 [#](#ternaryPlotRadiusDoc) _ternaryPlot_.**radius**([_radius_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L330)
 
-If _radius_ is specified, sets the radius of the ternary plot to the specified number. If \_radius_e is not specified, returns the current radius, which defaults to 300 (px).
+If _radius_ is specified, sets the radius of the ternary plot to the specified number. If _radius_ is not specified, returns the current radius, which defaults to 300 (px).
 
 [#](#ternaryPlotDomainsDoc) _ternaryPlot_.**domains**([_domains_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L180)
 
-If _domains_ is specified, sets the domains of the ternary plot to the specified domains in order `[A, B, C]` and checks if the supplied domains are reversed. If this is the case, [`reverseVertices()`](#ternaryPlotReverseVertices) is called. The scale and translation offset associated with the domains are [applied](#ternarPlotTransformDoc) to correctly scale and translate the plot, last it returns the ternary plot.
+If _domains_ is specified, sets the domains of the ternary plot to the specified domains in order `[A, B, C]` and checks if the supplied domains are reversed. If this is the case, [`reverseVertices()`](#ternaryPlotReverseVertices) is called. The scale and translation offset associated with the domains are [applied](#ternaryPlotTransformDoc) to correctly scale and translate the plot. At last it returns the ternary plot.
 If _domains_ is not specified, returns the current domains, which defaults to `[[0, 1], [0, 1], [0, 1]]`.
 
-To set domains without these extra checks use _ternaryPlot_.[setDomains(_domains_)](#ternaryPlotSetDomains).
+To set domains without these extra checks, use _ternaryPlot_.[setDomains(_domains_)](#ternaryPlotSetDomains).
 
-[#](#ternaryPlotVerticesDoc) _ternaryPlot_.**vertices**(_vertices_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L112)
+[#](#ternaryPlotVerticesDoc) _ternaryPlot_.**vertices**([_vertices_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L112)
 
 If _vertices_ is specified, unscales _vertices_ and sets the vertices of the _barycentric()_ function passed to _ternaryPlot()_. If _vertices_ is not specified, return the current scaled vertices.
 
-##### Styling
+#### Styling methods
 
 [#](#ternaryPlotLabelsDoc) _ternaryPlot_.**labels**([_labels_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L301)
 
@@ -146,7 +146,7 @@ If _angles_ is specified, sets the angles of the axis labels to the specified an
 
 [#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L316)
 
-The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified, sets the axis label offsets to the specified angles in order `[A, B, C]` and returns the ternary plot. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
+The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified and is an array, sets the axis label offsets to the specified angles in order of `[A, B, C]` and returns the ternary plot. If _offsets_ is a number, sets the label offsets of all axes to _offsets_. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
 
 [#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#256)
 
@@ -154,21 +154,21 @@ If _angles_ is specified, sets the angle axis ticks to the specified angles in o
 
 [#](#ternaryPlotTickAnchorsDoc) _ternaryPlot_.**tickTextAnchors**([_textAnchors_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#292)
 
-If _textAnchors_ is specified, sets the axis tick [text-anchor](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the specified text-anchors in order `[A, B, C]` and returns the ternary plot. If _textAnchors_ is not specified, returns the current tick text-anchors, which defaults to `["start", "start", "end"]`.
+If _textAnchors_ is specified, sets the axis tick [text-anchor](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the specified text-anchors in order of `[A, B, C]` and returns the ternary plot. If _textAnchors_ is not specified, returns the current tick text-anchors, which defaults to `["start", "start", "end"]`.
 
 [#](#ternaryPlotTickSizesDoc) _ternaryPlot_.**tickSizes**([_sizes_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#277)
 
-If _sizes_ is specified and an array, sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot. If _sizes_ is a number, sets the tick sizes of all axes to _sizes_. If _sizes_ is not specified, returns the current tick sizes, which defaults to `[6, 6, 6]`.
+If _sizes_ is specified and is an array, sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot. If _sizes_ is a number, sets the tick sizes of all axes to _sizes_. If _sizes_ is not specified, returns the current tick sizes, which defaults to `[6, 6, 6]`.
 
 [#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#288)
 
 If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat). To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
 
-### Plot Methods
+#### Plot Methods
 
 [#](#ternaryPlotGridLinesDoc) _ternaryPlot_.**gridLines**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#209)
 
-Generates and return an array of arrays containing each grid line objects. If counts is not specified, it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of a, b,c. Each array contains \`counts\` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
+Generates and return an array of arrays containing each grid line objects. If counts is not specified, it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]` . Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
 
 Grid lines are generated using [d3._scale_.ticks()](https://github.com/d3/d3-scale/blob/master/README.md#continuous_ticks). The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
 
@@ -202,9 +202,9 @@ ternaryPlot.axisLabels({ center: true });
 
 Returns an [SVG path command](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) for a the outer triangle. This is used for the bounds of the ternary plot and its [clipPath](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath).
 
-### Methods that handle zooming, panning
+#### Methods for handling zooming, panning
 
-These methods are used internally for _ternaryPlot*.**domains()**, and can be used for interactivity like zooming and panning. See [Introducing-d3-ternary: Zooming](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots#zooming) for an example of this.
+These methods are used internally for _ternaryPlot*.**domains()**, and can be used to handle interactivity like zooming and panning. See [Introducing-d3-ternary: Zooming](https://observablehq.com/@julesblm/introducing-d3-ternary?collection=@julesblm/ternary-plots#zooming) for an example of this.
 Other than that, best not to touch these really.
 
 [#](#ternaryPlotTranslateDoc) _ternaryPlot_.**translate**([scale]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#353)
