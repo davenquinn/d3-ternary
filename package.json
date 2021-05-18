@@ -1,7 +1,6 @@
 {
   "name": "d3-ternary",
   "version": "2.0.4",
-  "type": "module",
   "description": "Generate ternary plots",
   "keywords": [
     "d3",
@@ -29,6 +28,8 @@
   },
   "main": "dist/d3-ternary.umd.min.js",
   "unpkg": "dist/d3-ternary.umd.min.js",
+  "jsdelivr": "dist/d3-scale.min.js",
+  "types": "src/types.d.ts",
   "module": "dist/d3-ternary.js",
   "license": "BSD-3-Clause",
   "bugs": {
