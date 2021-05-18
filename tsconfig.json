@@ -7,9 +7,11 @@
         "dom.iterable",
         "esnext"
       ],
-      "allowJs": true,
+      "allowJs": false,
       "skipLibCheck": true,
-      "strict": false,
+      "strict": true,
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
       "strictNullChecks": true,
       "noImplicitAny": true,
       "forceConsistentCasingInFileNames": true,
