@@ -29,7 +29,6 @@
   "main": "dist/d3-ternary.umd.min.js",
   "unpkg": "dist/d3-ternary.umd.min.js",
   "jsdelivr": "dist/d3-scale.min.js",
-  "types": "src/types.d.ts",
   "module": "dist/d3-ternary.js",
   "license": "BSD-3-Clause",
   "bugs": {
