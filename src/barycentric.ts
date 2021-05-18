@@ -1,10 +1,9 @@
 import { sum } from "d3-array";
-import { Coord } from "./types";
+import { Accessor, Coord, Barycentric } from "./types";
 
-type Accessor = (d: any) => number; // number[] | Record<string,unknown>
-
-export type Barycentric = ReturnType<typeof barycentric>
-
+/**
+ * Constructs a new default ternary/barycentric converter. By default, it makes an equilateral triangle on the unit circle centered the origin.
+ */
 export default function barycentric() {
   const { sin, cos, PI } = Math,
     rad = PI / 180;
@@ -20,6 +19,9 @@ export default function barycentric() {
 
   // Composition closure operator: https://en.wikipedia.org/wiki/Compositional_data
   // Returns a composition version of the array where the elements are normalized to sum to 1
+  /**
+   * Computes normalized ternary values by summing and taking proportions of ternary data using the value accessors.
+   */
   function normalize(_: any): [number, number, number] {
     // number[] | Record<string, unknown>
     const values: [number, number, number] = [a(_), b(_), c(_)];
@@ -39,6 +41,9 @@ export default function barycentric() {
   };
 
   // en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
+  /**
+   * Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
+   * */
   barycentric.invert = function ([x, y]: Coord): [number, number, number] {
     const [xA, yA] = vA,
       [xB, yB] = vB,
@@ -60,51 +65,69 @@ export default function barycentric() {
     return [lambda1, lambda2, lambda3];
   };
 
-  function aAccessor(fn: Accessor): Barycentric
-  function aAccessor(): Accessor 
+  function aAccessor(): Accessor;
+  /**
+   * Returns the current a-value accessor, which defaults to: `const a = (d) => d[0];`
+   */
+  function aAccessor(fn: Accessor): Barycentric;
+  /**
+   * Sets the a-accessor to the specified function and returns this barycentric converter.
+   */
   function aAccessor(fn?: Accessor) {
     return fn ? ((a = fn), barycentric) : a;
-  };
+  }
 
-  barycentric.a = aAccessor
+  barycentric.a = aAccessor;
 
-
-  function bAccessor(fn: Accessor): Barycentric
-  function bAccessor(): Accessor 
+  /**
+   * Returns the current b-value accessor, which defaults to: `const b = (d) => d[1];`
+   */
+  function bAccessor(): Accessor;
+  /**
+   * Sets the b-accessor to the specified function and returns this barycentric converter.
+   * @param fn
+   * @returns barycentric
+   */
+  function bAccessor(fn: Accessor): Barycentric;
   function bAccessor(fn?: Accessor) {
     return fn ? ((b = fn), barycentric) : b;
-  };
+  }
 
-  barycentric.b = bAccessor
+  barycentric.b = bAccessor;
 
-  function cAccessor(fn: Accessor): Barycentric
-  function cAccessor(): Accessor 
+  /**
+   * Returns the current c-value accessor, which defaults to: `const c = (d) => d[2];`
+   */
+  function cAccessor(): Accessor;
+  /**
+   * Sets the c-accessor to the specified function and returns this barycentric converter.
+   * @param fn
+   * @returns barycentric
+   */
+  function cAccessor(fn: Accessor): Barycentric;
   function cAccessor(fn?: Accessor) {
     return fn ? ((c = fn), barycentric) : c;
-  };
-  
-  barycentric.c = cAccessor
+  }
 
-  // barycentric.c = function (fn?: Accessor): CAccessor {
-  //   return fn ? ((c = fn), barycentric) : c;
-  // };
-  // interface CAccessor {
-  //   (fn: Accessor): Barycentric,
-  //   (): Accessor
-  // }
+  barycentric.c = cAccessor;
 
-  
   barycentric.normalize = normalize;
 
-  function vertices(ABC: [Coord, Coord, Coord]): typeof barycentric;  
+  /**
+   * Returns the current vertices, which defaults to the vertices of an equilateral triangle with radius 1 with angles -90°, 150°, 30°.
+   */
   function vertices(): [Coord, Coord, Coord];
+  /**
+   * Sets the vertices to the specified array and returns this barycentric converter.
+   */
+  function vertices(ABC: [Coord, Coord, Coord]): typeof barycentric;
   function vertices(ABC?: [Coord, Coord, Coord]) {
     return ABC
       ? ((vA = ABC[0]), (vB = ABC[1]), (vC = ABC[2]), barycentric)
       : ([vA, vB, vC] as [Coord, Coord, Coord]);
-  };
+  }
 
-  barycentric.vertices = vertices
+  barycentric.vertices = vertices;
 
   return barycentric;
 }

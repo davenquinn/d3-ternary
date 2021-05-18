@@ -113,7 +113,7 @@ Constructs a new default ternary plot generator with the default options.
 
 Computes `[x, y]` coordinates that are scaled by the plot radius from ternary data. Unlike the [_barycentric_](#barycentricConvertDoc) method, this method takes the plot radius into account.
 
-[#](#densityPlotDensityDoc) _ternaryPlot_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L365)
+[#](#ternaryPlotInvertDoc) _ternaryPlot_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L365)
 
 Computes ternary values from `[x, y]` coordinates that are scaled by the radius. Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account. Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
 
@@ -150,7 +150,7 @@ The label offset is the spacing of the label to the vertex in pixels. If _offset
 
 [#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#256)
 
-If _angles_ is specified, sets the angle axis ticks to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
+If _angles_ is specified, sets the angle of the  ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
 
 [#](#ternaryPlotTickAnchorsDoc) _ternaryPlot_.**tickTextAnchors**([_textAnchors_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#292)
 
@@ -158,7 +158,7 @@ If _textAnchors_ is specified, sets the axis tick [text-anchor](https://develope
 
 [#](#ternaryPlotTickSizesDoc) _ternaryPlot_.**tickSizes**([_sizes_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#277)
 
-If _sizes_ is specified and is an array, sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot. If _sizes_ is a number, sets the tick sizes of all axes to _sizes_. If _sizes_ is not specified, returns the current tick sizes, which defaults to `[6, 6, 6]`.
+If _sizes_ is specified and is an array, sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot. If _sizes_ is a number, sets the tick sizes of all axes to _sizes_. If _sizes_ is not specified, returns the current tick sizes, which defaults to `[6, 6, 6]` (px).
 
 [#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#288)
 
@@ -221,7 +221,7 @@ The scale factor corresponds inversely to the domain length. For example a domai
 
 [#](#ternaryPlotTransformDoc) _ternaryPlot_.**transform**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L373)
 
-Applies the plot's scale factor and translation to the plots *barycentric()* conversion function. Or more simply, calling this method moves and scales the triangle defined by *barycentric()* used to calculate the ternary values.
+Applies the plot's scale factor and translations to the plots *barycentric()* conversion function. Or more simply, calling this method moves and scales the triangle defined by *barycentric()* used to calculate the ternary values.
 
 Before scale and translation are applied, they are checked if they are within bounds, if not, a correction is applied such that they are within bounds. Finally, the ternary plot is returned.
 

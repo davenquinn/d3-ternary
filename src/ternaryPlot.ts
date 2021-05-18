@@ -1,21 +1,15 @@
-import { scaleLinear, ScaleLinear } from "d3-scale";
-import { Domains, Coord, TickProps, TextAnchor } from "./types";
-import { Barycentric } from "./barycentric";
+import { scaleLinear } from "d3-scale";
+import {
+  TernaryPlot,
+  Barycentric,
+  Domains,
+  Coord,
+  TickProps,
+  TextAnchor,
+  TernaryAxis,
+} from "./types";
+
 const { cos, sin, atan, sign } = Math;
-
-type TernaryPlot = ReturnType<typeof ternaryPlot>;
-
-interface TernaryAxis {
-  label: string;
-  labelAngle: number;
-  labelOffset: number;
-  gridLine: (t: number) => Coord;
-  scale: ScaleLinear<number, number, never>;
-  tickAngle: number;
-  tickSize: number;
-  tickTextAnchor: TextAnchor;
-  conjugate: TernaryAxis | null;
-}
 
 const getDomainLengths = (domains: Domains) =>
   new Set(
@@ -33,9 +27,9 @@ const getTranslateCorrections = (
   m: number,
   distance: number
 ): [number, number] => {
-  // !🌶 distance shouldn't always have negative sign
   if (m === 0) return [0, -distance]; // for horizontal lines
 
+  // !🌶 distance shouldn't always have negative sign
   const inverseSlope = -1 / m;
 
   return getdXdY(inverseSlope, distance);
@@ -81,10 +75,17 @@ export default function ternaryPlot(barycentric: Barycentric) {
     return [x * radius, y * radius];
   }
 
+  /**
+   * Returns the current scaled vertices.
+   */
+  function scaleVertices(): [Coord, Coord, Coord];
+  /**
+   * Unscales _newScaledVertices_ and sets the vertices of the _barycentric()_ function passed to _ternaryPlot()_.
+   * @param newScaledVertices
+   */
   function scaleVertices(
     newScaledVertices: [Coord, Coord, Coord]
   ): typeof ternaryPlot;
-  function scaleVertices(): [Coord, Coord, Coord];
   function scaleVertices(newScaledVertices?: [Coord, Coord, Coord]) {
     if (newScaledVertices) {
       const newUnscaledVertices = newScaledVertices.map(
@@ -98,7 +99,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
     const vertices = barycentric.vertices();
 
-    let scaledVertices = (vertices as [Coord, Coord, Coord]).map(
+    let scaledVertices = vertices.map(
       ([x, y]: Coord): Coord => [x * radius, y * radius]
     );
 
@@ -154,7 +155,14 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.vertices = scaleVertices;
 
-  // returns array of objects with coords, rotation and label text for plot
+  /**
+   * Generates and return an array containing axis label objects. Each axis label object contains the following properties.
+   * - `position`: an array of [x,y] coords
+   * - `labelAngle`: the rotation of the axis label
+   * - `label`: The axis label
+   *
+   * Takes an optional configuration object that specifies whether axis labels should be placed at the center of the axis, the default is `false`.
+   */
   ternaryPlot.axisLabels = function ({ center = false } = {}) {
     return [A, B, C].map((d) => {
       const { label, labelAngle } = d;
@@ -200,7 +208,16 @@ export default function ternaryPlot(barycentric: Barycentric) {
   };
 
   // checks if domains are reversed and applies appropriate transform for partial domain
+
+  /**
+   * Returns the current domains, which defaults to `[[0, 1], [0, 1], [0, 1]]`.
+   */
   function domainsFunc(): Domains;
+  /**
+   * Sets the domains of the ternary plot to the specified domains in order `[A, B, C]` and checks if the supplied domains are reversed.
+   * If this is the case, [`reverseVertices()`](#ternaryPlotReverseVertices) is called. The scale and translation offset associated with
+   * the domains are [applied](#ternaryPlotTransformDoc) to correctly scale and translate the plot. At last it returns the ternaryPlot.
+   */
   function domainsFunc(domains: Domains): TernaryPlot;
   function domainsFunc(domains?: Domains) {
     if (!domains) return [A.scale.domain(), B.scale.domain(), C.scale.domain()];
@@ -232,6 +249,13 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.domains = domainsFunc;
 
+  /**
+   * Generates and return an array of arrays containing each grid line objects. If counts is not specified,
+   * it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
+   * Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
+   * @param counts
+   * @returns
+   */
   ternaryPlot.gridLines = function (counts = 20) {
     return [A, B, C].map((axis, i) => {
       const gridCount = Array.isArray(counts) ? +counts[i] : +counts;
@@ -244,6 +268,13 @@ export default function ternaryPlot(barycentric: Barycentric) {
     });
   };
 
+  /**
+   * Generates and return an array of arrays containing each grid line objects. If counts is not specified
+   * it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
+   * Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
+   * @param counts
+   * @returns
+   */
   ternaryPlot.ticks = function (counts = 10) {
     return [A, B, C].map((axis, i) => {
       const tickCount = Array.isArray(counts) ? +counts[i] : +counts;
@@ -267,7 +298,15 @@ export default function ternaryPlot(barycentric: Barycentric) {
     });
   };
 
+  /**
+   * Returns the current tick angles, which defaults to `[0, 60, -60]`.
+   */
   function tickAngles(): [number, number, number];
+  /**
+   * Sets the angle of axis ticks to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
+   *
+   * @param tickAngles
+   */
   function tickAngles(tickAngles: [number, number, number]): TernaryPlot;
   function tickAngles(tickAngles?: [number, number, number]) {
     return tickAngles
@@ -280,8 +319,19 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.tickAngles = tickAngles;
 
+  /**
+   * Returns the current tick sizes, which defaults to `[6, 6, 6]` (px).
+   */
   function tickSizes(): [number, number, number];
+  /**
+   * Sets the tick sizes of all axes to _sizes_ (px).
+   *
+   * @param _
+   */
   function tickSizes(_: number): TernaryPlot;
+  /**
+   * Sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot.
+   * */
   function tickSizes(_: [number, number, number]): TernaryPlot;
   function tickSizes(_?: [number, number, number] | number) {
     return _
@@ -296,7 +346,16 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.tickSizes = tickSizes;
 
+  /**
+   * Returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
+   */
   function setTickFormat(): typeof tickFormat;
+  /**
+   * Sets the tick format or formatter. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat).
+   * To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`.
+   *
+   * @param _ - [format specifier string](https://github.com/d3/d3-format#format) or formatter function
+   */
   function setTickFormat(_: string | ((tick: number) => string)): TernaryPlot; // this?
   function setTickFormat(_?: any) {
     return _ ? ((tickFormat = _), ternaryPlot) : tickFormat;
@@ -304,7 +363,15 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.tickFormat = setTickFormat;
 
+  /**
+   * Returns the current tick text-anchors, which defaults to `["start", "start", "end"]`.
+   */
   function tickTextAnchors(): [TextAnchor, TextAnchor, TextAnchor];
+  /**
+   * Sets the axis tick [text-anchor](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the specified text-anchors in order of `[A, B, C]` and returns the ternary plot.
+   *
+   * @param _ - The tick text anchors per axis in order of `[A, B, C]`
+   */
   function tickTextAnchors(
     _: [TextAnchor, TextAnchor, TextAnchor]
   ): TernaryPlot;
@@ -319,11 +386,19 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.tickTextAnchors = tickTextAnchors;
 
+  /**
+   * Returns the current labels, which defaults to `[A, B, C]`.
+   */
   function labels(): [string, string, string];
+  /**
+   * If _labels_ is specified, sets the axis labels to the labels in order `[A, B, C]` and returns the ternary plot.
+   *
+   * @param _ The labels per axis in order of `[A, B, C]`
+   */
   function labels(
     _: [string | number, string | number, string | number]
   ): TernaryPlot;
-  function labels(_?: any) {
+  function labels(_?: [string | number, string | number, string | number]) {
     return _
       ? ((A.label = String(_[0])),
         (B.label = String(_[1])),
@@ -334,7 +409,15 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.labels = labels;
 
+  /**
+   * Returns the current label angles, which defaults to `[0, 60, -60]`
+   */
   function labelAngles(): [number, number, number];
+  /**
+   * Sets the angles of the axis labels to the specified angles in order `[A, B, C]` and returns the ternary plot.
+   *
+   * @param _ - The label angles per axis in order of `[A, B, C]`
+   */
   function labelAngles(_: [number, number, number]): TernaryPlot;
   function labelAngles(_?: [number, number, number]) {
     return _
@@ -347,8 +430,23 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.labelAngles = labelAngles;
 
+  /**
+   * The label offset is the spacing of the label to the vertex in pixels.
+   * Returns the current label offsets, which defaults to `[45, 45, 45]` px.
+   */
   function labelOffsets(): [number, number, number];
+  /**
+   * The label offset is the spacing of the label to the vertex in pixels. Sets the label offsets of all axes to _offsets_.
+   *
+   * @param _ - The label offsets in px per axis in order of `[A, B, C]`
+   */
   function labelOffsets(_: number): TernaryPlot;
+  /**
+   * The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified and is an array,
+   * sets the axis label offsets to the specified angles in order of `[A, B, C]` and returns the ternary plot.
+   *
+   * @param _ - A label offset in px
+   */
   function labelOffsets(_: [number, number, number]): TernaryPlot;
   function labelOffsets(_?: number | [number, number, number]) {
     return _
@@ -363,12 +461,24 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.labelOffsets = labelOffsets;
 
+  /**
+   * Returns an [SVG path command](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d) for a the outer triangle.
+   * This is used for the bounds of the ternary plot and its [clipPath](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/clipPath).
+   */
   ternaryPlot.triangle = function () {
     // TODO: use d3-path or d3-line for canvas support
     return `M${svA}L${svB}L${svC}Z`;
   };
 
+  /**
+   * Returns the current radius, which defaults to 300 (px).
+   */
   function setRadius(): number;
+  /**
+   * Sets the radius of the ternary plot to the specified number.
+   *
+   * @param _ - The plot radius in px
+   */
   function setRadius(_: number): TernaryPlot;
   function setRadius(_?: number) {
     if (!_) return radius;
@@ -387,7 +497,21 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.radius = setRadius;
 
+  /**
+   * Returns the current scale factor, which defaults to `1`.
+   *
+   * The scale factor corresponds inversely to the domain length.
+   * For example a domains of `[[0, 0.5], [0, 0.5], [0.5, 1]` corresponds to a scale of 2.
+   */
   function setScale(): number;
+  /**
+   * If _scale_ is specified, sets the plot’s scale factor to the specified value, applies the transform and returns the plot.
+   *
+   * The scale factor corresponds inversely to the domain length. For example a domains of
+   * `[[0, 0.5], [0, 0.5], [0.5, 1]` corresponds to a scale of 2.
+   *
+   * @param _ - The plot scale factor
+   */
   function setScale(_: number): TernaryPlot;
   function setScale(_?: number) {
     return _ ? ((k = +_), ternaryPlot.transform(), ternaryPlot) : k;
@@ -395,7 +519,21 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
   ternaryPlot.scale = setScale;
 
+  /**
+   * Returns the current translation offset which defaults to `[0, 0]`.
+   *
+   * Note when setting the translation, the translation offsets are not scaled by the plot radius.
+   */
   function setTranslate(): [number, number];
+  /**
+   * If translate is specified, sets the plot’s translation offset to the specified two-element array
+   * `[tx, ty]`. Note that these are **unscaled by the radius**. Then it applies the transform and returns
+   * the ternary plot.
+   *
+   * Note when setting the translation, the offsets **should not** be scaled by the plot radius.
+   *
+   * @param _ - The plot translation (not scaled by radius)
+   */
   function setTranslate(_: [number, number]): TernaryPlot;
   function setTranslate(_?: [number, number]) {
     return _
@@ -404,6 +542,15 @@ export default function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.translate = setTranslate;
 
+  /**
+   * Computes ternary values from `[x, y]` coordinates that are scaled by the radius.
+   * Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes
+   * the plot radius into account. Note that for inverting mouse positions, the ternary plot
+   * should centered at the origin of the containing SVG element.
+   *
+   * @param _ - Array of ternary values
+   * @returns [x, y]
+   */
   ternaryPlot.invert = function (_: Coord): [number, number, number] {
     const xy: Coord = [_[0] / radius, _[1] / radius];
     const inverted = barycentric.invert(xy);
@@ -412,6 +559,15 @@ export default function ternaryPlot(barycentric: Barycentric) {
   };
 
   // apply scale and translate to vertices
+  /**
+   * Applies the plot's scale factor and translations to the plots *barycentric()* conversion function.
+   * Or more simply, calling this method moves and scales the triangle defined by *barycentric()* used
+   * to calculate the ternary values.
+   * Before scale and translation are applied, they are checked if they are within bounds, if not,
+   * a correction is applied such that they are within bounds. Finally, the ternary plot is returned.
+   *
+   * @returns ternaryPlot
+   */
   ternaryPlot.transform = function () {
     if (k === 1) {
       tx = 0;
@@ -488,8 +644,15 @@ export default function ternaryPlot(barycentric: Barycentric) {
     return ternaryPlot;
   };
 
-  // something like a static method
-  // or call transform from this function?
+  /**
+   * Computes the scale and translation for the given _domains_ and returns a transform object containing
+   * scale *k*, and translation offsets *x*, and *y*. This is used to sync the zoom and pan of the plot to
+   * the specified domains set by [.domains()](ternaryPlotDomainsDoc). You'll rarely need to call this method directly.
+
+   * Note that the translation returned here is unscaled by radius.
+
+   * @param domains - Array of the plot domains
+   */
   ternaryPlot.transformFromDomains = function (domains: Domains) {
     const [domainA, domainB, domainC] = domains;
 
@@ -516,7 +679,10 @@ export default function ternaryPlot(barycentric: Barycentric) {
     return { k, x: tx, y: ty };
   };
 
-  // get barycentric value of initial vertices to updated vertices
+  /**
+   * Computes and returns the domains corresponding to the current transform.
+   * This is used for syncing domains while zooming and panning.
+   */
   ternaryPlot.domainsFromVertices = function () {
     // 'vertices' is an array the original unscaled, untranslated vertices here
     // find their barycentric values in the transformed barycentric coordinate system
