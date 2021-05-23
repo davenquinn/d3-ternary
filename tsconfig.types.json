@@ -1,0 +1,18 @@
+
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "declaration": true,
+      "declarationDir": "./types",
+      "emitDeclarationOnly": true,
+      "noEmit": false,
+      "paths": {
+        "d3-ternary": ["./src/index.ts"]
+      }
+    },
+    "files": [
+      "./src/index.ts",
+    ],
+    "exclude": ["./src/**/*"]
+  }
+  

@@ -1,6 +1,6 @@
 {
   "name": "d3-ternary",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Generate ternary plots",
   "keywords": [
     "d3",
@@ -14,7 +14,8 @@
     "barycentric"
   ],
   "scripts": {
-    "build": "rm -rf dist && mkdir dist && rollup -c",
+    "build": "rimraf ./dist && rollup -c",
+    "build:types": "rimraf ./types && tsc --project ./tsconfig.types.json",
     "test": "tape-es 'test/**/*-test.js'",
     "postpublish": "zip -j dist/d3-ternary.zip -- LICENSE README.md dist/*"
   },
@@ -28,7 +29,7 @@
   },
   "main": "dist/d3-ternary.umd.min.js",
   "unpkg": "dist/d3-ternary.umd.min.js",
-  "types": "src/types.ts",
+  "types": "types/index.d.ts",
   "jsdelivr": "dist/d3-scale.min.js",
   "module": "dist/d3-ternary.js",
   "license": "BSD-3-Clause",
@@ -37,18 +38,26 @@
   },
   "homepage": "https://github.com/davenquinn/d3-ternary#readme",
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2",
+    "@types/d3-array": "^2.12.1",
+    "@types/d3-scale": "^3.2.3",
     "@types/tape": "^4.13.0",
+    "rimraf": "3",
     "rollup": "2",
     "rollup-plugin-terser": "7",
     "tape": "^5.2.2",
-    "tape-es": "1.2"
+    "tape-es": "1.2",
+    "tslib": "^2.2.0",
+    "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@rollup/plugin-node-resolve": "13",
-    "@types/d3-array": "2.9",
-    "@types/d3-scale": "3.2",
     "d3-array": "2",
     "d3-scale": "3"
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "src/**/*.js",
+    "types"
+  ]
 }
