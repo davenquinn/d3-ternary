@@ -22,17 +22,16 @@ export default function barycentric() {
   /**
    * Computes normalized ternary values by summing and taking proportions of ternary data using the value accessors.
    */
-  function normalize(_: any): [number, number, number] {
-    // number[] | Record<string, unknown>
-    const values: [number, number, number] = [a(_), b(_), c(_)];
-    const total = sum(values);
+  function normalize(_: [number, number, number]): [number, number, number] {
+    const total = sum(_);
     if (total === 0) return [0, 0, 0];
-    return values.map((d) => d / total) as [number, number, number];
+    return [_[0] / total, _[1] / total, _[2] / total];
   }
 
   const barycentric = function (d: any): Coord {
     // TODO: ternary data type : number[] | Record<string, unknown> | Map | Set more?
-    const [dA, dB, dC] = normalizeData ? normalize(d) : d;
+    const values: [number, number, number] = [a(d), b(d), c(d)];
+    const [dA, dB, dC] = normalizeData ? normalize(values) : values;
 
     return [
       vA[0] * dA + vB[0] * dB + vC[0] * dC,
@@ -40,9 +39,9 @@ export default function barycentric() {
     ];
   };
 
-  // en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
   /**
    * Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
+   * en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
    * */
   barycentric.invert = function ([x, y]: Coord): [number, number, number] {
     const [xA, yA] = vA,

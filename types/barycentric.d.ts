@@ -6,6 +6,7 @@ export default function barycentric(): {
     (d: any): Coord;
     /**
      * Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
+     * en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
      * */
     invert([x, y]: Coord): [number, number, number];
     a: {
@@ -20,7 +21,7 @@ export default function barycentric(): {
         (): Accessor;
         (fn: Accessor): Barycentric;
     };
-    normalize: (_: any) => [number, number, number];
+    normalize: (_: [number, number, number]) => [number, number, number];
     vertices: {
         (): [Coord, Coord, Coord];
         (ABC: [Coord, Coord, Coord]): any;

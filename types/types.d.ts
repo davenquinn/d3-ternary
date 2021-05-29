@@ -11,14 +11,12 @@ export interface Transform {
 export declare type Domains = [[number, number], [number, number], [number, number]];
 export declare type Coord = [number, number];
 export declare type TextAnchor = "start" | "middle" | "end";
-export interface AxisLabelProps {
+export interface AxisLabel {
     label: string | number;
     angle: number;
     position: Coord;
-    fontSize: number;
-    textAnchor: TextAnchor;
 }
-export interface TickProps {
+export interface Tick {
     tick: number | string;
     angle: number;
     textAnchor: TextAnchor;

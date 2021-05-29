@@ -1,4 +1,4 @@
-import { TernaryPlot, Barycentric, Domains, Coord, TickProps, TextAnchor } from "./types";
+import { TernaryPlot, Barycentric, Domains, Coord, Tick, TextAnchor, AxisLabel } from "./types";
 export default function ternaryPlot(barycentric: Barycentric): {
     (_: any): Coord;
     vertices: {
@@ -15,11 +15,7 @@ export default function ternaryPlot(barycentric: Barycentric): {
      */
     axisLabels({ center }?: {
         center?: boolean | undefined;
-    }): {
-        position: number[];
-        label: string;
-        angle: number;
-    }[];
+    }): [AxisLabel, AxisLabel, AxisLabel];
     setDomains(domains: Domains): any;
     reverseVertices(): any;
     domains: {
@@ -34,14 +30,10 @@ export default function ternaryPlot(barycentric: Barycentric): {
      * @returns
      */
     gridLines(counts?: number): (Coord | undefined)[][][];
-    /**
-     * Generates and return an array of arrays containing each grid line objects. If counts is not specified
-     * it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
-     * Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
-     * @param counts
-     * @returns
-     */
-    ticks(counts?: number): TickProps[][];
+    ticks: {
+        (counts: number): Tick[][];
+        (counts: [number, number, number]): Tick[][];
+    };
     tickAngles: {
         (): [number, number, number];
         (tickAngles: [number, number, number]): TernaryPlot;

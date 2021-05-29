@@ -18,15 +18,13 @@ export type Coord = [number, number];
 
 export type TextAnchor = "start" | "middle" | "end"
 
-export interface AxisLabelProps {
+export interface AxisLabel {
   label : string | number;
   angle : number;
   position: Coord;
-  fontSize: number;
-  textAnchor: TextAnchor;
 }
 
-export interface TickProps {
+export interface Tick {
   tick: number | string; 
   angle: number; 
   textAnchor: TextAnchor; 
@@ -46,4 +44,4 @@ export interface TernaryAxis {
   conjugate: TernaryAxis | null;
 }
 
-export type Accessor = (d: any) => number; // d: number[] | Record<string,unknown>
+export type Accessor = (d: any) => number;

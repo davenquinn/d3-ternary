@@ -1,5 +1,5 @@
 {
-    "compilerOptions": {
+    "compilerOptions": {  
       "target": "es6",
       "baseUrl": "./src",
       "lib": [
@@ -16,13 +16,17 @@
       "noImplicitAny": true,
       "forceConsistentCasingInFileNames": true,
       "noEmit": true,
+      "outDir": "dist",
+      "module": "ES2020",      
       "esModuleInterop": true,
-      "module": "esnext",
       "moduleResolution": "node",
       "resolveJsonModule": true,
       "isolatedModules": true,
       "jsx": "preserve"
     },
+    "files": [
+      "./src/index.ts",
+    ],
     "include": [
       "**/*.ts",
       "**/*.tsx"
