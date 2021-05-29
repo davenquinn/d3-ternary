@@ -4,12 +4,11 @@ import {
   Barycentric,
   Domains,
   Coord,
-  TickProps,
+  Tick,
   TextAnchor,
   TernaryAxis,
+  AxisLabel,
 } from "./types";
-
-const { cos, sin, atan, sign } = Math;
 
 const getDomainLengths = (domains: Domains) =>
   new Set(
@@ -23,40 +22,75 @@ const getDomainLengths = (domains: Domains) =>
     })
   );
 
+/**
+ * Calculate shift in x and y from distance between two perpendicular lines
+ *
+ * @param m {number} Slope
+ * @param c {number} distance between two perpendicular lines
+ * @returns distances
+ */
+const getdXdY = (m: number, c: number): [number, number] => {
+  // slope m = dy/dx = tan(Θ)
+  const theta = Math.atan(m); // radians
+  const dx = c * Math.cos(theta) * Math.sign(theta); // ! using Math.sign() is questionable?
+  const dy = c * Math.sin(theta) * Math.sign(theta);
+
+  return [dx, dy];
+};
+
+/**
+ * Calculate offsets needed to move transform within initial triangle
+ * @param m
+ * @param distance
+ * @returns
+ */
 const getTranslateCorrections = (
   m: number,
   distance: number
 ): [number, number] => {
+  // ! 🌶 distance shouldn't always have negative sign only if line is below origin
   if (m === 0) return [0, -distance]; // for horizontal lines
 
-  // !🌶 distance shouldn't always have negative sign
   const inverseSlope = -1 / m;
 
   return getdXdY(inverseSlope, distance);
 };
 
+/**
+ * Currying function that returns a function that
+ * @param param0 coord
+ * @param param1 coord
+ * @returns function that
+ */
 function lineBetween([x1, y1]: Coord, [x2, y2]: Coord) {
   return function (t: number): Coord {
     return [x1 + t * (x2 - x1), y1 + t * (y2 - y1)];
   };
 }
+
+/**
+ * Calculate the slope of a line between two cartesian points
+ *
+ * @param param0 coordinates of starting point
+ * @param param1 coordinates of end point
+ * @returns {number} slope
+ */
 const getSlope = ([x1, y1]: Coord, [x2, y2]: Coord) => (y2 - y1) / (x2 - x1);
 const epsilon = 1e-4;
 
 const insideDomain = (n: number) => (n > 0.999999 ? 1 : n < 0.000001 ? 0 : n);
 
-// https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
+/**
+ * Calculate distance between to parallel liens
+ * https://en.wikipedia.org/wiki/Distance_between_two_parallel_lines
+ *
+ * @param b1
+ * @param b2
+ * @param m slope
+ * @returns
+ */
 const parallelLinesDistance = (b1: number, b2: number, m: number) =>
-  ((b2 - b1) * Math.sign(b1)) / Math.sqrt(m ** 2 + 1); // using sign() is hacky tho
-
-const getdXdY = (m: number, c: number): [number, number] => {
-  // m = dy/dx = tan(Θ)
-  const theta = atan(m); // radians
-  const dx = c * cos(theta) * sign(theta);
-  const dy = c * sin(theta) * sign(theta);
-
-  return [dx, dy];
-};
+  ((b2 - b1) * Math.sign(b1)) / Math.sqrt(m ** 2 + 1); // ! using * Math.sign(b1) is hacky tho
 
 export default function ternaryPlot(barycentric: Barycentric) {
   let radius = 300,
@@ -164,10 +198,10 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * Takes an optional configuration object that specifies whether axis labels should be placed at the center of the axis, the default is `false`.
    */
   ternaryPlot.axisLabels = function ({ center = false } = {}) {
-    return [A, B, C].map((d) => {
+    return [A, B, C].map((d): AxisLabel => {
       const { label, labelAngle } = d;
       const [x, y] = d.gridLine(center ? 0.5 : 1);
-      const position = [
+      const position: Coord = [
         (x / radius) * (radius + d.labelOffset),
         (y / radius) * (radius + d.labelOffset),
       ];
@@ -177,7 +211,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
         label,
         angle: labelAngle,
       };
-    });
+    }) as [AxisLabel, AxisLabel, AxisLabel];
   };
 
   // set domains without applying matching transform
@@ -275,7 +309,9 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * @param counts
    * @returns
    */
-  ternaryPlot.ticks = function (counts = 10) {
+  function ticksFunc(counts: number): Tick[][];
+  function ticksFunc(counts: [number, number, number]): Tick[][];
+  function ticksFunc(counts: number | [number, number, number] = 10): Tick[][] {
     return [A, B, C].map((axis, i) => {
       const tickCount = Array.isArray(counts) ? +counts[i] : +counts;
       const tickValues = axis.scale.ticks(tickCount); //
@@ -285,7 +321,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
           ? tickFormat
           : axis.scale.tickFormat(tickCount, tickFormat);
 
-      return tickValues.map((tick: number): TickProps => {
+      return tickValues.map((tick: number): Tick => {
         const tickPos = reverse ? 1 - axis.scale(tick) : axis.scale(tick); // not a fan of using 'reverse' boolean
         return {
           tick: format(tick),
@@ -296,7 +332,8 @@ export default function ternaryPlot(barycentric: Barycentric) {
         };
       });
     });
-  };
+  }
+  ternaryPlot.ticks = ticksFunc;
 
   /**
    * Returns the current tick angles, which defaults to `[0, 60, -60]`.
@@ -580,9 +617,10 @@ export default function ternaryPlot(barycentric: Barycentric) {
       ([vx, vy]: Coord): Coord => [vx * k + tx, vy * k + ty]
     ); // these are the newly transformed vertices BEFORE checking if they within bounds of original triangle
 
-    const mAB = getSlope(vA, vB),
-      mAC = getSlope(vA, vC),
-      mBC = getSlope(vB, vC);
+    // slopes of triangle sides
+    const mAB = getSlope(vA, vB), // In case of equilateral triangle: sqrt(3) = 1.732
+      mAC = getSlope(vA, vC), // In case of equilateral triangle: -sqrt(3) = -1.732
+      mBC = getSlope(vB, vC); // In case of equilateral triangle: 0
 
     // y-intercepts of zoomed triangle sides
     const bAB = newvA[1] - mAB * newvA[0],
@@ -600,6 +638,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
         mAB,
         lineDistanceAB
       );
+
       tx += correctionX;
       ty += correctionY;
     }
