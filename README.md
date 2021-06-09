@@ -12,7 +12,7 @@ Try d3-ternary your browser, [view the introductory notebook on Observable](http
 
 ## Installing
 
-For npm
+If you use npm
 
 ```bash
 npm install d3-ternary
@@ -24,29 +24,31 @@ For yarn
 yarn add d3-ternary
 ```
 
-Otherwise, download the [latest release](https://github.com/davenquinn/d3-ternary/releases).
-
-d3-ternary is available as a D3.js module, in which a d3 global is exported.
+You can also download the [latest release](https://github.com/davenquinn/d3-ternary/releases) on GitHub. For vanilla HTML in modern browsers, import d3-ternary from [Skypack](https://www.skypack.dev/):
 
 ```html
-<script src="https://unpkg.com/d3-ternary@2"></script>
-<script src="https://d3js.org/d3.v6.min.js"></script>
+<script type="module">
+
+import {barycentric, ternaryPlot} from "https://cdn.skypack.dev/d3-ternary@2";
+
+const b = barycentric();
+const t = ternaryPlot(b);
+
+</script>
+```
+
+For legacy environments, you can load d3-ternary’s UMD bundle from an npm-based CDN such as [jsDelivr](https://www.google.com/search?q=jsdelvr&oq=jsdelvr&aqs=chrome..69i57.4168j0j7&sourceid=chrome&ie=UTF-8) or [unpkg](https://unpkg.com/); a d3 global is exported:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-scale@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-ternary@2"></script>
 <script>
 
 const b = d3.barycentric();
 const t = d3.ternaryPlot(b)
   
 </script>
-```
-
-And d3-ternary is available as a standalone ES module. This version bundles the d3-scale and d3-array dependencies.
-
-```javascript
-import { barycentric, ternaryPlot } from "d3-ternary"
-
-const b = d3.barycentric();
-const t = d3.ternaryPlot(b)
-
 ```
 
 ## API Reference
@@ -141,7 +143,7 @@ To set domains without these extra checks, use _ternaryPlot_.[setDomains(_domain
 
 If _vertices_ is specified, unscales _vertices_ and sets the vertices of the _barycentric()_ function passed to _ternaryPlot()_. If _vertices_ is not specified, return the current scaled vertices.
 
-#### Styling methods
+#### Layout methods
 
 [#](#ternaryPlotLabelsDoc) _ternaryPlot_.**labels**([_labels_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L301)
 
