@@ -1,6 +1,8 @@
 import { ScaleLinear } from "d3-scale";
 import { default as ternaryPlot } from "./ternaryPlot";
 import { default as barycentric } from "./barycentric";
+export { default as barycentric } from "./barycentric";
+export { default as ternaryPlot } from "./ternaryPlot";
 export declare type TernaryPlot = ReturnType<typeof ternaryPlot>;
 export declare type Barycentric = ReturnType<typeof barycentric>;
 export interface Transform {

@@ -1,6 +1,6 @@
 {
   "name": "d3-ternary",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "Generate ternary plots",
   "keywords": [
     "d3",
@@ -28,26 +28,29 @@
     "url": "http://jules.engineer/"
   },
   "sideEffects": false,
-  "exports": "./dist/d3-ternary.umd.min.js",
+  "type": "module",
+  "exports": {
+    "umd": "./dist/d3-ternary.umd.min.js",
+    "default": "./dist/d3-ternary.js"
+  },
+  "module": "dist/d3-ternary.js",
   "unpkg": "dist/d3-ternary.umd.min.js",
   "jsdelivr": "dist/d3-ternary.umd.min.js",
   "types": "types/types.d.ts",
-  "module": "dist/d3-ternary.js",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/davenquinn/d3-ternary/issues"
   },
   "homepage": "https://github.com/davenquinn/d3-ternary#readme",
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2",
-    "@types/d3-array": "^2.12.1",
-    "@types/d3-scale": "^3.2.3",
+    "@types/d3-array": "2",
+    "@types/d3-scale": "3",
     "@types/tape": "^4.13.0",
     "rimraf": "3",
     "rollup": "2",
     "rollup-plugin-terser": "7",
-    "tape": "^5.2.2",
+    "tape": "5",
     "tape-es": "1.2",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
@@ -55,10 +58,15 @@
   "dependencies": {
     "d3-array": "2",
     "d3-scale": "3"
-  },  
+  },
   "files": [
     "dist/**/*.js",
+    "dist/**/*.ts",
     "src/**/*.js",
+    "src/**/*.ts",
     "types"
-  ]
+  ],
+  "engines": {
+    "node": ">=12"
+  }
 }

@@ -280,7 +280,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
     return ternaryPlot;
   }
-
   ternaryPlot.domains = domainsFunc;
 
   /**
@@ -353,7 +352,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
         ternaryPlot)
       : [A.tickAngle, B.tickAngle, C.tickAngle];
   }
-
   ternaryPlot.tickAngles = tickAngles;
 
   /**
@@ -420,7 +418,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
         ternaryPlot)
       : [A.tickTextAnchor, B.tickTextAnchor, C.tickTextAnchor];
   }
-
   ternaryPlot.tickTextAnchors = tickTextAnchors;
 
   /**
@@ -443,7 +440,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
         ternaryPlot)
       : [A.label, B.label, C.label];
   }
-
   ternaryPlot.labels = labels;
 
   /**
@@ -464,7 +460,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
         ternaryPlot)
       : [A.labelAngle, B.labelAngle, C.labelAngle];
   }
-
   ternaryPlot.labelAngles = labelAngles;
 
   /**
@@ -495,7 +490,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
         : ((A.labelOffset = B.labelOffset = C.labelOffset = +_), ternaryPlot)
       : [A.labelOffset, B.labelOffset, C.labelOffset];
   }
-
   ternaryPlot.labelOffsets = labelOffsets;
 
   /**
@@ -531,7 +525,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
     return ternaryPlot;
   }
-
   ternaryPlot.radius = setRadius;
 
   /**
@@ -553,7 +546,6 @@ export default function ternaryPlot(barycentric: Barycentric) {
   function setScale(_?: number) {
     return _ ? ((k = +_), ternaryPlot.transform(), ternaryPlot) : k;
   }
-
   ternaryPlot.scale = setScale;
 
   /**

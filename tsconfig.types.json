@@ -6,12 +6,9 @@
       "declarationDir": "./types",
       "emitDeclarationOnly": true,
       "noEmit": false,
-      "paths": {
-        "d3-ternary": ["./src/index.ts"]
-      }
     },
     "files": [
-      "./src/index.ts",
+      "./src/types.ts",
     ],
     "exclude": ["./src/**/*"]
   }

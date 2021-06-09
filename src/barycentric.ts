@@ -2,7 +2,7 @@ import { sum } from "d3-array";
 import { Accessor, Coord, Barycentric } from "./types";
 
 /**
- * Constructs a new default ternary/barycentric converter. By default, it makes an equilateral triangle on the unit circle centered the origin.
+ * Constructs a new default ternary/barycentric converter. By default, it generates an equilateral triangle on the unit circle centered at the origin.
  */
 export default function barycentric() {
   const { sin, cos, PI } = Math,
@@ -17,10 +17,9 @@ export default function barycentric() {
   const angles = [-90, 150, 30]; // angles for equilateral triangle
   let [vA, vB, vC] = angles.map((d): Coord => [cos(d * rad), sin(d * rad)]); // default vertices
 
-  // Composition closure operator: https://en.wikipedia.org/wiki/Compositional_data
-  // Returns a composition version of the array where the elements are normalized to sum to 1
   /**
    * Computes normalized ternary values by summing and taking proportions of ternary data using the value accessors.
+   * [Wikipedia: Composition closure operator](https://en.wikipedia.org/wiki/Compositional_data)
    */
   function normalize(_: [number, number, number]): [number, number, number] {
     const total = sum(_);
@@ -41,8 +40,8 @@ export default function barycentric() {
 
   /**
    * Computes ternary values from coordinates (a two-element array `[x, y]`). Note that the [x, y] coordinates here are unscaled i.e. a radius of 1.
-   * en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
-   * */
+   * [Wikipedia: Conversion between barycentric and Cartesian coordinates](en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates)
+   */
   barycentric.invert = function ([x, y]: Coord): [number, number, number] {
     const [xA, yA] = vA,
       [xB, yB] = vB,
@@ -64,14 +63,15 @@ export default function barycentric() {
     return [lambda1, lambda2, lambda3];
   };
 
-  function aAccessor(): Accessor;
   /**
    * Returns the current a-value accessor, which defaults to: `const a = (d) => d[0];`
    */
-  function aAccessor(fn: Accessor): Barycentric;
+  function aAccessor(): Accessor;
   /**
    * Sets the a-accessor to the specified function and returns this barycentric converter.
    */
+  function aAccessor(fn: Accessor): Barycentric;
+
   function aAccessor(fn?: Accessor) {
     return fn ? ((a = fn), barycentric) : a;
   }
