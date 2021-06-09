@@ -1,6 +1,6 @@
 {
   "name": "d3-ternary",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "Generate ternary plots",
   "keywords": [
     "d3",
@@ -56,8 +56,8 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "d3-array": "2",
-    "d3-scale": "3"
+    "d3-array": "3",
+    "d3-scale": "4"
   },
   "files": [
     "dist/**/*.js",
