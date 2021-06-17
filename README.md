@@ -111,7 +111,7 @@ The following diagram makes it more clear
 
 ### `ternaryPlot()`
 
-**ternaryPlot**(_barycentric_) [<>](https://observablehq.com/@julesblm/)
+**ternaryPlot**(_barycentric_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts)
 
 Constructs a new default ternary plot generator with the default options.
 
@@ -134,7 +134,7 @@ If _radius_ is specified, sets the radius of the ternary plot to the specified n
 
 
 
-If _domains_ is specified, sets the domains of the ternary plot to the specified domains in order `[A, B, C]` and checks if the supplied domains are reversed. If this is the case, [`reverseVertices()`](#ternaryPlotReverseVertices) is called. The scale and translation offset associated with the domains are [applied](#ternaryPlotTransformDoc) to correctly scale and translate the plot. At last it returns the ternary plot.
+If _domains_ is specified, sets the domains of the ternary plot to the specified domains in order `[A, B, C]` and checks if the supplied domains are reversed. If this is the case, [`reverseVertices()`](#ternaryPlotReverseVerticesDoc) is called. The scale and translation offset associated with the domains are [applied](#ternaryPlotTransformDoc) to correctly scale and translate the plot. At last it returns the ternary plot.
 If _domains_ is not specified, returns the current domains, which defaults to `[[0, 1], [0, 1], [0, 1]]`.
 
 To set domains without these extra checks, use _ternaryPlot_.[setDomains(_domains_)](#ternaryPlotSetDomains).
@@ -145,31 +145,31 @@ If _vertices_ is specified, unscales _vertices_ and sets the vertices of the _ba
 
 #### Layout methods
 
-[#](#ternaryPlotLabelsDoc) _ternaryPlot_.**labels**([_labels_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L301)
+[#](#ternaryPlotLabelsDoc) _ternaryPlot_.**labels**([_labels_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L426)
 
 If _labels_ is specified, sets the axis labels to the labels in order of `[A, B, C]` and returns the ternary plot. If _labels_ is not specified, returns the current labels, which defaults to `[`[A, B, C]`]`.
 
-[#](#ternaryPlotLabelAnglesDoc) _ternaryPlot_.**labelAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L307)
+[#](#ternaryPlotLabelAnglesDoc) _ternaryPlot_.**labelAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L488)
 
 If _angles_ is specified, sets the angles of the axis labels to the specified angles in order of `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current label angles, which defaults to `[0, 60, -60]`
 
-[#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L316)
+[#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L469)
 
 The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified and is an array, sets the axis label offsets to the specified angles in order of `[A, B, C]` and returns the ternary plot. If _offsets_ is a number, sets the label offsets of all axes to _offsets_. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
 
 [#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#256)
 
-If _angles_ is specified, sets the angle of the  ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
+If _angles_ is specified, sets the angle of the ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
 
-[#](#ternaryPlotTickAnchorsDoc) _ternaryPlot_.**tickTextAnchors**([_textAnchors_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#292)
+[#](#ternaryPlotTickAnchorsDoc) _ternaryPlot_.**tickTextAnchors**([_textAnchors_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#410)
 
 If _textAnchors_ is specified, sets the axis tick [text-anchor](https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/text-anchor) to the specified text-anchors in order of `[A, B, C]` and returns the ternary plot. If _textAnchors_ is not specified, returns the current tick text-anchors, which defaults to `["start", "start", "end"]`.
 
-[#](#ternaryPlotTickSizesDoc) _ternaryPlot_.**tickSizes**([_sizes_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#277)
+[#](#ternaryPlotTickSizesDoc) _ternaryPlot_.**tickSizes**([_sizes_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#370)
 
 If _sizes_ is specified and is an array, sets the axis tick sizes to the specified tick sizes in order of `[A, B, C]` and returns the ternary plot. If _sizes_ is a number, sets the tick sizes of all axes to _sizes_. If _sizes_ is not specified, returns the current tick sizes, which defaults to `[6, 6, 6]` (px).
 
-[#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#288)
+[#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#387)
 
 If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat). To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
 
