@@ -110,7 +110,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
   }
 
   /**
-   * Returns the current scaled vertices.
+   * Returns the plots current, scaled vertices.
    */
   function scaleVertices(): [Coord, Coord, Coord];
   /**
@@ -287,7 +287,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
    * Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
    * @param counts
-   * @returns
+   * @returns [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
    */
   ternaryPlot.gridLines = function (counts = 20) {
     return [A, B, C].map((axis, i) => {
@@ -296,9 +296,9 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
       return gridValues.map((d) => [
         axis.gridLine(axis.scale(d)),
-        axis.conjugate?.gridLine(1 - axis.scale(d)),
+        axis.conjugate!.gridLine(1 - axis.scale(d)),
       ]);
-    });
+    }) as [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
   };
 
   /**
@@ -512,7 +512,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
    */
   function setRadius(_: number): TernaryPlot;
   function setRadius(_?: number) {
-    if (!_) return radius;
+    if (typeof _ === "undefined") return radius;
 
     radius = +_;
 
