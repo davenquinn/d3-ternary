@@ -22,14 +22,10 @@ export default function ternaryPlot(barycentric: Barycentric): {
         (): Domains;
         (domains: Domains): TernaryPlot;
     };
-    /**
-     * Generates and return an array of arrays containing each grid line objects. If counts is not specified,
-     * it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
-     * Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
-     * @param counts
-     * @returns
-     */
-    gridLines(counts?: number): (Coord | undefined)[][][];
+    gridLines: {
+        (counts: [number, number, number]): [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
+        (counts: number): [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
+    };
     ticks: {
         (counts: number): Tick[][];
         (counts: [number, number, number]): Tick[][];

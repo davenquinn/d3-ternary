@@ -289,7 +289,13 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * @param counts
    * @returns [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
    */
-  ternaryPlot.gridLines = function (counts = 20) {
+  function gridLinesFunc(
+    counts: [number, number, number]
+  ): [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
+  function gridLinesFunc(
+    counts: number
+  ): [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
+  function gridLinesFunc(counts: any = 20) {
     return [A, B, C].map((axis, i) => {
       const gridCount = Array.isArray(counts) ? +counts[i] : +counts;
       const gridValues = axis.scale.ticks(gridCount - 1); // forgot what the -1 was for
@@ -299,7 +305,9 @@ export default function ternaryPlot(barycentric: Barycentric) {
         axis.conjugate!.gridLine(1 - axis.scale(d)),
       ]);
     }) as [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
-  };
+  }
+
+  ternaryPlot.gridLines = gridLinesFunc;
 
   /**
    * Generates and return an array of arrays containing each grid line objects. If counts is not specified
@@ -310,7 +318,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
    */
   function ticksFunc(counts: number): Tick[][];
   function ticksFunc(counts: [number, number, number]): Tick[][];
-  function ticksFunc(counts: number | [number, number, number] = 10): Tick[][] {
+  function ticksFunc(counts: any = 10) {
     return [A, B, C].map((axis, i) => {
       const tickCount = Array.isArray(counts) ? +counts[i] : +counts;
       const tickValues = axis.scale.ticks(tickCount); //
@@ -339,7 +347,8 @@ export default function ternaryPlot(barycentric: Barycentric) {
    */
   function tickAngles(): [number, number, number];
   /**
-   * Sets the angle of axis ticks to the specified angles in order `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
+   * Sets the angle of axis ticks to the specified angles in order `[A, B, C]` and returns the ternary plot.
+   * If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
    *
    * @param tickAngles
    */
