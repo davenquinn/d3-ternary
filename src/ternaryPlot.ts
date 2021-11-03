@@ -17,8 +17,9 @@ const getDomainLengths = (domains: Domains) =>
       // https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
       const d0 = Math.round((domain[0] + Number.EPSILON) * 100) / 100;
       const d1 = Math.round((domain[1] + Number.EPSILON) * 100) / 100;
+      const difference = Math.abs(d1 - d0);
 
-      return Math.abs(d1 - d0);
+      return Math.round((difference + Number.EPSILON) * 100) / 100;
     })
   );
 
@@ -400,7 +401,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
    *
    * @param _ - [format specifier string](https://github.com/d3/d3-format#format) or formatter function
    */
-  function setTickFormat(_: string | ((tick: number) => string)): TernaryPlot; // this?
+  function setTickFormat(_: string | ((tick: number) => string)): TernaryPlot;
   function setTickFormat(_?: any) {
     return _ ? ((tickFormat = _), ternaryPlot) : tickFormat;
   }
