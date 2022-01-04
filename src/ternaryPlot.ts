@@ -10,7 +10,7 @@ import {
   AxisLabel,
 } from "./types";
 
-const getDomainLengths = (domains: Domains) =>
+const getDomainLengths = (domains: Readonly<Domains>) =>
   new Set(
     domains.map((domain) => {
       // round differences
@@ -119,9 +119,9 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * @param newScaledVertices
    */
   function scaleVertices(
-    newScaledVertices: [Coord, Coord, Coord]
+    newScaledVertices: readonly [Coord, Coord, Coord]
   ): typeof ternaryPlot;
-  function scaleVertices(newScaledVertices?: [Coord, Coord, Coord]) {
+  function scaleVertices(newScaledVertices?: readonly [Coord, Coord, Coord]) {
     if (newScaledVertices) {
       const newUnscaledVertices = newScaledVertices.map(
         ([x, y]: Coord): Coord => [x / radius, y / radius]
@@ -216,7 +216,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
   };
 
   // set domains without applying matching transform
-  ternaryPlot.setDomains = function (domains: Domains) {
+  ternaryPlot.setDomains = function (domains: Readonly<Domains>) {
     const [domainA, domainB, domainC] = domains;
 
     A.scale.domain(domainA);
@@ -229,7 +229,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.reverseVertices = function () {
     // 'swap' vertices clockwise
     reverse = true;
-    const swappedVertices: [Coord, Coord, Coord] = [svC, svA, svB];
+    const swappedVertices: readonly [Coord, Coord, Coord] = [svC, svA, svB];
     const [vA, vB, vC] = unscaledVertices;
     unscaledVertices = [vC, vA, vB]; // needed for .transform() and transformFromDomains() & .domainsFromVertices() to work
     ternaryPlot.vertices(swappedVertices);
@@ -253,8 +253,8 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * If this is the case, [`reverseVertices()`](#ternaryPlotReverseVertices) is called. The scale and translation offset associated with
    * the domains are [applied](#ternaryPlotTransformDoc) to correctly scale and translate the plot. At last it returns the ternaryPlot.
    */
-  function domainsFunc(domains: Domains): TernaryPlot;
-  function domainsFunc(domains?: Domains) {
+  function domainsFunc(domains: Readonly<Domains>): TernaryPlot;
+  function domainsFunc(domains?: Readonly<Domains>) {
     if (!domains) return [A.scale.domain(), B.scale.domain(), C.scale.domain()];
 
     const domainLengths = getDomainLengths(domains);
@@ -291,7 +291,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * @returns [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
    */
   function gridLinesFunc(
-    counts: [number, number, number]
+    counts: readonly [number, number, number]
   ): [[Coord, Coord][], [Coord, Coord][], [Coord, Coord][]];
   function gridLinesFunc(
     counts: number
@@ -315,10 +315,9 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * it defaults to 20. *Counts* can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
    * Each array contains `counts` elements of two-element arrays with the start- and end coordinates of the grid line in two-element arrays.
    * @param counts
-   * @returns
    */
   function ticksFunc(counts: number): Tick[][];
-  function ticksFunc(counts: [number, number, number]): Tick[][];
+  function ticksFunc(counts: readonly [number, number, number]): Tick[][];
   function ticksFunc(counts: any = 10) {
     return [A, B, C].map((axis, i) => {
       const tickCount = Array.isArray(counts) ? +counts[i] : +counts;
@@ -353,8 +352,10 @@ export default function ternaryPlot(barycentric: Barycentric) {
    *
    * @param tickAngles
    */
-  function tickAngles(tickAngles: [number, number, number]): TernaryPlot;
-  function tickAngles(tickAngles?: [number, number, number]) {
+  function tickAngles(
+    tickAngles: readonly [number, number, number]
+  ): TernaryPlot;
+  function tickAngles(tickAngles?: readonly [number, number, number]) {
     return tickAngles
       ? ((A.tickAngle = tickAngles[0]),
         (B.tickAngle = tickAngles[1]),
@@ -377,8 +378,8 @@ export default function ternaryPlot(barycentric: Barycentric) {
   /**
    * Sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot.
    * */
-  function tickSizes(_: [number, number, number]): TernaryPlot;
-  function tickSizes(_?: [number, number, number] | number) {
+  function tickSizes(_: readonly [number, number, number]): TernaryPlot;
+  function tickSizes(_?: readonly [number, number, number] | number) {
     return _
       ? Array.isArray(_)
         ? ((A.tickSize = _[0]),
@@ -418,7 +419,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * @param _ - The tick text anchors per axis in order of `[A, B, C]`
    */
   function tickTextAnchors(
-    _: [TextAnchor, TextAnchor, TextAnchor]
+    _: readonly [TextAnchor, TextAnchor, TextAnchor]
   ): TernaryPlot;
   function tickTextAnchors(_?: any) {
     return _
@@ -440,9 +441,11 @@ export default function ternaryPlot(barycentric: Barycentric) {
    * @param _ The labels per axis in order of `[A, B, C]`
    */
   function labels(
-    _: [string | number, string | number, string | number]
+    _: readonly [string | number, string | number, string | number]
   ): TernaryPlot;
-  function labels(_?: [string | number, string | number, string | number]) {
+  function labels(
+    _?: readonly [string | number, string | number, string | number]
+  ) {
     return _
       ? ((A.label = String(_[0])),
         (B.label = String(_[1])),
@@ -461,8 +464,8 @@ export default function ternaryPlot(barycentric: Barycentric) {
    *
    * @param _ - The label angles per axis in order of `[A, B, C]`
    */
-  function labelAngles(_: [number, number, number]): TernaryPlot;
-  function labelAngles(_?: [number, number, number]) {
+  function labelAngles(_: readonly [number, number, number]): TernaryPlot;
+  function labelAngles(_?: readonly [number, number, number]) {
     return _
       ? ((A.labelAngle = _[0]),
         (B.labelAngle = _[1]),
@@ -489,8 +492,8 @@ export default function ternaryPlot(barycentric: Barycentric) {
    *
    * @param _ - A label offset in px
    */
-  function labelOffsets(_: [number, number, number]): TernaryPlot;
-  function labelOffsets(_?: number | [number, number, number]) {
+  function labelOffsets(_: readonly [number, number, number]): TernaryPlot;
+  function labelOffsets(_?: number | readonly [number, number, number]) {
     return _
       ? Array.isArray(_)
         ? ((A.labelOffset = _[0]),
@@ -694,7 +697,7 @@ export default function ternaryPlot(barycentric: Barycentric) {
 
    * @param domains - Array of the plot domains
    */
-  ternaryPlot.transformFromDomains = function (domains: Domains) {
+  ternaryPlot.transformFromDomains = function (domains: Readonly<Domains>) {
     const [domainA, domainB, domainC] = domains;
 
     const domainLengths = getDomainLengths(domains);

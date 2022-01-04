@@ -119,8 +119,8 @@ export default function barycentric() {
   /**
    * Sets the vertices to the specified array and returns this barycentric converter.
    */
-  function vertices(ABC: [Coord, Coord, Coord]): typeof barycentric;
-  function vertices(ABC?: [Coord, Coord, Coord]) {
+  function vertices(ABC: readonly [Coord, Coord, Coord]): typeof barycentric;
+  function vertices(ABC?: readonly [Coord, Coord, Coord]) {
     return ABC
       ? ((vA = ABC[0]), (vB = ABC[1]), (vC = ABC[2]), barycentric)
       : ([vA, vB, vC] as [Coord, Coord, Coord]);
