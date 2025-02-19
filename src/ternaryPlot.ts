@@ -140,45 +140,80 @@ export function ternaryPlot(barycentric: Barycentric) {
    * - `angle`: The rotation angle of the label
    * - `label`: The axis label text
    *
-   * Takes an optional configuration object: axis labels
+   * Takes an optional configuration object:
+   * - `center`: If true, places labels at the center of each axis instead of at vertices
    */
-  // ternaryPlot.axisLabels = function ({ center = false } = {}): [ // TODO!!!!
-  ternaryPlot.axisLabels = function (): [
+  ternaryPlot.axisLabels = function ({ center = false } = {}): [
     a: AxisLabel,
     b: AxisLabel,
     c: AxisLabel,
   ] {
-    const [c1, c2, c3] = getVertices(); // c1=[1,0,0], c2=[0,1,0], c3=[0,0,1]
+    const [cA, cB, cC] = getVertices(); // c1=[1,0,0], c2=[0,1,0], c3=[0,0,1]
 
+    if (center) {
+      // Calculate midpoints of each edge
+      const midAB = [(cA[0] + cB[0]) / 2, (cA[1] + cB[1]) / 2];
+      const midBC = [(cB[0] + cC[0]) / 2, (cB[1] + cC[1]) / 2];
+      const midCA = [(cC[0] + cA[0]) / 2, (cC[1] + cA[1]) / 2];
+
+      return [
+        // C axis label (opposite to C vertex)
+        {
+          position: [
+            (midAB[0] / radius) * (radius + A.labelOffset),
+            (midAB[1] / radius) * (radius + A.labelOffset),
+          ],
+          label: A.label,
+          angle: A.labelAngle,
+        },
+        // A axis label (opposite to A vertex)
+        {
+          position: [
+            (midBC[0] / radius) * (radius + B.labelOffset),
+            (midBC[1] / radius) * (radius + B.labelOffset),
+          ],
+          label: B.label,
+          angle: B.labelAngle,
+        },
+        // B axis label (opposite to B vertex)
+        {
+          position: [
+            (midCA[0] / radius) * (radius + C.labelOffset),
+            (midCA[1] / radius) * (radius + C.labelOffset),
+          ],
+          label: C.label,
+          angle: C.labelAngle,
+        },
+      ];
+    }
+
+    // Original vertex-based label positioning
     return [
       // A axis label (at top vertex where A=1)
       {
-        // [1,0,0] vertex
         position: [
-          c1[0] + c1[0] * (A.labelOffset / radius), // Extend in direction of vertex
-          c1[1] + c1[1] * (A.labelOffset / radius),
+          cA[0] + cA[0] * (A.labelOffset / radius),
+          cA[1] + cA[1] * (A.labelOffset / radius),
         ],
-        label: A.label, // A at top
+        label: A.label,
         angle: A.labelAngle,
       },
       // B axis label (at left vertex where B=1)
       {
-        // [0,1,0] vertex
         position: [
-          c2[0] + c2[0] * (B.labelOffset / radius),
-          c2[1] + c2[1] * (B.labelOffset / radius),
+          cB[0] + cB[0] * (B.labelOffset / radius),
+          cB[1] + cB[1] * (B.labelOffset / radius),
         ],
-        label: B.label, // B at left
+        label: B.label,
         angle: B.labelAngle,
       },
       // C axis label (at right vertex where C=1)
       {
-        // [0,0,1] vertex
         position: [
-          c3[0] + c3[0] * (C.labelOffset / radius),
-          c3[1] + c3[1] * (C.labelOffset / radius),
+          cC[0] + cC[0] * (C.labelOffset / radius),
+          cC[1] + cC[1] * (C.labelOffset / radius),
         ],
-        label: C.label, // C at right
+        label: C.label,
         angle: C.labelAngle,
       },
     ];
