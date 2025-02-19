@@ -265,7 +265,7 @@ export function ternaryPlot(barycentric: Barycentric) {
           textAnchor: A.tickTextAnchor,
           size: A.tickSize,
           position: transform(
-            ...barycentric([
+            ...barycentric.unscaled([
               scaledT, // A
               0, // B
               1 - scaledT, // C
@@ -283,7 +283,7 @@ export function ternaryPlot(barycentric: Barycentric) {
           textAnchor: B.tickTextAnchor,
           size: B.tickSize,
           position: transform(
-            ...barycentric([
+            ...barycentric.unscaled([
               1 - scaledT, // A
               scaledT, // B,
               0, // C
@@ -301,7 +301,7 @@ export function ternaryPlot(barycentric: Barycentric) {
           textAnchor: C.tickTextAnchor,
           size: B.tickSize,
           position: transform(
-            ...barycentric([
+            ...barycentric.unscaled([
               0, // A
               1 - scaledT, // B
               scaledT, //C
