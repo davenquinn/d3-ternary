@@ -206,7 +206,7 @@ export function barycentric() {
   barycentric.domains = domainsFn;
 
   /**
-   * Returns the scales for each axis
+   * Returns the scales for the three axes
    */
   barycentric.scales = function () {
     return [scaleA, scaleB, scaleC];
@@ -234,7 +234,3 @@ export function getDomainLengths(
     }),
   );
 }
-
-const b = barycentric();
-
-
