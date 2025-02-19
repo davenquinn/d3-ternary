@@ -1,19 +1,24 @@
-import {readFileSync} from "fs";
+import { readFileSync } from "fs";
 import * as pkg from "./package.json";
 import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
-// import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 // Extract copyrights from the LICENSE.
 const copyright = readFileSync("./LICENSE", "utf-8")
   .split(/\n/g)
-  .filter(line => /^Copyright\s+/.test(line))
-  .map(line => line.replace(/^Copyright\s+/, ""))
+  .filter((line) => /^Copyright\s+/.test(line))
+  .map((line) => line.replace(/^Copyright\s+/, ""))
   .join(", ");
 
-const globals = Object.assign({}, ...Object.keys(pkg.dependencies || {}).filter(key => /^d3-/.test(key)).map(key => ({[key]: "d3"})))
-const external = Object.keys(pkg.dependencies || {}).filter((key) =>/^(d3-)/.test(key));
-// console.log({ globals ,external });
+const globals = Object.assign(
+  {},
+  ...Object.keys(pkg.dependencies || {})
+    .filter((key) => /^d3-/.test(key))
+    .map((key) => ({ [key]: "d3" })),
+);
+const external = Object.keys(pkg.dependencies || {}).filter((key) =>
+  /^(d3-)/.test(key),
+);
 
 // standalone ES module
 const config = {
@@ -25,7 +30,7 @@ const config = {
     banner: `// ${pkg.homepage} v${pkg.version} Copyright ${copyright}`,
     name: "d3",
     extend: true,
-    globals
+    globals,
   },
   plugins: [typescript()],
 };
@@ -36,7 +41,7 @@ const umdConfig = {
   output: {
     ...config.output,
     file: `dist/${pkg.name}.umd.js`,
-    format: "umd"
+    format: "umd",
   },
   plugins: [typescript()],
 };
