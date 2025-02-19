@@ -10,7 +10,7 @@ export declare function barycentric(): {
     b(fn?: (d: any) => number): ((d: any) => number) | /*elided*/ any;
     c(fn?: (d: any) => number): ((d: any) => number) | /*elided*/ any;
     rotation(_?: number): number | /*elided*/ any;
-    domains(domains?: [[number, number], [number, number], [number, number]]): /*elided*/ any | number[][];
+    domains(domains?: [[number, number], [number, number], [number, number]]): number[][] | /*elided*/ any;
     scales(): import("d3-scale").ScaleLinear<number, number, never>[];
 };
 export declare function getDomainLengths(domains: [[number, number], [number, number], [number, number]]): Set<number>;

@@ -6,7 +6,9 @@ export declare function ternaryPlot(barycentric: Barycentric): {
     (d: [number, number, number]): [x: number, y: number];
     triangle(): string;
     gridLines(count?: number): [[start: [x: number, y: number], end: [x: number, y: number]][], [start: [x: number, y: number], end: [x: number, y: number]][], [start: [x: number, y: number], end: [x: number, y: number]][]];
-    axisLabels(): [a: AxisLabel, b: AxisLabel, c: AxisLabel];
+    axisLabels({ center }?: {
+        center?: boolean | undefined;
+    }): [a: AxisLabel, b: AxisLabel, c: AxisLabel];
     ticks(count?: number): {
         tick: string;
         angle: number;
