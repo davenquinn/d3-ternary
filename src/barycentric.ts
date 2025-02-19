@@ -1,4 +1,5 @@
 import { scaleLinear } from "d3-scale";
+import type { Barycentric } from "types";
 
 /**
  * Constructs a new barycentric converter. Uses an equilateral triangle with unit height.
@@ -75,8 +76,6 @@ export function barycentric() {
     return rotate(x, y);
   };
 
-  barycentric.barycentricToCartesian = barycentricToCartesian;
-
   barycentric.unscaled = function (
     d: [number, number, number],
   ): [number, number] {
@@ -109,34 +108,85 @@ export function barycentric() {
     return [scaleA.invert(a), scaleB.invert(b), scaleC.invert(c)];
   };
 
+  /**
+   * Sets or gets the accessor function for the A component.
+   * If _fn_ is specified, sets the accessor function and returns the barycentric converter.
+   * If _fn_ is not specified, returns the current accessor function, which defaults to:
+   * ```ts
+   * (d) => d[0]
+   * ```
+   * 
+   */
   barycentric.a = function (fn?: Accessor): Accessor | typeof barycentric {
     return fn ? ((a = fn), barycentric) : a;
   };
 
+  /**
+   * Sets or gets the accessor function for the B component.
+   * If _fn_ is specified, sets the accessor function and returns the barycentric converter.
+   * If _fn_ is not specified, returns the current accessor function, which defaults to:
+   * ```ts
+   * (d) => d[1]
+   * ```
+   * 
+   */
   barycentric.b = function (fn?: Accessor): Accessor | typeof barycentric {
     return fn ? ((b = fn), barycentric) : b;
   };
 
+  /**
+   * Sets or gets the accessor function for the C component.
+   * If _fn_ is specified, sets the accessor function and returns the barycentric converter.
+   * If _fn_ is not specified, returns the current accessor function, which defaults to:
+   * ```ts
+   * (d) => d[2]
+   * ```
+   * 
+   */
   barycentric.c = function (fn?: Accessor): Accessor | typeof barycentric {
     return fn ? ((c = fn), barycentric) : c;
   };
 
   /**
-   * Sets the rotation angle in degrees
+   * Sets or gets the rotation angle of the ternary plot in degrees.
+   * If _angle_ is specified, sets the rotation angle and returns the barycentric converter.
+   * If _angle_ is not specified, returns the current rotation angle, which defaults to 0.
+   *
+   * Positive angles rotate the plot clockwise.
    */
-  barycentric.rotation = function (_?: number) {
+  function rotationFn(): number;
+  function rotationFn(_: number): Barycentric;
+  function rotationFn(_?: number) {
     if (!arguments.length) return rotation;
     rotation = _ ?? 0;
     return barycentric;
-  };
-
-  // Add types for domains
-  type Domain = [number, number];
+  }
+  barycentric.rotation = rotationFn;
 
   /**
-   * Sets or gets the domains for each axis
+   * Sets or gets the domains for each axis. If _domains_ is not specified, returns an array of the current domains.
+   * Each domain is a two-element array containing the start and end values.
+   * All domains must have the same length.
    */
-  barycentric.domains = function (domains?: [Domain, Domain, Domain]) {
+  function domainsFn(): [
+    [start: number, end: number],
+    [start: number, end: number],
+    [start: number, end: number],
+  ];
+  function domainsFn(
+    domains: [
+      [start: number, end: number],
+      [start: number, end: number],
+      [start: number, end: number],
+    ],
+  ): Barycentric;
+  function domainsFn(
+    domains?: [
+      [start: number, end: number],
+      [start: number, end: number],
+      [start: number, end: number],
+    ],
+  ) {
     if (!domains) {
       return [scaleA.domain(), scaleB.domain(), scaleC.domain()];
     }
@@ -151,7 +201,9 @@ export function barycentric() {
     scaleC.domain(domains[2]);
 
     return barycentric;
-  };
+  }
+
+  barycentric.domains = domainsFn;
 
   /**
    * Returns the scales for each axis
@@ -164,7 +216,11 @@ export function barycentric() {
 }
 
 export function getDomainLengths(
-  domains: [[number, number], [number, number], [number, number]],
+  domains: [
+    [start: number, end: number],
+    [start: number, end: number],
+    [start: number, end: number],
+  ],
 ) {
   return new Set(
     domains.map((domain) => {
@@ -178,3 +234,7 @@ export function getDomainLengths(
     }),
   );
 }
+
+const b = barycentric();
+
+
