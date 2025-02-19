@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,9 +9,13 @@
   <body>
     <svg id="plot"></svg>
     <script type="module">
-      import { ternaryPlot, barycentric } from "./../../dist/d3-ternary.js";
+      import {
+        ternaryPlot,
+        barycentric,
+      } from "./../../dist/d3-ternary.bundle.js";
       import { select } from "https://unpkg.com/d3-selection@2?module";
       import { line } from "https://unpkg.com/d3-shape@2?module";
+      import { scaleLinear } from "https://unpkg.com/d3-scale@4?module";
 
       const axisLabels = (g, labels) =>
         g
@@ -21,18 +25,18 @@
             (enter) =>
               enter
                 .append("text")
-                .attr("dy", (d, i) => (i === 2 ? "-0.5em" : ".5em"))
+                .attr("dominant-baseline", "middle")
                 .attr(
                   "transform",
-                  (d, i) => `translate(${d.position})rotate(${d.angle})`
+                  (d, i) => `translate(${d.position})rotate(${d.angle})`,
                 )
                 .attr("text-anchor", "middle")
                 .text((d) => d.label),
             (update) =>
               update.attr(
                 "transform",
-                (d, i) => `translate(${d.position})rotate(${d.angle})`
-              )
+                (d, i) => `translate(${d.position})rotate(${d.angle})`,
+              ),
           );
 
       const ticks = (g) =>
@@ -40,7 +44,7 @@
           .selectAll("g")
           .data(
             (d) => d,
-            (d) => d.tick
+            (d) => d.tick,
           )
           .join(
             (enter) => {
@@ -55,7 +59,7 @@
                 .attr("transform", (d) => `rotate(${d.angle})`)
                 .attr(
                   "dx",
-                  (d) => (-d.size - 5) * (d.textAnchor === "start" ? -1 : 1)
+                  (d) => (-d.size - 5) * (d.textAnchor === "start" ? -1 : 1),
                 )
                 .attr("dy", ".5em")
                 .text((d) => d.tick);
@@ -70,7 +74,7 @@
             },
             (update) =>
               update.attr("transform", (d) => `translate(${d.position})`),
-            (exit) => exit.remove()
+            (exit) => exit.remove(),
           );
 
       const grid = (g, gridLines) =>
@@ -84,13 +88,13 @@
                 .attr("d", (d) => d)
                 .attr("stroke", "#e3e3e3")
                 .attr("stroke-width", (d, i) => (i & 1 ? 1 : 2)),
-            (update) => update.attr("d", (d) => d)
+            (update) => update.attr("d", (d) => d),
             // theres no exit selection, lines are only drawn upto 'initial' triangle bounds
           );
 
       const b = barycentric();
 
-      const t = ternaryPlot(b).radius(100);
+      const t = ternaryPlot(b).radius(125);
 
       const radius = t.radius();
 
