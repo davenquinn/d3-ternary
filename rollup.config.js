@@ -1,10 +1,9 @@
 import { readFileSync } from "fs";
-import json from '@rollup/plugin-json';
+import json from "@rollup/plugin-json";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
-
-// Read package.json manually if needed
-const pkg = JSON.parse(readFileSync('./package.json', 'utf8'));
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import meta from "./package.json" with { type: "json" };
 
 // Extract copyrights from the LICENSE.
 const copyright = readFileSync("./LICENSE", "utf-8")
@@ -13,80 +12,97 @@ const copyright = readFileSync("./LICENSE", "utf-8")
   .map((line) => line.replace(/^Copyright\s+/, ""))
   .join(", ");
 
-// Update globals to explicitly include d3-scale
+// Create banner text once
+const BANNER = `// ${meta.name} v${meta.version} Copyright ${copyright}`;
+
+// Base globals configuration
 const globals = {
-  'd3-scale': 'd3',
-  // ... existing d3 dependencies
+  "d3-scale": "d3",
   ...Object.assign(
     {},
-    ...Object.keys(pkg.dependencies || {})
+    ...Object.keys(meta.dependencies || {})
       .filter((key) => /^d3-/.test(key))
-      .map((key) => ({ [key]: "d3" }))
-  )
+      .map((key) => ({ [key]: "d3" })),
+  ),
 };
 
-// Update external to explicitly include d3-scale
-const external = ['d3-scale'].concat(
-  Object.keys(pkg.dependencies || {}).filter((key) => /^(d3-)/.test(key))
-);
+// Base external dependencies
+const external = ["d3-scale"];
 
-// standalone ES module
-const config = {
+// Base configuration shared across all builds
+const baseConfig = {
   input: "src/index.ts",
-  external,
   output: {
-    // Use pkg.name directly instead of template literal
-    file: "dist/d3-ternary.js",
-    format: "es",
-    banner: `// ${pkg.homepage} v${pkg.version} Copyright ${copyright}`,
     name: "d3",
     extend: true,
+    banner: BANNER,
+    sourcemap: true,
+  },
+};
+
+// ES module for npm (with external dependencies)
+const esmConfig = {
+  ...baseConfig,
+  external,
+  output: {
+    ...baseConfig.output,
+    file: "dist/d3-ternary.js",
+    format: "es",
+    globals,
+  },
+  plugins: [typescript(), json()],
+};
+
+// ES module for browser (bundled dependencies)
+const esmBrowserConfig = {
+  ...baseConfig,
+  external: [],
+  output: {
+    ...baseConfig.output,
+    file: "dist/d3-ternary.bundle.js",
+    format: "es",
+  },
+  plugins: [nodeResolve(), typescript()],
+};
+
+// UMD module
+const umdConfig = {
+  ...baseConfig,
+  external,
+  output: {
+    ...baseConfig.output,
+    file: "dist/d3-ternary.umd.js",
+    format: "umd",
     globals,
   },
   plugins: [typescript()],
 };
 
-// d3 module: d3.ternaryPlot() and d3.barycentric()
-const umdConfig = {
+// Helper function to create minified config
+const createMinifiedConfig = (config, suffix) => ({
   ...config,
   output: {
     ...config.output,
-    file: "dist/d3-ternary.umd.js",
-    format: "umd",
-  },
-  plugins: [typescript()],
-};
-
-const minifiedConfig = {
-  ...config,
-  output: {
-    ...config.output,
-    file: "dist/d3-ternary.min.js",
+    file: config.output.file.replace(".js", suffix),
   },
   plugins: [
     ...config.plugins,
     terser({
       output: {
-        preamble: config.output.banner,
+        preamble: BANNER,
       },
     }),
   ],
-};
+});
 
-const minifiedUmdConfig = {
-  ...umdConfig,
-  output: {
-    ...umdConfig.output,
-    file: "dist/d3-ternary.umd.min.js",
-  },
-  plugins: [
-    ...umdConfig.plugins,
-    terser({
-      output: {
-        preamble: config.output.banner,
-      },
-    }),
-  ],
-};
+// Create minified versions
+const minifiedConfig = createMinifiedConfig(esmConfig, ".min.js");
+const minifiedUmdConfig = createMinifiedConfig(umdConfig, ".min.js");
 
-export default [config, umdConfig, minifiedUmdConfig, minifiedConfig];
+export default [
+  esmConfig,
+  esmBrowserConfig,
+  umdConfig,
+  minifiedUmdConfig,
+  minifiedConfig,
+];

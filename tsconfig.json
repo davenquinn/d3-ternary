@@ -1,37 +1,25 @@
 {
-    "compilerOptions": {  
-      "target": "ES2020",
-      "baseUrl": "./src",
-      "lib": [
-        "dom",
-        "dom.iterable",
-        "esnext"
-      ],
-      "allowJs": false,
-      "skipLibCheck": true,
-      "strict": true,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "strictNullChecks": true,
-      "noImplicitAny": true,
-      "forceConsistentCasingInFileNames": true,
-      "noEmit": true,
-      "outDir": "dist",
-      "module": "ES2020",      
-      "esModuleInterop": true,
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-    },
-    "files": [
-      "./src/index.ts",
-    ],
-    "include": [
-      "**/*.ts",
-      "**/*.tsx"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
-  
+  "compilerOptions": {
+    "target": "ES2022",
+    "baseUrl": "./src",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "outDir": "dist",
+    "module": "ES2022",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "files": ["./src/index.ts"],
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}

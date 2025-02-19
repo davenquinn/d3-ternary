@@ -14,15 +14,17 @@
     "barycentric"
   ],
   "scripts": {
-    "build": "rimraf ./dist && rollup -c && npm run build:types",
+    "build": "npm run clean && rollup -c && npm run build:types",
     "build:types": "rimraf ./types && tsc --project ./tsconfig.types.json",
     "test": "tape-es 'test/**/*-test.js'",
     "postpublish": "zip -j dist/d3-ternary.zip -- LICENSE README.md dist/*",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "prepublishOnly": "npm run build",
+    "clean": "rimraf dist types"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davenquinn/d3-ternary"
+    "url": "git+https://github.com/davenquinn/d3-ternary.git"
   },
   "author": {
     "name": "Jules Blom",
@@ -31,8 +33,12 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
-    "umd": "./dist/d3-ternary.umd.min.js",
-    "default": "./dist/d3-ternary.js"
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/d3-ternary.js",
+      "require": "./dist/d3-ternary.umd.js",
+      "umd": "./dist/d3-ternary.umd.min.js"
+    }
   },
   "module": "dist/d3-ternary.js",
   "unpkg": "dist/d3-ternary.umd.min.js",
@@ -45,6 +51,7 @@
   "homepage": "https://github.com/davenquinn/d3-ternary#readme",
   "devDependencies": {
     "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "12",
     "@types/d3-scale": "4",
@@ -66,6 +73,7 @@
     "src/**/*.ts"
   ],
   "engines": {
-    "node": ">=12"
-  }
+    "node": ">=16"
+  },
+  "main": "./dist/d3-ternary.umd.js"
 }
