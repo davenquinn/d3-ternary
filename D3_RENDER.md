@@ -146,7 +146,7 @@ const axisLabels = (g, labels) =>
       (enter) =>
         enter
           .append("text")
-          .attr("dy", (d, i) => (i === 2 ? "-0.5em" : ".5em"))
+          .attr("dominant-baseline", "middle")
           .attr(
             "transform",
             (d, i) => `translate(${d.position})rotate(${d.angle})`,

@@ -93,6 +93,14 @@ barycentric.domains([
 
 Returns an array of the three [d3.scaleLinear()](https://github.com/d3/d3-scale#scaleLinear) scale functions used internally by the barycentric converter, in order of `[A, B, C]`. These scale functions map the input domains to normalized values between 0 and 1.
 
+[#](#barycentricUnscaledDoc) _barycentric_.**unscaled**(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L77)
+
+Similar to the standard conversion function, but bypasses the domain scaling. Takes a three-element array of ternary values and returns `[x,y]` coordinates on the unit circle. This is primarily used internally for plotting the triangle bounds and grid lines.
+
+[#](#barycentricRotationDoc) _barycentric_.**rotation**([_angle_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L123)
+
+If _angle_ is specified, sets the rotation angle in degrees and returns this barycentric converter. If _angle_ is not specified, returns the current rotation angle, which defaults to 0. Positive angles rotate clockwise.
+
 ### `ternaryPlot()`
 
 **ternaryPlot**(_barycentric_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts)
@@ -115,10 +123,6 @@ If _radius_ is specified, sets the radius of the ternary plot to the specified n
 
 To set domains without these extra checks, use _ternaryPlot_.[setDomains(_domains_)](#ternaryPlotSetDomains).
 
-[#](#ternaryPlotVerticesDoc) _ternaryPlot_.**vertices**([_vertices_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L112)
-
-If _vertices_ is specified, unscales _vertices_ and sets the vertices of the _barycentric()_ function passed to _ternaryPlot()_. If _vertices_ is not specified, return the current scaled vertices.
-
 #### Layout methods
 
 [#](#ternaryPlotLabelsDoc) _ternaryPlot_.**labels**([_labels_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L426)
@@ -131,7 +135,7 @@ If _angles_ is specified, sets the angles of the axis labels to the specified an
 
 [#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L469)
 
-The label offset is the spacing of the label to the vertex in pixels. If _offsets_ is specified and is an array, sets the axis label offsets to the specified angles in order of `[A, B, C]` and returns the ternary plot. If _offsets_ is a number, sets the label offsets of all axes to _offsets_. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
+If _offsets_ is specified and is an array, sets the axis label offsets to the specified offsets in order of `[A, B, C]` and returns the ternary plot. If _offsets_ is a number, sets all label offsets to that value. If _offsets_ is not specified, returns the current label offsets, which defaults to `[45, 45, 45]` px.
 
 [#](#ternaryPlotTickAnglesDoc) _ternaryPlot_.**tickAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#256)
 
@@ -249,6 +253,13 @@ chart.call(zoom).call(zoom.transform, initialTransform);
 ```
 
 Note that the translations returned are unscaled by the plot radius - they should be scaled by the radius before being used with SVG transforms.
+
+## Rendering Examples
+
+For detailed examples of how to render ternary plots:
+
+- [D3.js Rendering Example](D3_RENDER.md)
+- [React Rendering Example](REACT_RENDER.md)
 
 ## Acknowledgments
 
