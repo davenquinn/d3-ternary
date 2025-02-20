@@ -5,16 +5,16 @@ tape("barycentric() converts ternary data correctly", (test) => {
   const b = barycentric();
 
   const ternaryValues = [
-    [100, 0, 0],
-    [0, 0, 100],
-    [0, 100, 0],
-    [50, 50, 0],
-    [0, 50, 50],
-    [50, 0, 50],
-    [33, 33, 33],
+    [1, 0, 0],
+    [0, 0, 1],
+    [0, 1, 0],
+    [1, 1, 0],
+    [0, 1, 1],
+    [1, 0, 1],
+    [1, 1, 1],
   ];
 
-  const coordinates = ternaryValues.map(b);
+  const coordinates = ternaryValues.map((v) => b(v));
 
   const testCoordinates = [
     [6.123233995736766e-17, -1],
@@ -74,3 +74,51 @@ tape(
     test.end();
   },
 );
+
+tape("barycentric() handles rotation correctly", (test) => {
+  const b = barycentric();
+
+  // Test default rotation (0)
+  const noRotation = b([1, 0, 0]);
+  test.deepEqual(noRotation, [6.123233995736766e-17, -1]);
+
+  // Test 120 degree rotation
+  b.rotation(120);
+  const rotated = b([1, 0, 0]);
+
+  test.ok(Math.abs(rotated[0]) - 0.866 < 1e-4);
+  test.ok(Math.abs(rotated[1]) - 0.5 < 1e-4);
+
+  test.end();
+});
+
+tape("barycentric() handles custom domains", (test) => {
+  const b = barycentric();
+
+  // Set custom domains
+  b.domains([
+    [0, 0.7],
+    [0, 0.7],
+    [0.3, 1],
+  ]);
+
+  // Test point conversion with scaled domains
+  const point = b([50, 25, 25]);
+
+  test.deepEqual(point, [-0.3711537444790451, -0.5714285714285715]);
+
+  test.end();
+});
+
+tape("barycentric() normalize() handles invalid inputs", (test) => {
+  const b = barycentric();
+
+  // Should throw on NaN
+  test.throws(() => b([NaN, 1, 1]));
+
+  // Should normalize negative values
+  const normalized = b([-1, 1, 1]);
+  test.ok(normalized.every((n) => !Number.isNaN(n)));
+
+  test.end();
+});
