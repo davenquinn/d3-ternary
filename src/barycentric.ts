@@ -5,8 +5,6 @@ import type { Barycentric } from "types";
  * Constructs a new barycentric converter. Uses an equilateral triangle with unit height.
  */
 export function barycentric() {
-  const sqrt3_2 = Math.sqrt(3) / 2;
-
   /** rotation angle in degrees */
   let rotation = 0;
 
@@ -99,13 +97,30 @@ export function barycentric() {
     const rx = x * ca + y * sa;
     const ry = y * ca - x * sa;
 
-    // Convert to barycentric coordinates
-    const b = -ry / sqrt3_2;
-    const a = rx - b * 0.5;
-    const c = 1 - a - b;
+    // en.wikipedia.org/wiki/Barycentric_coordinate_system#Conversion_between_barycentric_and_Cartesian_coordinates
+    const [xA, yA] = vA,
+      [xB, yB] = vB,
+      [xC, yC] = vC;
+
+    const yByC = yB - yC,
+      xCxB = xC - xB,
+      xAxC = xA - xC,
+      yAyC = yA - yC,
+      yCyA = yC - yA,
+      xxC = rx - xC,
+      yyC = ry - yC;
+
+    const d = yByC * xAxC + xCxB * yAyC,
+      lambda1 = Math.abs((yByC * xxC + xCxB * yyC) / d),
+      lambda2 = Math.abs((yCyA * xxC + xAxC * yyC) / d),
+      lambda3 = Math.abs(1 - lambda1 - lambda2);
 
     // Invert through scales
-    return [scaleA.invert(a), scaleB.invert(b), scaleC.invert(c)];
+    return [
+      scaleA.invert(lambda1),
+      scaleB.invert(lambda2),
+      scaleC.invert(lambda3),
+    ];
   };
 
   /**
@@ -115,7 +130,7 @@ export function barycentric() {
    * ```ts
    * (d) => d[0]
    * ```
-   * 
+   *
    */
   barycentric.a = function (fn?: Accessor): Accessor | typeof barycentric {
     return fn ? ((a = fn), barycentric) : a;
@@ -128,7 +143,7 @@ export function barycentric() {
    * ```ts
    * (d) => d[1]
    * ```
-   * 
+   *
    */
   barycentric.b = function (fn?: Accessor): Accessor | typeof barycentric {
     return fn ? ((b = fn), barycentric) : b;
@@ -141,7 +156,7 @@ export function barycentric() {
    * ```ts
    * (d) => d[2]
    * ```
-   * 
+   *
    */
   barycentric.c = function (fn?: Accessor): Accessor | typeof barycentric {
     return fn ? ((c = fn), barycentric) : c;
