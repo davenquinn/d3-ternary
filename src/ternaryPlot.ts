@@ -11,7 +11,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   const A = {
     label: "A",
     labelAngle: 0,
-    labelOffset: 20,
+    labelOffset: 45,
     tickAngle: 0,
     tickSize: 6,
     tickTextAnchor: "start",
@@ -20,7 +20,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   const B = {
     label: "B",
     labelAngle: 60,
-    labelOffset: 20,
+    labelOffset: 45,
     tickAngle: 60,
     tickSize: 6,
     tickTextAnchor: "end",
@@ -29,7 +29,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   const C = {
     label: "C",
     labelAngle: -60,
-    labelOffset: 20,
+    labelOffset: 45,
     tickAngle: -60,
     tickSize: 6,
     tickTextAnchor: "end",
@@ -313,27 +313,29 @@ export function ternaryPlot(barycentric: Barycentric) {
   };
 
   /**
-   * If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format)
-   * that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat).
-   * To implement your own tick format function, pass a custom formatter function,
-   * for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified,
-   * returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
+   * Returns the current tick format, which defaults to `"%"`.
    */
   function tickFormatFn(): string | ((d: number) => string);
+  /**
+   * Sets the tick format and returns the ternary plot. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format)
+   * that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat),
+   * or a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`.
+   */
   function tickFormatFn(_: string | ((d: number) => string)): TernaryPlot;
   function tickFormatFn(_?: string | ((d: number) => string)) {
     if (!arguments.length) return tickFormat;
     tickFormat = _ ?? "%";
-
     return ternaryPlot;
   }
   ternaryPlot.tickFormat = tickFormatFn;
 
   /**
-   * If _radius_ is specified, sets the radius of the ternary plot to the specified number.
-   * If _radius_ is not specified, returns the current radius, which defaults to 300 (px).
+   * Returns the current radius, which defaults to 300 (px).
    */
   function radiusFn(): number;
+  /**
+   * Sets the radius of the ternary plot to the specified number and returns the ternary plot.
+   */
   function radiusFn(_: number): TernaryPlot;
   function radiusFn(_?: number) {
     if (typeof _ === "undefined") return radius;
@@ -352,11 +354,12 @@ export function ternaryPlot(barycentric: Barycentric) {
   };
 
   /**
-   * If _labels_ is specified, sets the axis labels to the labels in order of `[A, B, C]`
-   * and returns the ternary plot. If _labels_ is not specified, returns the current labels,
-   * which defaults to `[`[A, B, C]`]`.
+   * Returns the current axis labels, which defaults to `["A", "B", "C"]`.
    */
   function labels(): [a: string, b: string, c: string];
+  /**
+   * Sets the axis labels to the specified labels in order of `[A, B, C]` and returns the ternary plot.
+   */
   function labels(_: [a: string, b: string, c: string]): TernaryPlot;
   function labels(_?: [a: string, b: string, c: string]) {
     return _
@@ -369,10 +372,12 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.labels = labels;
 
   /**
-   * If _angles_ is specified, sets the angle of the ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot.
-   * If _angles_ is not specified, returns the current tick angles, which defaults to `[0, 60, -60]`.
+   * Returns the current tick angles, which defaults to `[0, 60, -60]`.
    */
   function tickAngles(): [a: number, b: number, c: number];
+  /**
+   * Sets the angle of the ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot.
+   */
   function tickAngles(_: [a: number, b: number, c: number]): TernaryPlot;
   function tickAngles(_?: [number, number, number]) {
     return _
@@ -385,10 +390,12 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.tickAngles = tickAngles;
 
   /**
-   * If _angles_ is specified, sets the angle of the axis labels to the specified angles in order `[A, B, C]` and returns the ternary plot.
-   * If _angles_ is not specified, returns the current label angles, which defaults to `[0, 60, -60]`.
+   * Returns the current label angles, which defaults to `[0, 60, -60]`.
    */
   function labelAngles(): [a: number, b: number, c: number];
+  /**
+   * Sets the angle of the axis labels to the specified angles in order `[A, B, C]` and returns the ternary plot.
+   */
   function labelAngles(_: [a: number, b: number, c: number]): TernaryPlot;
   function labelAngles(_?: [number, number, number]) {
     return _
@@ -401,14 +408,16 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.labelAngles = labelAngles;
 
   /**
-   * If _anchors_ is specified, sets the text-anchor of the ticks of each axis to the specified values in order `[A, B, C]` and returns the ternary plot.
-   * If _anchors_ is not specified, returns the current text anchors, which defaults to `["start", "end", "end"]`.
+   * Returns the current text anchors, which defaults to `["start", "end", "end"]`.
    */
   function tickTextAnchors(): [a: TextAnchor, b: TextAnchor, c: TextAnchor];
+  /**
+   * Sets the text-anchor of the ticks of each axis to the specified values in order `[A, B, C]` and returns the ternary plot.
+   */
   function tickTextAnchors(
     _: [a: TextAnchor, b: TextAnchor, c: TextAnchor],
   ): TernaryPlot;
-  function tickTextAnchors(_?: [a: TextAnchor, b: TextAnchor, c: TextAnchor]) {
+  function tickTextAnchors(_?: [TextAnchor, TextAnchor, TextAnchor]) {
     return _
       ? ((A.tickTextAnchor = _[0]),
         (B.tickTextAnchor = _[1]),
@@ -418,9 +427,42 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.tickTextAnchors = tickTextAnchors;
 
+  /**
+   * Returns the current tick sizes, which defaults to `[6, 6, 6]` (px).
+   */
+  function tickSizes(): [number, number, number];
+  /**
+   * Sets the tick sizes of all axes to _sizes_ (px).
+   */
+  function tickSizes(_: number): TernaryPlot;
+  /**
+   * Sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot.
+   */
+  function tickSizes(_: readonly [number, number, number]): TernaryPlot;
+  function tickSizes(_?: readonly [number, number, number] | number) {
+    return _
+      ? Array.isArray(_)
+        ? ((A.tickSize = _[0]),
+          (B.tickSize = _[1]),
+          (C.tickSize = _[2]),
+          ternaryPlot)
+        : ((A.tickSize = B.tickSize = C.tickSize = +_), ternaryPlot)
+      : [A.tickSize, B.tickSize, C.tickSize];
+  }
+  ternaryPlot.tickSizes = tickSizes;
+
+  /**
+   * Returns the current labelOffsets, which defaults to `[45, 45, 45]` (px).
+   */
   function labelOffsets(): [a: number, b: number, c: number];
-  function labelOffsets(_: number): TernaryPlot;
+  /**
+   * Sets the label offsets to the specified sizes in order `[A, B, C]` and returns the ternary plot.
+   */
   function labelOffsets(_: [a: number, b: number, c: number]): TernaryPlot;
+  /**
+   * Sets the tick sizes of all axes to _sizes_ (px).
+   */
+  function labelOffsets(_: number): TernaryPlot;
   function labelOffsets(_?: number | [a: number, b: number, c: number]) {
     return _
       ? Array.isArray(_)
