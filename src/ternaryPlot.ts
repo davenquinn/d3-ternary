@@ -1,4 +1,11 @@
-import type { AxisLabel, Barycentric, TernaryPlot, TextAnchor } from "./types";
+import type {
+  AxisLabel,
+  Barycentric,
+  GridLines,
+  TernaryPlot,
+  TextAnchor,
+  Ticks
+} from "./types";
 
 /**
  * Constructs a new ternary plot using the provided barycentric converter
@@ -69,23 +76,22 @@ export function ternaryPlot(barycentric: Barycentric) {
 
   /**
    * Generates and returns an array of arrays containing grid line coordinates for each axis.
-   * If _count_ is not specified, it defaults to 10. _count_ can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
-   * Each array contains _count_ elements of two-element arrays with the start- and end coordinates of the grid line.
+   * Takes an array of numbers `[A, B, C]` specifying the number of grid lines for each axis.
+   * Each array contains the specified number of elements of two-element arrays with the start- and end coordinates of the grid line.
    *
    * Grid lines are generated using [d3._scaleLinear_.ticks()](https://d3js.org/d3-scale/linear#linear_ticks).
-   * The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
+   * The specified counts are only **hints**; the scale may return more or fewer values depending on the domain.
    */
-  ternaryPlot.gridLines = function (count = 10) {
+  function gridLines(count: number): GridLines;
+  function gridLines(count: [number, number, number]): GridLines;
+  function gridLines(count: [number, number, number] | number = 10) {
     const [scaleA, scaleB, scaleC] = barycentric.scales();
+    const counts = Array.isArray(count) ? count : [+count, +count, +count];
 
-    const gridLines: [
-      Array<[start: [x: number, y: number], end: [x: number, y: number]]>,
-      Array<[start: [x: number, y: number], end: [x: number, y: number]]>,
-      Array<[start: [x: number, y: number], end: [x: number, y: number]]>,
-    ] = [
+    const gridLines: GridLines = [
       // A axis grid lines (vertical lines, parallel to BC edge)
       scaleA
-        .ticks(count)
+        .ticks(counts[0])
         .map((t): [[x: number, y: number], [x: number, y: number]] => {
           const scaledT = scaleA(t);
 
@@ -100,7 +106,7 @@ export function ternaryPlot(barycentric: Barycentric) {
         }),
       // B axis grid lines (lines parallel to AC edge, from left vertex)
       scaleB
-        .ticks(count)
+        .ticks(counts[1])
         .map((t): [[x: number, y: number], [x: number, y: number]] => {
           const scaledT = scaleB(t);
 
@@ -115,7 +121,7 @@ export function ternaryPlot(barycentric: Barycentric) {
         }),
       // C axis grid lines (lines parallel to AB edge, from right vertex)
       scaleC
-        .ticks(count)
+        .ticks(counts[2])
         .map((t): [[x: number, y: number], [x: number, y: number]] => {
           const scaledT = scaleC(t);
 
@@ -131,7 +137,9 @@ export function ternaryPlot(barycentric: Barycentric) {
     ];
 
     return gridLines;
-  };
+  }
+
+  ternaryPlot.gridLines = gridLines;
 
   /**
    * Generates and returns an array containing axis label objects. Each axis label object contains:
@@ -234,7 +242,10 @@ export function ternaryPlot(barycentric: Barycentric) {
    * Ticks are generated using [d3._scaleLinear_.ticks()](https://d3js.org/d3-scale/linear#linear_ticks).
    * The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
    */
-  ternaryPlot.ticks = function (count = 10) {
+  function ticks(count: [a: number, b: number, c: number]): Ticks;
+  function ticks(
+    count: [a: number, b: number, c: number] | number = 10,
+  ): Ticks {
     const [scaleA, scaleB, scaleC] = barycentric.scales();
 
     const counts = Array.isArray(count) ? count : [+count, +count, +count];
@@ -254,7 +265,7 @@ export function ternaryPlot(barycentric: Barycentric) {
         ? tickFormat
         : scaleC.tickFormat(counts[2], tickFormat);
 
-    return [
+    const ticks: Ticks = [
       // A axis ticks (top)
       scaleA.ticks(counts[0]).map((t) => {
         const scaledT = scaleA(t);
@@ -299,7 +310,7 @@ export function ternaryPlot(barycentric: Barycentric) {
           tick: formatC(t),
           angle: C.tickAngle,
           textAnchor: C.tickTextAnchor,
-          size: B.tickSize,
+          size: C.tickSize,
           position: transform(
             ...barycentric.unscaled([
               0, // A
@@ -310,7 +321,10 @@ export function ternaryPlot(barycentric: Barycentric) {
         };
       }),
     ];
-  };
+
+    return ticks;
+  }
+  ternaryPlot.ticks = ticks;
 
   /**
    * Returns the current tick format, which defaults to `"%"`.
@@ -460,7 +474,7 @@ export function ternaryPlot(barycentric: Barycentric) {
    */
   function labelOffsets(_: [a: number, b: number, c: number]): TernaryPlot;
   /**
-   * Sets the tick sizes of all axes to _sizes_ (px).
+   * Sets the label offset of all axes to the specified size (px) and returns the ternary plot.
    */
   function labelOffsets(_: number): TernaryPlot;
   function labelOffsets(_?: number | [a: number, b: number, c: number]) {

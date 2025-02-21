@@ -1,5 +1,5 @@
-import { ternaryPlot } from "./ternaryPlot";
-import { barycentric } from "./barycentric";
+import type { ternaryPlot } from "./ternaryPlot";
+import type { barycentric } from "./barycentric";
 export { barycentric } from "./barycentric";
 export { ternaryPlot } from "./ternaryPlot";
 
@@ -14,5 +14,20 @@ export type AxisLabel = {
   label: string;
   angle: number;
 };
-export type Tick = ReturnType<TernaryPlot["ticks"]>[number];
-export type GridLine = ReturnType<TernaryPlot["gridLines"]>[number];
+
+export type Tick = {
+  tick: string;
+  angle: number;
+  textAnchor: string;
+  size: number;
+  position: [x: number, y: number];
+};
+
+export type Ticks = [Array<Tick>, Array<Tick>, Array<Tick>];
+
+export type GridLine = [
+  start: [x: number, y: number],
+  end: [x: number, y: number],
+];
+
+export type GridLines = [Array<GridLine>, Array<GridLine>, Array<GridLine>];

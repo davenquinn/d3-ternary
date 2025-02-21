@@ -1,21 +1,18 @@
-import type { AxisLabel, Barycentric, TernaryPlot, TextAnchor } from "./types";
+import type { AxisLabel, Barycentric, GridLines, TernaryPlot, TextAnchor, Ticks } from "./types";
 /**
  * Constructs a new ternary plot using the provided barycentric converter
  */
 export declare function ternaryPlot(barycentric: Barycentric): {
     (d: [number, number, number]): [x: number, y: number];
     triangle(): string;
-    gridLines(count?: number): [[start: [x: number, y: number], end: [x: number, y: number]][], [start: [x: number, y: number], end: [x: number, y: number]][], [start: [x: number, y: number], end: [x: number, y: number]][]];
+    gridLines: {
+        (count: number): GridLines;
+        (count: [number, number, number]): GridLines;
+    };
     axisLabels({ center }?: {
         center?: boolean | undefined;
     }): [a: AxisLabel, b: AxisLabel, c: AxisLabel];
-    ticks(count?: number): {
-        tick: string;
-        angle: number;
-        textAnchor: string;
-        size: number;
-        position: [x: number, y: number];
-    }[][];
+    ticks: (count: [a: number, b: number, c: number]) => Ticks;
     tickFormat: {
         (): string | ((d: number) => string);
         (_: string | ((d: number) => string)): TernaryPlot;
@@ -41,9 +38,14 @@ export declare function ternaryPlot(barycentric: Barycentric): {
         (): [a: TextAnchor, b: TextAnchor, c: TextAnchor];
         (_: [a: TextAnchor, b: TextAnchor, c: TextAnchor]): TernaryPlot;
     };
+    tickSizes: {
+        (): [number, number, number];
+        (_: number): TernaryPlot;
+        (_: readonly [number, number, number]): TernaryPlot;
+    };
     labelOffsets: {
         (): [a: number, b: number, c: number];
-        (_: number): TernaryPlot;
         (_: [a: number, b: number, c: number]): TernaryPlot;
+        (_: number): TernaryPlot;
     };
 };
