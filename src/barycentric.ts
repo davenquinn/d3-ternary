@@ -10,9 +10,9 @@ export function barycentric() {
 
   type Accessor = (d: unknown) => number;
 
-  let a: Accessor = (d) => d[0];
-  let b: Accessor = (d) => d[1];
-  let c: Accessor = (d) => d[2];
+  let a: Accessor = (d: any) => d[0];
+  let b: Accessor = (d: any) => d[1];
+  let c: Accessor = (d: any) => d[2];
 
   // domain scales
   const scaleA = scaleLinear().domain([0, 1]);

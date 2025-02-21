@@ -1,5 +1,5 @@
-import type { ternaryPlot } from "./ternaryPlot";
 import type { barycentric } from "./barycentric";
+import type { ternaryPlot } from "./ternaryPlot";
 export { barycentric } from "./barycentric";
 export { ternaryPlot } from "./ternaryPlot";
 export type TernaryPlot = ReturnType<typeof ternaryPlot>;

@@ -3,7 +3,7 @@ import type { AxisLabel, Barycentric, GridLines, TernaryPlot, TextAnchor, Ticks 
  * Constructs a new ternary plot using the provided barycentric converter
  */
 export declare function ternaryPlot(barycentric: Barycentric): {
-    (d: [number, number, number]): [x: number, y: number];
+    (d: unknown): [x: number, y: number];
     triangle(): string;
     gridLines: {
         (count: number): GridLines;
@@ -12,7 +12,10 @@ export declare function ternaryPlot(barycentric: Barycentric): {
     axisLabels({ center }?: {
         center?: boolean | undefined;
     }): [a: AxisLabel, b: AxisLabel, c: AxisLabel];
-    ticks: (count: [a: number, b: number, c: number]) => Ticks;
+    ticks: {
+        (count: number): Ticks;
+        (count: [a: number, b: number, c: number]): Ticks;
+    };
     tickFormat: {
         (): string | ((d: number) => string);
         (_: string | ((d: number) => string)): TernaryPlot;
