@@ -8,7 +8,7 @@ export function barycentric() {
   /** rotation angle in degrees */
   let rotation = 0;
 
-  type Accessor = (d: unknown) => number;
+  type Accessor = (d: any) => number;
 
   let a: Accessor = (d: any) => d[0];
   let b: Accessor = (d: any) => d[1];
