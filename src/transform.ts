@@ -37,7 +37,7 @@ export function domainsFromTransform(transform: {
     Math.sin(d * radian),
   ]);
 
-  // Solve system of equations to find shifts
+  // Solve system of equations to find shifts for each axis
   const det =
     vA[0] * (vB[1] - vC[1]) + vB[0] * (vC[1] - vA[1]) + vC[0] * (vA[1] - vB[1]);
 

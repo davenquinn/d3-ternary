@@ -1,5 +1,5 @@
 import { scaleLinear } from "d3-scale";
-import type { Barycentric } from "types";
+import type { Barycentric } from "./types";
 
 /**
  * Constructs a new barycentric converter. Uses an equilateral triangle with unit height.
@@ -8,10 +8,8 @@ export function barycentric() {
   /** rotation angle in degrees */
   let rotation = 0;
 
-  // Add type for accessor function
-  type Accessor = (d: any) => number;
+  type Accessor = (d: unknown) => number;
 
-  // Update accessor declarations with types
   let a: Accessor = (d) => d[0];
   let b: Accessor = (d) => d[1];
   let c: Accessor = (d) => d[2];
@@ -67,7 +65,7 @@ export function barycentric() {
     return total === 0 ? [0, 0, 0] : [na / total, nb / total, nc / total];
   }
 
-  const barycentric = function (d: any): [number, number] {
+  const barycentric = function (d: unknown): [x: number, y: number] {
     const [dA, dB, dC] = normalize([a(d), b(d), c(d)]);
     const [x, y] = barycentricToCartesian([scaleA(dA), scaleB(dB), scaleC(dC)]);
 
@@ -82,6 +80,7 @@ export function barycentric() {
 
     return rotate(x, y);
   };
+
   /**
    * Computes ternary values from coordinates
    */
@@ -124,53 +123,44 @@ export function barycentric() {
   };
 
   /**
-   * Sets or gets the accessor function for the A component.
-   * If _fn_ is specified, sets the accessor function and returns the barycentric converter.
-   * If _fn_ is not specified, returns the current accessor function, which defaults to:
+   * Returns the current accessor function for the A component, which defaults to:
    * ```ts
    * (d) => d[0]
    * ```
-   *
    */
-  barycentric.a = function (fn?: Accessor): Accessor | typeof barycentric {
+  barycentric.a = function (fn?: Accessor) {
     return fn ? ((a = fn), barycentric) : a;
   };
 
   /**
-   * Sets or gets the accessor function for the B component.
-   * If _fn_ is specified, sets the accessor function and returns the barycentric converter.
-   * If _fn_ is not specified, returns the current accessor function, which defaults to:
+   * Returns the current accessor function for the B component, which defaults to:
    * ```ts
    * (d) => d[1]
    * ```
-   *
    */
-  barycentric.b = function (fn?: Accessor): Accessor | typeof barycentric {
+  barycentric.b = function (fn?: Accessor) {
     return fn ? ((b = fn), barycentric) : b;
   };
 
   /**
-   * Sets or gets the accessor function for the C component.
-   * If _fn_ is specified, sets the accessor function and returns the barycentric converter.
-   * If _fn_ is not specified, returns the current accessor function, which defaults to:
+   * Returns the current accessor function for the C component, which defaults to:
    * ```ts
    * (d) => d[2]
    * ```
-   *
    */
-  barycentric.c = function (fn?: Accessor): Accessor | typeof barycentric {
+  barycentric.c = function (fn?: Accessor) {
     return fn ? ((c = fn), barycentric) : c;
   };
 
   /**
-   * Sets or gets the rotation angle of the ternary plot in degrees.
-   * If _angle_ is specified, sets the rotation angle and returns the barycentric converter.
-   * If _angle_ is not specified, returns the current rotation angle, which defaults to 0.
-   *
-   * Positive angles rotate the plot clockwise.
+   * Returns the current rotation angle in degrees, which defaults to 0.
    */
   function rotationFn(): number;
-  function rotationFn(_: number): Barycentric;
+  /**
+   * Sets the rotation angle to the specified angle in degrees and returns the barycentric converter.
+   * Positive angles rotate the plot clockwise.
+   */
+  function rotationFn(angle: number): Barycentric;
   function rotationFn(_?: number) {
     if (!arguments.length) return rotation;
     rotation = _ ?? 0;
@@ -179,15 +169,14 @@ export function barycentric() {
   barycentric.rotation = rotationFn;
 
   /**
-   * Sets or gets the domains for each axis. If _domains_ is not specified, returns an array of the current domains.
-   * Each domain is a two-element array containing the start and end values.
-   * All domains must have the same length.
+   * Returns an array of the current domains.
+   * Each domain is a two-element array containing the start and end values, in order of `[A, B, C]`.
    */
-  function domainsFn(): [
-    [start: number, end: number],
-    [start: number, end: number],
-    [start: number, end: number],
-  ];
+  function domainsFn(): [[number, number], [number, number], [number, number]];
+  /**
+   * Sets the domains for each axis and returns the barycentric converter.
+   * Each domain is a two-element array containing the start and end values, in order of `[A, B, C]`.
+   */
   function domainsFn(
     domains: [
       [start: number, end: number],
@@ -217,7 +206,6 @@ export function barycentric() {
 
     return barycentric;
   }
-
   barycentric.domains = domainsFn;
 
   /**

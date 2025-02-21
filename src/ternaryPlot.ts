@@ -4,7 +4,7 @@ import type {
   GridLines,
   TernaryPlot,
   TextAnchor,
-  Ticks
+  Ticks,
 } from "./types";
 
 /**
@@ -47,9 +47,8 @@ export function ternaryPlot(barycentric: Barycentric) {
     return [x * radius, y * radius];
   }
 
-  const ternaryPlot = function (d: [number, number, number]) {
+  const ternaryPlot = function (d: unknown) {
     const [x, y] = barycentric(d);
-
     return transform(x, y); // Apply radius
   };
 
@@ -76,7 +75,7 @@ export function ternaryPlot(barycentric: Barycentric) {
 
   /**
    * Generates and returns an array of arrays containing grid line coordinates for each axis.
-   * Takes an array of numbers `[A, B, C]` specifying the number of grid lines for each axis.
+   * Takes an array of three numbers `[A, B, C]` specifying the number of grid lines for each axis.
    * Each array contains the specified number of elements of two-element arrays with the start- and end coordinates of the grid line.
    *
    * Grid lines are generated using [d3._scaleLinear_.ticks()](https://d3js.org/d3-scale/linear#linear_ticks).
@@ -229,7 +228,7 @@ export function ternaryPlot(barycentric: Barycentric) {
 
   /**
    * Generates and returns an array of tick objects for each axis.
-   * If _count_ is not specified, it defaults to 10. _count_ can be a number or an array of numbers, one for each axis in order of `[A, B, C]`.
+   * If _count_ is not specified, it defaults to 10. _count_ can be a number or an array of three numbers, one for each axis in order of `[A, B, C]`.
    *
    * Each tick object contains:
    *
@@ -242,6 +241,7 @@ export function ternaryPlot(barycentric: Barycentric) {
    * Ticks are generated using [d3._scaleLinear_.ticks()](https://d3js.org/d3-scale/linear#linear_ticks).
    * The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
    */
+  function ticks(count: number): Ticks;
   function ticks(count: [a: number, b: number, c: number]): Ticks;
   function ticks(
     count: [a: number, b: number, c: number] | number = 10,
