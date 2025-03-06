@@ -4,7 +4,7 @@ import type { Barycentric } from "./types";
 /**
  * Constructs a new barycentric converter. Uses an equilateral triangle with unit height.
  */
-export function barycentric() {
+export function barycentric(): Barycentric {
   /** rotation angle in degrees */
   let rotation = 0;
 
@@ -65,7 +65,7 @@ export function barycentric() {
     return total === 0 ? [0, 0, 0] : [na / total, nb / total, nc / total];
   }
 
-  const barycentric = function (d: unknown): [x: number, y: number] {
+  const barycentric: Barycentric = function (d: unknown): [x: number, y: number] {
     const [dA, dB, dC] = normalize([a(d), b(d), c(d)]);
     const [x, y] = barycentricToCartesian([scaleA(dA), scaleB(dB), scaleC(dC)]);
 

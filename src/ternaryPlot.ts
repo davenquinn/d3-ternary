@@ -47,7 +47,7 @@ export function ternaryPlot(barycentric: Barycentric) {
     return [x * radius, y * radius];
   }
 
-  const ternaryPlot = function (d: unknown) {
+  const ternaryPlot: TernaryPlot = function (d: unknown) {
     const [x, y] = barycentric(d);
     return transform(x, y); // Apply radius
   };
@@ -65,22 +65,11 @@ export function ternaryPlot(barycentric: Barycentric) {
     return [a, b, c];
   }
 
-  /**
-   * Returns an SVG path command for the outer triangle.
-   */
   ternaryPlot.triangle = function () {
     const [cA, cB, cC] = getVertices();
     return `M${cA}L${cB}L${cC}Z`;
   };
 
-  /**
-   * Generates and returns an array of arrays containing grid line coordinates for each axis.
-   * Takes an array of three numbers `[A, B, C]` specifying the number of grid lines for each axis.
-   * Each array contains the specified number of elements of two-element arrays with the start- and end coordinates of the grid line.
-   *
-   * Grid lines are generated using [d3._scaleLinear_.ticks()](https://d3js.org/d3-scale/linear#linear_ticks).
-   * The specified counts are only **hints**; the scale may return more or fewer values depending on the domain.
-   */
   function gridLines(count: number): GridLines;
   function gridLines(count: [number, number, number]): GridLines;
   function gridLines(count: [number, number, number] | number = 10) {
@@ -137,19 +126,8 @@ export function ternaryPlot(barycentric: Barycentric) {
 
     return gridLines;
   }
-
   ternaryPlot.gridLines = gridLines;
 
-  /**
-   * Generates and returns an array containing axis label objects. Each axis label object contains:
-   *
-   * - `position`: An array of `[x,y]` coordinates
-   * - `angle`: The rotation angle of the label
-   * - `label`: The axis label text
-   *
-   * Takes an optional configuration object:
-   * - `center`: If true, places labels at the center of each axis instead of at vertices
-   */
   ternaryPlot.axisLabels = function ({ center = false } = {}): [
     a: AxisLabel,
     b: AxisLabel,
@@ -226,21 +204,6 @@ export function ternaryPlot(barycentric: Barycentric) {
     ];
   };
 
-  /**
-   * Generates and returns an array of tick objects for each axis.
-   * If _count_ is not specified, it defaults to 10. _count_ can be a number or an array of three numbers, one for each axis in order of `[A, B, C]`.
-   *
-   * Each tick object contains:
-   *
-   * - `tick`: The formatted tick text
-   * - `position`: An array of [x,y] coordinates
-   * - `angle`: The tick rotation angle
-   * - `textAnchor`: The SVG text-anchor value
-   * - `size`: The length of the tick line
-   *
-   * Ticks are generated using [d3._scaleLinear_.ticks()](https://d3js.org/d3-scale/linear#linear_ticks).
-   * The specified count is only a **hint**; the scale may return more or fewer values depending on the domain.
-   */
   function ticks(count: number): Ticks;
   function ticks(count: [a: number, b: number, c: number]): Ticks;
   function ticks(
@@ -326,15 +289,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.ticks = ticks;
 
-  /**
-   * Returns the current tick format, which defaults to `"%"`.
-   */
   function tickFormatFn(): string | ((d: number) => string);
-  /**
-   * Sets the tick format and returns the ternary plot. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format)
-   * that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat),
-   * or a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`.
-   */
   function tickFormatFn(_: string | ((d: number) => string)): TernaryPlot;
   function tickFormatFn(_?: string | ((d: number) => string)) {
     if (!arguments.length) return tickFormat;
@@ -343,13 +298,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.tickFormat = tickFormatFn;
 
-  /**
-   * Returns the current radius, which defaults to 300 (px).
-   */
   function radiusFn(): number;
-  /**
-   * Sets the radius of the ternary plot to the specified number and returns the ternary plot.
-   */
   function radiusFn(_: number): TernaryPlot;
   function radiusFn(_?: number) {
     if (typeof _ === "undefined") return radius;
@@ -358,22 +307,11 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.radius = radiusFn;
 
-  /**
-   * Computes ternary values from `[x, y]` coordinates that are scaled by the radius.
-   * Unlike the _barycentric_.[invert()](#barycentricInvertDoc) method this method takes the plot radius into account.
-   * Note that for inverting mouse positions, the ternary plot should centered at the origin of the containing SVG element.
-   */
   ternaryPlot.invert = function (_: [number, number]) {
     return barycentric.invert([_[0] / radius, _[1] / radius]);
   };
 
-  /**
-   * Returns the current axis labels, which defaults to `["A", "B", "C"]`.
-   */
   function labels(): [a: string, b: string, c: string];
-  /**
-   * Sets the axis labels to the specified labels in order of `[A, B, C]` and returns the ternary plot.
-   */
   function labels(_: [a: string, b: string, c: string]): TernaryPlot;
   function labels(_?: [a: string, b: string, c: string]) {
     return _
@@ -385,13 +323,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.labels = labels;
 
-  /**
-   * Returns the current tick angles, which defaults to `[0, 60, -60]`.
-   */
   function tickAngles(): [a: number, b: number, c: number];
-  /**
-   * Sets the angle of the ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot.
-   */
   function tickAngles(_: [a: number, b: number, c: number]): TernaryPlot;
   function tickAngles(_?: [number, number, number]) {
     return _
@@ -403,13 +335,8 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.tickAngles = tickAngles;
 
-  /**
-   * Returns the current label angles, which defaults to `[0, 60, -60]`.
-   */
   function labelAngles(): [a: number, b: number, c: number];
-  /**
-   * Sets the angle of the axis labels to the specified angles in order `[A, B, C]` and returns the ternary plot.
-   */
+
   function labelAngles(_: [a: number, b: number, c: number]): TernaryPlot;
   function labelAngles(_?: [number, number, number]) {
     return _
@@ -421,13 +348,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.labelAngles = labelAngles;
 
-  /**
-   * Returns the current text anchors, which defaults to `["start", "end", "end"]`.
-   */
   function tickTextAnchors(): [a: TextAnchor, b: TextAnchor, c: TextAnchor];
-  /**
-   * Sets the text-anchor of the ticks of each axis to the specified values in order `[A, B, C]` and returns the ternary plot.
-   */
   function tickTextAnchors(
     _: [a: TextAnchor, b: TextAnchor, c: TextAnchor],
   ): TernaryPlot;
@@ -441,17 +362,8 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.tickTextAnchors = tickTextAnchors;
 
-  /**
-   * Returns the current tick sizes, which defaults to `[6, 6, 6]` (px).
-   */
   function tickSizes(): [number, number, number];
-  /**
-   * Sets the tick sizes of all axes to _sizes_ (px).
-   */
   function tickSizes(_: number): TernaryPlot;
-  /**
-   * Sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot.
-   */
   function tickSizes(_: readonly [number, number, number]): TernaryPlot;
   function tickSizes(_?: readonly [number, number, number] | number) {
     return _
@@ -465,17 +377,8 @@ export function ternaryPlot(barycentric: Barycentric) {
   }
   ternaryPlot.tickSizes = tickSizes;
 
-  /**
-   * Returns the current labelOffsets, which defaults to `[45, 45, 45]` (px).
-   */
   function labelOffsets(): [a: number, b: number, c: number];
-  /**
-   * Sets the label offsets to the specified sizes in order `[A, B, C]` and returns the ternary plot.
-   */
   function labelOffsets(_: [a: number, b: number, c: number]): TernaryPlot;
-  /**
-   * Sets the label offset of all axes to the specified size (px) and returns the ternary plot.
-   */
   function labelOffsets(_: number): TernaryPlot;
   function labelOffsets(_?: number | [a: number, b: number, c: number]) {
     return _

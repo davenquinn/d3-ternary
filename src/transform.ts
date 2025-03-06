@@ -115,10 +115,8 @@ export function transformFromDomains(
     Math.sin(d * radian),
   ]);
 
-  const [tx, ty] = [
-    (vA[0] * shiftA + vB[0] * shiftB + vC[0] * shiftC) * k,
-    (vA[1] * shiftA + vB[1] * shiftB + vC[1] * shiftC) * k,
-  ];
+  const tx = (vA[0] * shiftA + vB[0] * shiftB + vC[0] * shiftC) * k;
+  const ty = (vA[1] * shiftA + vB[1] * shiftB + vC[1] * shiftC) * k;
 
   return { k, x: tx, y: ty };
 }
