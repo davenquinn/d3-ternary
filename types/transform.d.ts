@@ -9,14 +9,14 @@
  *   - k: scale factor (zoom level)
  *   - x: x-translation
  *   - y: y-translation
- * @returns Array of [start,end] domain ranges for axes A, B, and C
+ * @returns Tuple of three [start,end] domain ranges for axes A, B, and C
  * @throws Error if zoom level or translation would create invalid domains
  */
 export declare function domainsFromTransform(transform: {
     k: number;
     x: number;
     y: number;
-}): number[][];
+}): [[number, number], [number, number], [number, number]];
 /**
  * Computes the d3.zoom transform parameters that would create the given domain ranges.
  * This is the inverse of domainsFromTransform().
