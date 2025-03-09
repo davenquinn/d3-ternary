@@ -10,7 +10,9 @@ import type {
 /**
  * Constructs a new ternary plot using the provided barycentric converter
  */
-export function ternaryPlot(barycentric: Barycentric) {
+export function ternaryPlot<T = [number, number, number]>(
+  barycentric: Barycentric<T>,
+) {
   let radius = 300;
   let tickFormat: string | ((d: number) => string) = "%";
 
@@ -47,7 +49,7 @@ export function ternaryPlot(barycentric: Barycentric) {
     return [x * radius, y * radius];
   }
 
-  const ternaryPlot: TernaryPlot = function (d: unknown) {
+  const ternaryPlot: TernaryPlot<T> = function (d: T) {
     const [x, y] = barycentric(d);
     return transform(x, y); // Apply radius
   };
@@ -290,7 +292,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.ticks = ticks;
 
   function tickFormatFn(): string | ((d: number) => string);
-  function tickFormatFn(_: string | ((d: number) => string)): TernaryPlot;
+  function tickFormatFn(_: string | ((d: number) => string)): TernaryPlot<T>;
   function tickFormatFn(_?: string | ((d: number) => string)) {
     if (!arguments.length) return tickFormat;
     tickFormat = _ ?? "%";
@@ -299,7 +301,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.tickFormat = tickFormatFn;
 
   function radiusFn(): number;
-  function radiusFn(_: number): TernaryPlot;
+  function radiusFn(_: number): TernaryPlot<T>;
   function radiusFn(_?: number) {
     if (typeof _ === "undefined") return radius;
     radius = +_;
@@ -312,7 +314,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   };
 
   function labels(): [a: string, b: string, c: string];
-  function labels(_: [a: string, b: string, c: string]): TernaryPlot;
+  function labels(_: [a: string, b: string, c: string]): TernaryPlot<T>;
   function labels(_?: [a: string, b: string, c: string]) {
     return _
       ? ((A.label = String(_[0])),
@@ -324,7 +326,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.labels = labels;
 
   function tickAngles(): [a: number, b: number, c: number];
-  function tickAngles(_: [a: number, b: number, c: number]): TernaryPlot;
+  function tickAngles(_: [a: number, b: number, c: number]): TernaryPlot<T>;
   function tickAngles(_?: [number, number, number]) {
     return _
       ? ((A.tickAngle = _[0]),
@@ -337,7 +339,7 @@ export function ternaryPlot(barycentric: Barycentric) {
 
   function labelAngles(): [a: number, b: number, c: number];
 
-  function labelAngles(_: [a: number, b: number, c: number]): TernaryPlot;
+  function labelAngles(_: [a: number, b: number, c: number]): TernaryPlot<T>;
   function labelAngles(_?: [number, number, number]) {
     return _
       ? ((A.labelAngle = _[0]),
@@ -351,7 +353,7 @@ export function ternaryPlot(barycentric: Barycentric) {
   function tickTextAnchors(): [a: TextAnchor, b: TextAnchor, c: TextAnchor];
   function tickTextAnchors(
     _: [a: TextAnchor, b: TextAnchor, c: TextAnchor],
-  ): TernaryPlot;
+  ): TernaryPlot<T>;
   function tickTextAnchors(_?: [TextAnchor, TextAnchor, TextAnchor]) {
     return _
       ? ((A.tickTextAnchor = _[0]),
@@ -363,8 +365,8 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.tickTextAnchors = tickTextAnchors;
 
   function tickSizes(): [number, number, number];
-  function tickSizes(_: number): TernaryPlot;
-  function tickSizes(_: readonly [number, number, number]): TernaryPlot;
+  function tickSizes(_: number): TernaryPlot<T>;
+  function tickSizes(_: readonly [number, number, number]): TernaryPlot<T>;
   function tickSizes(_?: readonly [number, number, number] | number) {
     return _
       ? Array.isArray(_)
@@ -378,8 +380,8 @@ export function ternaryPlot(barycentric: Barycentric) {
   ternaryPlot.tickSizes = tickSizes;
 
   function labelOffsets(): [a: number, b: number, c: number];
-  function labelOffsets(_: [a: number, b: number, c: number]): TernaryPlot;
-  function labelOffsets(_: number): TernaryPlot;
+  function labelOffsets(_: [a: number, b: number, c: number]): TernaryPlot<T>;
+  function labelOffsets(_: number): TernaryPlot<T>;
   function labelOffsets(_?: number | [a: number, b: number, c: number]) {
     return _
       ? Array.isArray(_)

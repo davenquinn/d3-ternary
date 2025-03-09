@@ -4,15 +4,15 @@ import type { Barycentric } from "./types";
 /**
  * Constructs a new barycentric converter. Uses an equilateral triangle with unit height.
  */
-export function barycentric(): Barycentric {
+export function barycentric<T = [number, number, number]>(): Barycentric<T> {
   /** rotation angle in degrees */
   let rotation = 0;
 
-  type Accessor = (d: any) => number;
+  type Accessor = (d: T) => number;
 
-  let a: Accessor = (d: any) => d[0];
-  let b: Accessor = (d: any) => d[1];
-  let c: Accessor = (d: any) => d[2];
+  let a: Accessor = (d: T) => (d as never)[0];
+  let b: Accessor = (d: T) => (d as never)[1];
+  let c: Accessor = (d: T) => (d as never)[2];
 
   // domain scales
   const scaleA = scaleLinear().domain([0, 1]);
@@ -65,7 +65,7 @@ export function barycentric(): Barycentric {
     return total === 0 ? [0, 0, 0] : [na / total, nb / total, nc / total];
   }
 
-  const barycentric: Barycentric = function (d: unknown): [x: number, y: number] {
+  const barycentric: Barycentric<T> = function (d: T): [x: number, y: number] {
     const [dA, dB, dC] = normalize([a(d), b(d), c(d)]);
     const [x, y] = barycentricToCartesian([scaleA(dA), scaleB(dB), scaleC(dC)]);
 
@@ -123,34 +123,46 @@ export function barycentric(): Barycentric {
   };
 
   /**
-   * Returns the current accessor function for the A component, which defaults to:
-   * ```ts
-   * (d) => d[0]
-   * ```
+   * Returns the current accessor function for the A component
    */
-  barycentric.a = function (fn?: Accessor) {
+  function aFn(): Accessor;
+  /**
+   * Sets the accessor function for the A component and returns the barycentric converter
+   * @param fn - Accessor function that defaults to `(d) => d[0]`
+   */
+  function aFn(fn: Accessor): Barycentric<T>;
+  function aFn(fn?: Accessor) {
     return fn ? ((a = fn), barycentric) : a;
-  };
+  }
+  barycentric.a = aFn;
 
   /**
-   * Returns the current accessor function for the B component, which defaults to:
-   * ```ts
-   * (d) => d[1]
-   * ```
+   * Returns the current accessor function for the B component
    */
-  barycentric.b = function (fn?: Accessor) {
+  function bFn(): Accessor;
+  /**
+   * Sets the accessor function for the B component and returns the barycentric converter
+   * @param fn - Accessor function that defaults to `(d) => d[1]`
+   */
+  function bFn(fn: Accessor): Barycentric<T>;
+  function bFn(fn?: Accessor) {
     return fn ? ((b = fn), barycentric) : b;
-  };
+  }
+  barycentric.b = bFn;
 
   /**
-   * Returns the current accessor function for the C component, which defaults to:
-   * ```ts
-   * (d) => d[2]
-   * ```
+   * Returns the current accessor function for the C component
    */
-  barycentric.c = function (fn?: Accessor) {
+  function cFn(): Accessor;
+  /**
+   * Sets the accessor function for the C component and returns the barycentric converter
+   * @param fn - Accessor function that defaults to `(d) => d[2]`
+   */
+  function cFn(fn: Accessor): Barycentric<T>;
+  function cFn(fn?: Accessor) {
     return fn ? ((c = fn), barycentric) : c;
-  };
+  }
+  barycentric.c = cFn;
 
   /**
    * Returns the current rotation angle in degrees, which defaults to 0.
@@ -160,7 +172,7 @@ export function barycentric(): Barycentric {
    * Sets the rotation angle to the specified angle in degrees and returns the barycentric converter.
    * Positive angles rotate the plot clockwise.
    */
-  function rotationFn(angle: number): Barycentric;
+  function rotationFn(angle: number): Barycentric<T>;
   function rotationFn(_?: number) {
     if (!arguments.length) return rotation;
     rotation = _ ?? 0;
@@ -183,7 +195,7 @@ export function barycentric(): Barycentric {
       [start: number, end: number],
       [start: number, end: number],
     ],
-  ): Barycentric;
+  ): Barycentric<T>;
   function domainsFn(
     domains?: [
       [start: number, end: number],

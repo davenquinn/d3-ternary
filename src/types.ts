@@ -5,11 +5,11 @@ export { barycentric } from "./barycentric";
  * Ternary plot generator
  * @public
  */
-export interface TernaryPlot {
+export interface TernaryPlot<T> {
   /**
    * Converts data to cartesian coordinates using the provided barycentric converter and scaling by radius
    */
-  (d: unknown): [x: number, y: number];
+  (d: T): [x: number, y: number];
 
   /**
    * Returns an SVG path command for the outer triangle
@@ -93,7 +93,7 @@ export interface TernaryPlot {
    * that is passed to [d3.tickFormat()](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat),
    * or a custom formatter function.
    */
-  tickFormat(format: string | ((d: number) => string)): TernaryPlot;
+  tickFormat(format: string | ((d: number) => string)): TernaryPlot<T>;
 
   /**
    * Returns the current radius, which defaults to 300 (px)
@@ -102,7 +102,7 @@ export interface TernaryPlot {
   /**
    * Sets the radius of the ternary plot to the specified number and returns the ternary plot
    */
-  radius(radius: number): TernaryPlot;
+  radius(radius: number): TernaryPlot<T>;
 
   /**
    * Computes ternary values from `[x, y]` coordinates that are scaled by the radius
@@ -119,7 +119,7 @@ export interface TernaryPlot {
   /**
    * Sets the axis labels to the specified labels in order of `[A, B, C]` and returns the ternary plot
    */
-  labels(labels: [a: string, b: string, c: string]): TernaryPlot;
+  labels(labels: [a: string, b: string, c: string]): TernaryPlot<T>;
 
   /**
    * Returns the current tick angles, which defaults to `[0, 60, -60]`
@@ -128,7 +128,7 @@ export interface TernaryPlot {
   /**
    * Sets the angle of the ticks of each axis to the specified angles in order `[A, B, C]` and returns the ternary plot
    */
-  tickAngles(angles: [a: number, b: number, c: number]): TernaryPlot;
+  tickAngles(angles: [a: number, b: number, c: number]): TernaryPlot<T>;
 
   /**
    * Returns the current label angles, which defaults to `[0, 60, -60]`
@@ -137,7 +137,7 @@ export interface TernaryPlot {
   /**
    * Sets the angle of the axis labels to the specified angles in order `[A, B, C]` and returns the ternary plot
    */
-  labelAngles(angles: [a: number, b: number, c: number]): TernaryPlot;
+  labelAngles(angles: [a: number, b: number, c: number]): TernaryPlot<T>;
 
   /**
    * Returns the current text anchors, which defaults to `["start", "end", "end"]`
@@ -148,7 +148,7 @@ export interface TernaryPlot {
    */
   tickTextAnchors(
     anchors: [a: TextAnchor, b: TextAnchor, c: TextAnchor],
-  ): TernaryPlot;
+  ): TernaryPlot<T>;
 
   /**
    * Returns the current tick sizes, which defaults to `[6, 6, 6]` (px)
@@ -157,11 +157,11 @@ export interface TernaryPlot {
   /**
    * Sets the tick sizes of all axes to the specified size (px) and returns the ternary plot
    */
-  tickSizes(size: number): TernaryPlot;
+  tickSizes(size: number): TernaryPlot<T>;
   /**
    * Sets the axis tick sizes to the specified tick sizes in order `[A, B, C]` and returns the ternary plot
    */
-  tickSizes(sizes: readonly [number, number, number]): TernaryPlot;
+  tickSizes(sizes: readonly [number, number, number]): TernaryPlot<T>;
 
   /**
    * Returns the current label offsets, which defaults to `[45, 45, 45]` (px)
@@ -170,11 +170,11 @@ export interface TernaryPlot {
   /**
    * Sets the label offset of all axes to the specified size (px) and returns the ternary plot
    */
-  labelOffsets(offset: number): TernaryPlot;
+  labelOffsets(offset: number): TernaryPlot<T>  ;
   /**
    * Sets the label offsets to the specified sizes in order `[A, B, C]` and returns the ternary plot
    */
-  labelOffsets(offsets: [a: number, b: number, c: number]): TernaryPlot;
+  labelOffsets(offsets: [a: number, b: number, c: number]): TernaryPlot<T>;
 }
 
 export type TextAnchor = "start" | "middle" | "end";
@@ -206,17 +206,17 @@ export type GridLines = [Array<GridLine>, Array<GridLine>, Array<GridLine>];
  * Accessor function for getting component values
  * @public
  */
-export type Accessor = (d: any) => number;
+export type Accessor<T> = (d: T) => number;
 
 /**
  * Barycentric coordinate converter
  * @public
  */
-export interface Barycentric {
+export interface Barycentric<T> {
   /**
    * Converts data to cartesian coordinates using the current accessors and scales
    */
-  (d: unknown): [x: number, y: number];
+  (d: T): [x: number, y: number];
 
   /**
    * Converts raw barycentric coordinates to cartesian coordinates without scaling
@@ -231,28 +231,34 @@ export interface Barycentric {
   invert([x, y]: [number, number]): [number, number, number];
 
   /**
-   * Returns the current accessor function for the A component, which defaults to:
-   * ```ts
-   * (d) => d[0]
-   * ```
+   * Returns the current accessor function for the A component
    */
-  a(fn?: Accessor): Accessor | Barycentric;
+  a(): Accessor<T>;
+  /**
+   * Sets the accessor function for the A component and returns the barycentric converter
+   * @param fn - Accessor function that defaults to `(d) => d[0]`
+   */
+  a(fn: Accessor<T>): Barycentric<T>;
 
   /**
-   * Returns the current accessor function for the B component, which defaults to:
-   * ```ts
-   * (d) => d[1]
-   * ```
+   * Returns the current accessor function for the B component
    */
-  b(fn?: Accessor): Accessor | Barycentric;
+  b(): Accessor<T>;
+  /**
+   * Sets the accessor function for the B component and returns the barycentric converter
+   * @param fn - Accessor function that defaults to `(d) => d[1]`
+   */
+  b(fn: Accessor<T>): Barycentric<T>;
 
   /**
-   * Returns the current accessor function for the C component, which defaults to:
-   * ```ts
-   * (d) => d[2]
-   * ```
+   * Returns the current accessor function for the C component
    */
-  c(fn?: Accessor): Accessor | Barycentric;
+  c(): Accessor<T>;
+  /**
+   * Sets the accessor function for the C component and returns the barycentric converter
+   * @param fn - Accessor function that defaults to `(d) => d[2]`
+   */
+  c(fn: Accessor<T>): Barycentric<T>;
 
   /**
    * Returns the current rotation angle in degrees, which defaults to 0.
@@ -262,7 +268,7 @@ export interface Barycentric {
    * Sets the rotation angle to the specified angle in degrees and returns the barycentric converter.
    * Positive angles rotate the plot clockwise.
    */
-  rotation(angle: number): Barycentric;
+  rotation(angle: number): Barycentric<T>;
 
   /**
    * Returns an array of the current domains.
@@ -279,7 +285,7 @@ export interface Barycentric {
       [start: number, end: number],
       [start: number, end: number],
     ],
-  ): Barycentric;
+  ): Barycentric<T>;
 
   /**
    * Returns the scales for the three axes
