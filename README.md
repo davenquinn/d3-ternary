@@ -18,14 +18,14 @@ If you use npm
 npm install d3-ternary
 ```
 
-You can also download the [latest release](https://github.com/davenquinn/d3-ternary/releases) on GitHub. For vanilla JS in modern browsers, import d3-ternary from [Skypack](https://www.skypack.dev/):
+You can also download the [latest release](https://github.com/davenquinn/d3-ternary/releases) on GitHub. For vanilla JS in modern browsers, import d3-ternary from [jsDelivr](https://www.skypack.dev/):
 
 ```html
 <script type="module">
   import {
     barycentric,
     ternaryPlot,
-  } from "https://cdn.skypack.dev/d3-ternary@2";
+  } from "https://cdn.jsdelivr.net/npm/d3-ternary@3/+esm";
 
   const b = barycentric();
   const t = ternaryPlot(b);
@@ -36,13 +36,13 @@ You can also download the [latest release](https://github.com/davenquinn/d3-tern
 
 ### `barycentric()`
 
-**barycentric**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L6)
+**barycentric**() [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L7)
 
 Constructs a new default ternary converter that converts ternary data to Cartesian coordinates. By default, it makes an equilateral triangle on the unit circle centered at the origin.
 
 [#](#barycentricConvertDoc) _barycentric_(_data_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L25)
 
-Computes `[x,y]` coordinates from a ternary values (a single three-element array). Note that the [x, y] coordinates here are unscaled (radius of 1). All values are [normalized](#barycentricNormalizeDoc) by default.
+Computes `[x,y]` coordinates from a ternary values (a single three-element array). Note that the `[x, y]` coordinates here are unscaled (radius of 1). All values are normalized by default.
 
 [#](#barycentricInvertDoc) _barycentric_.**invert**(_coordinates_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L35)
 
@@ -75,7 +75,7 @@ const c = (d) => d[2];
 [#](#barycentricDomainsDoc) _barycentric_.**domains**([_domains_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/barycentric.ts#L120)
 
 If _domains_ is specified, sets the domains for each axis to the specified domains in order of `[A, B, C]` and returns this barycentric converter. Each domain should be a two-element array `[min, max]`. All domains must have equal lengths. This method allows you to create "partial" ternary plots that zoom in on a specific region of the full triangle.
-For example, setting domains to `[[0.2, 0.4], [0.3, 0.5], [0.2, 0.4]]` would show only the portion of the triangle where A is between 20-40%, B between 30-50%, and C between 20-40%.
+For example, setting domains to `[[0.2, 0.4], [0.2, 0.4], [0.2, 0.4]]` will show only the portion of the triangle where each component is between 20-40%.
 
 If _domains_ is not specified, returns the current domains for each axis.
 
@@ -131,7 +131,7 @@ If _labels_ is specified, sets the axis labels to the labels in order of `[A, B,
 
 [#](#ternaryPlotLabelAnglesDoc) _ternaryPlot_.**labelAngles**([_angles_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L488)
 
-If _angles_ is specified, sets the angles of the axis labels to the specified angles in order of `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current label angles, which defaults to `[0, 60, -60]`
+If _angles_ is specified, sets the angles of the axis labels to the specified angles in order of `[A, B, C]` and returns the ternary plot. If _angles_ is not specified, returns the current label angles, which defaults to `[0, 60, -60]`.
 
 [#](#ternaryPlotLabelOffsetsDoc) _ternaryPlot_.**labelOffsets**([_offsets_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#L469)
 
@@ -151,7 +151,7 @@ If _sizes_ is specified and is an array, sets the axis tick sizes to the specifi
 
 [#](#ternaryPlotTickFormatDoc) _ternaryPlot_.**tickFormat**([_format_]) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/ternaryPlot.ts#387)
 
-If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://github.com/d3/d3-scale/blob/master/README.md#tickFormat). To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick sizes, which defaults to `"%"`, meaning ticks are formatted as percentages.
+If _format_ is specified, sets the tick format. _format_ can either be a [format specifier string](https://github.com/d3/d3-format#format) that is passed to [`d3.tickFormat()`](https://d3js.org/d3-scale/linear#linear_tickFormat). To implement your own tick format function, pass a custom formatter function, for example `const formatTick = (x) => String(x.toFixed(1))`. If _format_ is not specified, returns the current tick format, which defaults to `"%"`.
 
 #### Plot Methods
 
@@ -197,7 +197,7 @@ Returns an [SVG path command](https://developer.mozilla.org/en-US/docs/Web/SVG/A
 
 ### Transform Functions
 
-[#](#domainsFromTransformDoc) **domainsFromTransform**(_transform_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/transform.ts#L16)
+[#](#domainsFromTransformDoc) **domainsFromTransform**(_transform_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/transform.ts#L17)
 
 Converts a transform into domain ranges for the ternary plot axes. This can be used to handle zooming and panning using [d3-zoom](https://d3js.org/d3-zoom). The transform object contains
 
@@ -222,7 +222,7 @@ Throws an error if the transform would create invalid domains (outside the [0,1]
 
 [#](#transformFromDomainsDoc) **transformFromDomains**(_domains_) [<>](https://github.com/davenquinn/d3-ternary/blob/master/src/transform.ts#L89)
 
-The inverse of domainsFromTransform - converts domain ranges into a d3.zoom transform. This is useful when you want to programmatically set the zoom/pan state to focus on specific domain ranges.
+The inverse of domainsFromTransform - converts domain ranges into a `d3.zoom` transform. This is useful when you want to programmatically set the zoom/pan state to focus on specific domain ranges.
 
 Takes an array of `[start, end]` domain ranges for axes A, B, and C. Returns a transform object with:
 
@@ -266,7 +266,6 @@ For detailed examples of how to render ternary plots:
 Several projects have served as a starting point for this module.
 
 - The initial [d3-ternary](https://github.com/davenquinn/d3-ternary) module by [Daven Quinn](https://github.com/davenquinn/)
-- [Ternary slider](https://observablehq.com/@yurivish/ternary-slider) notebook by Yuri Vishnevsky
 - [D3 Ternary Plot](https://observablehq.com/@toja/d3-ternary-plot) notebook by Torben Jansen
 - [Zoomable Ternary Plot](https://observablehq.com/@dixonj13/zoomable-ternary-plot) notebook by dixonj13
 
