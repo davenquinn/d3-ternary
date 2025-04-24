@@ -182,3 +182,4 @@ tape("ternaryPlot() generates correct axis labels", (test) => {
   
   test.end();
 });
+
