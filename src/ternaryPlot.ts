@@ -149,24 +149,24 @@ export function ternaryPlot<T = [number, number, number]>(
             (midCA[0] / radius) * (radius + C.labelOffset),
             (midCA[1] / radius) * (radius + C.labelOffset),
           ],
-          label: C.label,
-          angle: C.labelAngle,
+          label: A.label,
+          angle: A.labelAngle,
         },
         {
           position: [
             (midAB[0] / radius) * (radius + A.labelOffset),
             (midAB[1] / radius) * (radius + A.labelOffset),
           ],
-          label: A.label,
-          angle: A.labelAngle,
+          label: B.label,
+          angle: B.labelAngle,
         },
         {
           position: [
             (midBC[0] / radius) * (radius + B.labelOffset),
             (midBC[1] / radius) * (radius + B.labelOffset),
           ],
-          label: B.label,
-          angle: B.labelAngle,
+          label: C.label,
+          angle: C.labelAngle,
         },
       ];
     }
