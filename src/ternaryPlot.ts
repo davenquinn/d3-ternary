@@ -144,16 +144,6 @@ export function ternaryPlot<T = [number, number, number]>(
       const midCA = [(cC[0] + cA[0]) / 2, (cC[1] + cA[1]) / 2];
 
       return [
-        // A axis label (opposite to A vertex)
-        {
-          position: [
-            (midBC[0] / radius) * (radius + B.labelOffset),
-            (midBC[1] / radius) * (radius + B.labelOffset),
-          ],
-          label: B.label,
-          angle: B.labelAngle,
-        },
-        // B axis label (opposite to B vertex)
         {
           position: [
             (midCA[0] / radius) * (radius + C.labelOffset),
@@ -162,7 +152,6 @@ export function ternaryPlot<T = [number, number, number]>(
           label: C.label,
           angle: C.labelAngle,
         },
-        // C axis label (opposite to C vertex)
         {
           position: [
             (midAB[0] / radius) * (radius + A.labelOffset),
@@ -170,6 +159,14 @@ export function ternaryPlot<T = [number, number, number]>(
           ],
           label: A.label,
           angle: A.labelAngle,
+        },
+        {
+          position: [
+            (midBC[0] / radius) * (radius + B.labelOffset),
+            (midBC[1] / radius) * (radius + B.labelOffset),
+          ],
+          label: B.label,
+          angle: B.labelAngle,
         },
       ];
     }
